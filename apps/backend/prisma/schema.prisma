@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Bangumi {
+  id          Int       @id @default(autoincrement())
+  nameZh      String    @map("name_zh")
+  nameJp      String?   @map("name_jp")
+  nameEn      String?   @map("name_en")
+  poster      String    @default("default")
+  season      Int       @default(1)
+  year        Int?
+  isCompleted Boolean   @default(false) @map("is_completed")
+  offset      Int       @default(0)
+  savePath    String    @map("save_path")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean   @default(false)
+  episode     Episode[]
+
+  @@unique([nameZh, season])
+}
+
+enum Sub {
+  CHS
+  CHT
+  JP
+}
+
+model Episode {
+  id        Int      @id @default(autoincrement())
+  name      String
+  bangumiId Int      @map("bangumi_id")
+  bangumi   Bangumi  @relation(fields: [bangumiId], references: [id])
+  episode   Int
+  sub       Sub
+  source    String?
+  dpi       String
+  torrent   String
+  savePath  String   @map("save_path")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deleted   Boolean  @default(false)
+
+  @@unique([bangumiId, episode])
+}
