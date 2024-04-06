@@ -8,9 +8,9 @@ describe('rawParser', () => {
     expect(result.nameZh).toBe('欢迎来到实力至上主义教室');
     expect(result.season).toBe(3);
     expect(result.episode).toBe(13);
-    expect(result.sub).toBe('chs');
+    expect(result.sub).toBe('CHS');
     expect(result.dpi).toBe('1080p');
-    expect(result.group).toBe('桜都字幕组');
+    expect(result.groupName).toBe('桜都字幕组');
   });
 
   it('should return null for collection title', () => {

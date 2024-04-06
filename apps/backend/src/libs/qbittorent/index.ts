@@ -1,4 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import * as https from 'https';
+import { TorrentOptions } from './interface';
 
 const QBITTORENT_API = {
   login: 'auth/login',
@@ -13,19 +15,26 @@ export class Qbittorent {
   #username: string;
   #password: string;
   #sid = '';
+  #axiosInstance: AxiosInstance;
 
   constructor(host: string, username: string, password: string) {
     this.#host = host;
     this.#username = username;
     this.#password = password;
 
-    this.setupAxios(host);
+    this.setupAxios();
   }
 
-  setupAxios(host: string) {
-    axios.defaults.baseURL = host;
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    axios.interceptors.request.use(
+  setupAxios() {
+    const axiosInstance = axios.create({
+      baseURL: this.#host,
+    });
+    axiosInstance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    if (process.env.NODE_ENV === 'dev') {
+      const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+      axiosInstance.defaults.httpsAgent = httpsAgent;
+    }
+    axiosInstance.interceptors.request.use(
       (config) => {
         const { url } = config;
         config.headers['Referer'] = this.#host;
@@ -43,10 +52,11 @@ export class Qbittorent {
         return Promise.reject(error);
       },
     );
+    this.#axiosInstance = axiosInstance;
   }
 
   async login() {
-    const response = await axios.post(QBITTORENT_API.login, {
+    const response = await this.#axiosInstance.post(QBITTORENT_API.login, {
       username: this.#username,
       password: this.#password,
     });
@@ -56,12 +66,13 @@ export class Qbittorent {
   }
 
   getVersion() {
-    return axios.get(QBITTORENT_API.version);
+    return this.#axiosInstance.get(QBITTORENT_API.version);
   }
 
-  addTorrent(torrent: string) {
-    return axios.post(QBITTORENT_API.torrent_add, {
-      urls: torrent,
-    });
+  addTorrent(data: TorrentOptions) {
+    return this.#axiosInstance.post(QBITTORENT_API.torrent_add, data);
   }
 }
+
+// let a = new Qbittorent('http://qb.backend.orb.local', 'admin', 'fG9yyJWwW');
+// a.login();

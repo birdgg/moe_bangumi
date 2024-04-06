@@ -1,4 +1,3 @@
-import { Episode } from 'src/interfaces/bangumi';
 import { RawParserResult } from './interface';
 
 const EPISODE_RE = /\d+/;
@@ -23,9 +22,9 @@ const CHINESE_NUMBER_MAP = {
 };
 
 const CHINESE_SUB_MAP = {
-  简: 'chs',
-  繁: 'cht',
-  日: 'jp',
+  简: 'CHS',
+  繁: 'CHT',
+  日: 'JP',
 };
 
 function getGroup(name: string): string {

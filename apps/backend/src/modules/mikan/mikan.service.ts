@@ -7,6 +7,8 @@ import { MikanRssItem } from 'src/interfaces/response';
 import { RawParserResult } from 'src/libs/parser/analyser/interface';
 import { rawParser } from 'src/libs/parser/analyser/rawParser';
 import { pick } from 'lodash';
+import { QbittorrentService } from '../qbittorrent/qbittorrent.service';
+import { mikanParser } from 'src/libs/parser/analyser/mikanParser';
 
 @Injectable()
 export class MikanService {
@@ -18,6 +20,7 @@ export class MikanService {
   constructor(
     private schedulerRegistry: SchedulerRegistry,
     private prismaService: PrismaService,
+    private qbittorrentService: QbittorrentService,
   ) {}
 
   addFeed(url: string) {
@@ -42,19 +45,26 @@ export class MikanService {
       const item = items[index];
       const result = rawParser(items[index].title);
       if (!result) continue;
-      this.updateToBangumi(result, item.enclosure.url);
+      await this.updateToBangumi(result, item.enclosure.url, item.link);
     }
   }
 
-  private async updateToBangumi(item: RawParserResult, torrent: string) {
+  private async updateToBangumi(
+    item: RawParserResult,
+    torrent: string,
+    link: string,
+  ) {
     let bangumi = await this.prismaService.bangumi.findUnique({
       where: { nameZh_season: { nameZh: item.nameZh, season: item.season } },
     });
 
     if (!bangumi) {
+      // save poster
+      const { poster } = await mikanParser(link);
       bangumi = await this.prismaService.bangumi.create({
         data: {
           ...pick(item, ['nameZh', 'nameEn', 'season']),
+          poster,
           savePath: this.getSavePath(item),
         },
       });
@@ -73,18 +83,29 @@ export class MikanService {
     // already downloaded
     if (episode) return;
     const savePath = this.getSavePath(item);
+    const name = `${item.nameZh} S${this.getNumber(item.season)}E${this.getNumber(item.episode)}`;
     await this.prismaService.episode.create({
       data: {
         bangumiId,
+        name,
         ...pick(item, ['sub', 'source', 'dpi']),
         episode: item.episode,
         torrent,
         savePath,
       },
     });
+    this.qbittorrentService.addTorrent({
+      urls: torrent,
+      savepath: savePath,
+      rename: name,
+    });
   }
 
   private getSavePath(item: RawParserResult) {
     return `/${item.nameZh}/Season ${item.season}/`;
+  }
+
+  private getNumber(n: number) {
+    return n < 10 ? `0${n}` : n;
   }
 }

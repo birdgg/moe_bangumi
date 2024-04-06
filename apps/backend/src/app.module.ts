@@ -5,14 +5,23 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MikanModule } from './modules/mikan/mikan.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from 'nestjs-prisma';
+import { QbittorrentModule } from './modules/qbittorrent/qbittorrent.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     PrismaModule.forRoot({
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
+    QbittorrentModule,
     MikanModule,
   ],
   controllers: [AppController],

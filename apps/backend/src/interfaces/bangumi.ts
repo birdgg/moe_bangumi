@@ -1,4 +1,4 @@
-export type Sub = 'chs' | 'cht' | 'jp';
+export type Sub = 'CHS' | 'CHT' | 'JP';
 
 export interface Bangumi {
   id: string;
