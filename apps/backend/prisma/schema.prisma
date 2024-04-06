@@ -55,3 +55,16 @@ model Episode {
 
   @@unique([bangumiId, episode])
 }
+
+model Setting {
+  id          Int @id @default(autoincrement())
+  rssInterval Int @default(7200) @map("rss_interval")
+
+  downloaderHost     String @map("downloader_host")
+  downloaderUsername String @map("downloader_username")
+  downloaderPassword String @map("downloader_password")
+  downloaderPath     String @map("downloader_path")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
