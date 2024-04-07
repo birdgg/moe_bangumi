@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:dev.db"
 }
 
 model Bangumi {
@@ -32,19 +32,13 @@ model Bangumi {
   @@unique([nameZh, season])
 }
 
-enum Sub {
-  CHS
-  CHT
-  JP
-}
-
 model Episode {
   id        Int      @id @default(autoincrement())
   name      String
   bangumiId Int      @map("bangumi_id")
   bangumi   Bangumi  @relation(fields: [bangumiId], references: [id])
   episode   Int
-  sub       Sub
+  sub       String
   source    String?
   dpi       String
   torrent   String

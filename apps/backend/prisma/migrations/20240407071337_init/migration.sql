@@ -1,0 +1,51 @@
+-- CreateTable
+CREATE TABLE "Bangumi" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name_zh" TEXT NOT NULL,
+    "name_jp" TEXT,
+    "name_en" TEXT,
+    "poster" TEXT NOT NULL DEFAULT 'default',
+    "season" INTEGER NOT NULL DEFAULT 1,
+    "year" INTEGER,
+    "is_completed" BOOLEAN NOT NULL DEFAULT false,
+    "offset" INTEGER NOT NULL DEFAULT 0,
+    "save_path" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL,
+    "deleted" BOOLEAN NOT NULL DEFAULT false
+);
+
+-- CreateTable
+CREATE TABLE "Episode" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "bangumi_id" INTEGER NOT NULL,
+    "episode" INTEGER NOT NULL,
+    "sub" TEXT NOT NULL,
+    "source" TEXT,
+    "dpi" TEXT NOT NULL,
+    "torrent" TEXT NOT NULL,
+    "save_path" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT "Episode_bangumi_id_fkey" FOREIGN KEY ("bangumi_id") REFERENCES "Bangumi" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Setting" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "rss_interval" INTEGER NOT NULL DEFAULT 7200,
+    "downloader_host" TEXT NOT NULL,
+    "downloader_username" TEXT NOT NULL,
+    "downloader_password" TEXT NOT NULL,
+    "downloader_path" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Bangumi_name_zh_season_key" ON "Bangumi"("name_zh", "season");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Episode_bangumi_id_episode_key" ON "Episode"("bangumi_id", "episode");

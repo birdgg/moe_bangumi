@@ -11,14 +11,5 @@ services:
       PUID: 1000
       PGID: 100
       WEBUIPORT: 8989
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: adminadmin
-      POSTGRES_DB: moe
     volumes:
-      - /tmp/postgres/data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+      - $HOME/Downloads:/downloads

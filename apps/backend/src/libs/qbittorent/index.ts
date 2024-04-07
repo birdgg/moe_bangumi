@@ -60,6 +60,9 @@ export class Qbittorent {
       username: this.#username,
       password: this.#password,
     });
+    if (response.data == 'Failed') {
+      throw new Error('qbittorrent login failed');
+    }
     const sid = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
     this.#sid = sid;
     return response;
