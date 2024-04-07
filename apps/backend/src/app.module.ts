@@ -8,6 +8,7 @@ import { PrismaModule } from 'nestjs-prisma';
 import { QbittorrentModule } from './modules/qbittorrent/qbittorrent.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { SettingModule } from './modules/setting/setting.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { join } from 'path';
     }),
     QbittorrentModule,
     MikanModule,
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

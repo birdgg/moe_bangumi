@@ -3,7 +3,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { PrismaService } from 'nestjs-prisma';
 import * as RssParser from 'rss-parser';
-import { MikanRssItem } from 'src/interfaces/response';
+import { MikanRssItem } from 'src/interfaces/response.interface';
 import { RawParserResult } from 'src/libs/parser/analyser/interface';
 import { rawParser } from 'src/libs/parser/analyser/rawParser';
 import { pick } from 'lodash';

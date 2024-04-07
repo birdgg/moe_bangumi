@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Patch, Post } from '@nestjs/common';
 import { MikanService } from './mikan.service';
 
 const URL =
