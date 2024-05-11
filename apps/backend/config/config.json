@@ -1,0 +1,9 @@
+{
+  "program": { "rssTime": 7200, "renameTime": 60, "webuiPort": 7892 },
+  "downloader": {
+    "host": "http://qb.auto-bangumi.orb.local",
+    "username": "admin",
+    "password": "adminadmin",
+    "path": "/downloads/fanjv"
+  }
+}

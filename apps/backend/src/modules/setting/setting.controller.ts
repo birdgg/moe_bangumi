@@ -8,11 +8,11 @@ export class SettingController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.settingService.findOne(+id);
+    // return this.settingService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() setting: Setting) {
-    return this.settingService.update(+id, setting);
+    // return this.settingService.update(+id, setting);
   }
 }

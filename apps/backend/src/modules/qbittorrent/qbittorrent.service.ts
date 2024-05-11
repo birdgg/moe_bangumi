@@ -1,27 +1,52 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Qbittorent } from 'src/libs/qbittorent';
-import { TorrentOptions } from 'src/libs/qbittorent/interface';
+import { Torrent, TorrentOptions } from 'src/libs/qbittorent/interface';
+import { SettingService } from '../setting/setting.service';
 
 @Injectable()
 export class QbittorrentService implements OnModuleInit {
   private readonly logger = new Logger(QbittorrentService.name);
+  private readonly CATEGORY = 'bangumi';
   private qbittorrentClient: Qbittorent;
 
-  constructor(private configService: ConfigService) {
+  constructor(private settingService: SettingService) {}
+
+  async onModuleInit() {
+    const { downloader } = this.settingService.getConfig();
     this.qbittorrentClient = new Qbittorent(
-      this.configService.get('QBITTORRENT_URL'),
-      this.configService.get('QBITTORRENT_USERNAME'),
-      this.configService.get('QBITTORRENT_PASSWORD'),
+      downloader.host,
+      downloader.username,
+      downloader.password,
     );
   }
 
-  onModuleInit() {
-    this.qbittorrentClient.login();
+  async addTorrent(data: TorrentOptions) {
+    this.logger.log(`[Downloader]: add torrent ${data.urls}`);
+    return this.qbittorrentClient.addTorrent({
+      ...data,
+      category: this.CATEGORY,
+    });
   }
 
-  addTorrent(data: TorrentOptions) {
-    this.logger.log(`[Downloader]: add torrent ${data.urls}`);
-    return this.qbittorrentClient.addTorrent(data);
+  async getTorrentList() {
+    const response = await this.qbittorrentClient.getTorrentList({
+      filter: 'completed',
+      category: this.CATEGORY,
+    });
+    return response.data as Torrent[];
+  }
+
+  async getTorrentContents(hash: string) {
+    const response = await this.qbittorrentClient.getTorrentContents(hash);
+    return response.data;
+  }
+
+  async renameTorrent(hash: string, oldPath: string, newPath: string) {
+    const response = await this.qbittorrentClient.renameFile({
+      hash,
+      oldPath,
+      newPath,
+    });
+    return response.data;
   }
 }

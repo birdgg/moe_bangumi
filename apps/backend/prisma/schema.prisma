@@ -8,6 +8,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated"
+  outputToNestJsResourceStructure = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  fileNamingStyle                 = "camel"
+}
+
 datasource db {
   provider = "sqlite"
   url      = "file:dev.db"
@@ -42,23 +56,9 @@ model Episode {
   source    String?
   dpi       String
   torrent   String
-  savePath  String   @map("save_path")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   deleted   Boolean  @default(false)
 
   @@unique([bangumiId, episode])
-}
-
-model Setting {
-  id          Int @id @default(autoincrement())
-  rssInterval Int @default(7200) @map("rss_interval")
-
-  downloaderHost     String @map("downloader_host")
-  downloaderUsername String @map("downloader_username")
-  downloaderPassword String @map("downloader_password")
-  downloaderPath     String @map("downloader_path")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 }

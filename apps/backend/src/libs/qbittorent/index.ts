@@ -1,13 +1,15 @@
 import axios, { AxiosInstance } from 'axios';
 import * as https from 'https';
-import { TorrentOptions } from './interface';
+import { TorrentListOptions, TorrentOptions } from './interface';
 
-const QBITTORENT_API = {
+const API = {
   login: 'auth/login',
   logout: 'auth/logout',
   version: 'app/version',
   torrent_list: 'torrents/info',
   torrent_add: 'torrents/add',
+  torrent_contents: 'torrents/files',
+  torrent_renameFile: 'torrents/renameFile',
 };
 
 export class Qbittorent {
@@ -15,7 +17,7 @@ export class Qbittorent {
   #username: string;
   #password: string;
   #sid = '';
-  #axiosInstance: AxiosInstance;
+  #axios: AxiosInstance;
 
   constructor(host: string, username: string, password: string) {
     this.#host = host;
@@ -39,9 +41,9 @@ export class Qbittorent {
         const { url } = config;
         config.headers['Referer'] = this.#host;
         config.headers['Host'] = this.#host;
-        if (url !== QBITTORENT_API.login) {
+        if (url !== API.login) {
           if (!this.#sid) {
-            throw new Error('qbittorrent not logged in');
+            throw new Error('[Qbittorent] not login');
           }
           config.headers['Cookie'] = `SID=${this.#sid}`;
         }
@@ -52,11 +54,11 @@ export class Qbittorent {
         return Promise.reject(error);
       },
     );
-    this.#axiosInstance = axiosInstance;
+    this.#axios = axiosInstance;
   }
 
   async login() {
-    const response = await this.#axiosInstance.post(QBITTORENT_API.login, {
+    const response = await this.#axios.post(API.login, {
       username: this.#username,
       password: this.#password,
     });
@@ -69,13 +71,43 @@ export class Qbittorent {
   }
 
   getVersion() {
-    return this.#axiosInstance.get(QBITTORENT_API.version);
+    return this.#axios.get(API.version);
   }
 
+  // torrent
+
   addTorrent(data: TorrentOptions) {
-    return this.#axiosInstance.post(QBITTORENT_API.torrent_add, data);
+    return this.#axios.post(API.torrent_add, data);
+  }
+
+  getTorrentList(options: TorrentListOptions) {
+    return this.#axios.get(API.torrent_list, {
+      params: options,
+    });
+  }
+
+  getTorrentContents(hash: string) {
+    return this.#axios.get(API.torrent_contents, {
+      params: { hash },
+    });
+  }
+
+  renameFile(data: { hash: string; oldPath: string; newPath: string }) {
+    return this.#axios.post(API.torrent_renameFile, data);
   }
 }
 
-// let a = new Qbittorent('http://qb.backend.orb.local', 'admin', 'fG9yyJWwW');
-// a.login();
+// let a = new Qbittorent(
+//   'http://qb.auto-bangumi.orb.local',
+//   'admin',
+//   'SAHfewFzI',
+// );
+// (async function () {
+//   await a.login();
+//   await a.renameFile({
+//     hash: '2c37804c09415d3db8d7a21a75e52fb66a561b60',
+//     oldPath:
+//       'Tensei shitara Dainana Ouji Datta node, Kimama ni Majutsu wo Kiwamemasu S01E02.mkv',
+//     newPath: '1.mkv',
+//   });
+// })();

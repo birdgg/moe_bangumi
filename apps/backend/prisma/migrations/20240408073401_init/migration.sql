@@ -25,23 +25,10 @@ CREATE TABLE "Episode" (
     "source" TEXT,
     "dpi" TEXT NOT NULL,
     "torrent" TEXT NOT NULL,
-    "save_path" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Episode_bangumi_id_fkey" FOREIGN KEY ("bangumi_id") REFERENCES "Bangumi" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "Setting" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "rss_interval" INTEGER NOT NULL DEFAULT 7200,
-    "downloader_host" TEXT NOT NULL,
-    "downloader_username" TEXT NOT NULL,
-    "downloader_password" TEXT NOT NULL,
-    "downloader_path" TEXT NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL
 );
 
 -- CreateIndex
