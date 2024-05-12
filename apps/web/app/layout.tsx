@@ -1,11 +1,9 @@
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { fontSans } from "@/lib/fonts";
-
-const inter = Inter({ subsets: ["latin"] });
+import { fontSans, fontSerif } from "@/lib/fonts";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Moe Bangumi",
@@ -28,18 +26,21 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.variable,
+          fontSerif.variable
         )}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col bg-background">
-            {children}
-          </div>
+          <TooltipProvider>
+            <div className="relative flex min-h-screen flex-col bg-background">
+              {children}
+            </div>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

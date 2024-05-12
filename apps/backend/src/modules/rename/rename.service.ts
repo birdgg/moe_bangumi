@@ -72,7 +72,7 @@ export class RenameService {
   }
 
   private genNewFilePath(path: string, file: string) {
-    const baseSavePath = this.settingService.getConfig().downloader.path;
+    const baseSavePath = this.settingService.getSetting().downloader.path;
 
     const [bangumi, seasonString] = path
       .slice(baseSavePath.length + 1)

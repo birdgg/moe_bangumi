@@ -112,6 +112,6 @@ export class MikanService {
   }
 
   private getBaseSavePath() {
-    return this.settingService.getConfig().downloader.path;
+    return this.settingService.getSetting().downloader.path;
   }
 }

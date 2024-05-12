@@ -1,15 +1,16 @@
-// import { JetBrains_Mono as FontMono, Inter as FontSans } from "next/font/google"
-import { JetBrains_Mono as FontMono } from "next/font/google";
-// import { GeistMono } from "geist/font/mono"
-import { GeistSans } from "geist/font/sans";
+import { Manrope, Noto_Serif_SC } from "next/font/google";
 
-// export const fontSans = FontSans({
-//   subsets: ["latin"],
-//   variable: "--font-sans",
-// })
-export const fontSans = GeistSans;
-
-export const fontMono = FontMono({
+export const fontSans = Manrope({
   subsets: ["latin"],
-  variable: "--font-mono",
+  weight: ["300", "400", "500"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+export const fontSerif = Noto_Serif_SC({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-serif",
+  display: "swap",
+  fallback: ["Noto Serif SC"],
 });

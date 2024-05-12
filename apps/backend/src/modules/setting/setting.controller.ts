@@ -1,18 +1,18 @@
-import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Body, Patch } from '@nestjs/common';
 import { SettingService } from './setting.service';
 import { Setting } from 'src/interfaces/setting.interface';
 
-@Controller('setting')
+@Controller('settings')
 export class SettingController {
   constructor(private readonly settingService: SettingService) {}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    // return this.settingService.findOne(+id);
+  @Get()
+  find() {
+    return this.settingService.getSetting();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() setting: Setting) {
-    // return this.settingService.update(+id, setting);
+  @Patch()
+  update(@Body() setting: Setting) {
+    return this.settingService.updateSetting(setting);
   }
 }

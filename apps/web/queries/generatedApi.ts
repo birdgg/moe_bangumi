@@ -267,13 +267,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name SettingControllerFindOne
-     * @request GET:/api/setting/{id}
+     * @name SettingControllerFind
+     * @request GET:/api/settings
      */
-    settingControllerFindOne: (id: string, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/setting/${id}`,
+    settingControllerFind: (params: RequestParams = {}) =>
+      this.request<object, any>({
+        path: `/api/settings`,
         method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -281,11 +282,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @name SettingControllerUpdate
-     * @request PATCH:/api/setting/{id}
+     * @request PATCH:/api/settings
      */
-    settingControllerUpdate: (id: string, params: RequestParams = {}) =>
+    settingControllerUpdate: (params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/api/setting/${id}`,
+        path: `/api/settings`,
         method: 'PATCH',
         ...params,
       }),

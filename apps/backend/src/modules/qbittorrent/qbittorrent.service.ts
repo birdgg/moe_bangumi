@@ -12,7 +12,7 @@ export class QbittorrentService implements OnModuleInit {
   constructor(private settingService: SettingService) {}
 
   async onModuleInit() {
-    const { downloader } = this.settingService.getConfig();
+    const { downloader } = this.settingService.getSetting();
     this.qbittorrentClient = new Qbittorent(
       downloader.host,
       downloader.username,

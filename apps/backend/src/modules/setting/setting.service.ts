@@ -38,7 +38,13 @@ export class SettingService implements OnModuleInit {
     }
   }
 
-  getConfig() {
+  getSetting() {
     return this.setting;
+  }
+
+  updateSetting(setting: Setting) {
+    this.setting = setting;
+    const file = path.join(this.PATH, this.FILE);
+    fs.writeFileSync(file, JSON.stringify(setting));
   }
 }
