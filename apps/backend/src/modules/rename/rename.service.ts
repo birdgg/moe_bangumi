@@ -3,9 +3,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { QbittorrentService } from '../qbittorrent/qbittorrent.service';
 import { Torrent, TorrentContent } from 'src/libs/qbittorent/interface';
 import * as path from 'path';
-import { SettingService } from '../setting/setting.service';
 import { torrentParser } from 'src/libs/parser/analyser/torrentParser';
 import { getEpisodeName } from 'src/libs/parser/analyser/pathParser';
+import { SettingService } from '../setting/setting.service';
 
 @Injectable()
 export class RenameService {

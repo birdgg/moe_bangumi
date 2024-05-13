@@ -5,9 +5,9 @@ import { PrismaModule } from 'nestjs-prisma';
 import { QbittorrentModule } from './modules/qbittorrent/qbittorrent.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { SettingModule } from './modules/setting/setting.module';
 import { RenameModule } from './modules/rename/rename.module';
-import { BangumisModule } from './modules/bangumis/bangumis.module';
+import { HttpModule } from './modules/http/http.module';
+import { SettingModule } from './modules/setting/setting.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,7 +23,7 @@ import { BangumisModule } from './modules/bangumis/bangumis.module';
     SettingModule,
     QbittorrentModule,
     RenameModule,
-    BangumisModule,
+    HttpModule,
   ],
 })
 export class AppModule {}

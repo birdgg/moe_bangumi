@@ -3,7 +3,7 @@ import { BangumisService } from './bangumis.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Bangumi } from 'src/generated/bangumi.entity';
 
-@ApiTags('bangumis')
+@ApiTags('Bangumi')
 @Controller('bangumis')
 export class BangumisController {
   constructor(private readonly bangumisService: BangumisService) {}
@@ -11,11 +11,6 @@ export class BangumisController {
   @Get()
   async findAll(): Promise<Bangumi[]> {
     return this.bangumisService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bangumisService.findOne(+id);
   }
 
   @Delete(':id')

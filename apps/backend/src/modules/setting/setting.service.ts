@@ -43,7 +43,7 @@ export class SettingService implements OnModuleInit {
     return this.setting;
   }
 
-  updateSetting(setting: UpdateSettingDto) {
+  updateSetting(setting: Partial<Setting>) {
     const newSetting = { ...this.setting, ...setting };
     this.setting = { ...this.setting, ...setting };
     const file = path.join(this.PATH, this.FILE);
