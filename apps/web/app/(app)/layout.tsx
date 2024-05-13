@@ -7,11 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div className="h-screen w-full pl-[53px]">
       <Sidebar />
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className="flex flex-col h-full">
         <Header />
-        {children}
+        <main className="flex-1 h-full overflow-auto p-4">{children}</main>
       </div>
     </div>
   );

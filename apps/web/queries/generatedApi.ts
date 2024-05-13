@@ -54,7 +54,7 @@ export interface components {
         Program: {
             rssTime: number;
             renameTime: number;
-            webuiPort: number;
+            mikanToken: string;
         };
         Downloader: {
             host: string;
@@ -65,6 +65,10 @@ export interface components {
         Setting: {
             program: components["schemas"]["Program"];
             downloader: components["schemas"]["Downloader"];
+        };
+        UpdateSettingDto: {
+            program?: components["schemas"]["Program"];
+            downloader?: components["schemas"]["Downloader"];
         };
         Bangumi: {
             id?: number;
@@ -137,7 +141,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Setting"];
+                "application/json": components["schemas"]["UpdateSettingDto"];
             };
         };
         responses: {

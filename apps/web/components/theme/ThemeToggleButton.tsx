@@ -1,10 +1,10 @@
 import { useTheme } from "next-themes";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "../ui/button";
 
 export default function ThemeToggleButton() {
   const { theme, setTheme } = useTheme();
-  const Icon = theme === "dark" ? SunIcon : MoonIcon;
+  const Icon = theme === "dark" ? Sun : Moon;
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };

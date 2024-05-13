@@ -1,31 +1,41 @@
 "use client";
 
-import { Bangumi } from "@/queries/generatedApi";
+import type { components } from "@/queries/generatedApi";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
 
-export function BangumiCard(bangumi: Bangumi) {
+type Props = components["schemas"]["Bangumi"];
+
+const CARD_WIDTH = 300;
+const IMAGE_WIDTH = CARD_WIDTH * 0.8;
+const RADIO = 1.5;
+
+export function BangumiCard({ poster, nameZh, season }: Props) {
   return (
-    <Card className="w-[300px]">
+    // <Card className={cn(`w-[${CARD_WIDTH}px]`)}>
+    <Card className="">
       <CardHeader>
         <Image
-          src={`${process.env.NEXT_PUBLIC_BACKEND}/${bangumi.poster}`}
+          className="rounded-md"
+          src={`${process.env.NEXT_PUBLIC_BACKEND}/${poster}`}
           alt="poster"
-          width={300}
-          height={400}
+          width={IMAGE_WIDTH}
+          height={IMAGE_WIDTH * RADIO}
+          priority={false}
         />
       </CardHeader>
       <CardContent>
-        <p>{bangumi.nameZh}</p>
+        <p>{nameZh}</p>
       </CardContent>
       <CardFooter>
-        <p>Season {bangumi.season}</p>
+        <Badge variant="secondary">Season {season}</Badge>
       </CardFooter>
     </Card>
   );
