@@ -1,5 +1,6 @@
-import { Api } from "./generatedApi";
+import createClient from "openapi-fetch";
+import type { paths } from "./generatedApi";
 
-export const moeBangumiApi = new Api({
-  baseUrl: "http://localhost:3200",
-}).api;
+export const bangumiClient = createClient<paths>({
+  baseUrl: process.env.NEXT_PUBLIC_BACKEND,
+});
