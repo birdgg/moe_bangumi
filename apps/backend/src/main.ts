@@ -1,10 +1,13 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, PartialGraphHost } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
   app.setGlobalPrefix('api');
@@ -20,4 +23,7 @@ async function bootstrap() {
 
   await app.listen(3200);
 }
-bootstrap();
+bootstrap().catch((err) => {
+  fs.writeFileSync('graph.json', PartialGraphHost.toString() ?? '');
+  process.exit(1);
+});

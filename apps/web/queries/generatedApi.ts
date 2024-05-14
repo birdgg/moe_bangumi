@@ -1,5 +1,5 @@
 export interface paths {
-    "/api/settings": {
+    "/api/setting": {
         parameters: {
             query?: never;
             header?: never;
@@ -38,7 +38,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["BangumisController_findOne"];
+        get?: never;
         put?: never;
         post?: never;
         delete: operations["BangumisController_remove"];
@@ -69,40 +69,6 @@ export interface components {
         UpdateSettingDto: {
             program?: components["schemas"]["Program"];
             downloader?: components["schemas"]["Downloader"];
-        };
-        Bangumi: {
-            id?: number;
-            nameZh?: string;
-            nameJp?: string | null;
-            nameEn?: string | null;
-            poster?: string;
-            season?: number;
-            year?: number | null;
-            isCompleted?: boolean;
-            offset?: number;
-            savePath?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            deleted?: boolean;
-            episode?: components["schemas"]["Episode"][];
-        };
-        Episode: {
-            id?: number;
-            name?: string;
-            bangumiId?: number;
-            bangumi: components["schemas"]["Bangumi"];
-            episode?: number;
-            sub?: string;
-            source?: string | null;
-            dpi?: string;
-            torrent?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            deleted?: boolean;
         };
     };
     responses: never;
@@ -166,30 +132,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["Bangumi"][];
-                };
-            };
-        };
-    };
-    BangumisController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": string;
-                };
+                content?: never;
             };
         };
     };

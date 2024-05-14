@@ -1,11 +1,7 @@
-export interface RawParserResult {
-  nameEn: string;
-  nameZh: string;
-  nameJp: string;
-  season: number;
-  episode: number;
-  sub: string;
-  dpi: string;
-  source: string;
-  groupName: string;
-}
+import { Prisma } from '@prisma/client';
+
+export type RawParserResult = {
+  bangumi: Prisma.BangumiUncheckedCreateInput;
+  episode: Prisma.EpisodeUncheckedCreateInput;
+  error?: string;
+};

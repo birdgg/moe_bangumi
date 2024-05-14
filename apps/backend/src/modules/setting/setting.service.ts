@@ -1,7 +1,9 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Setting, UpdateSettingDto } from './setting.entity';
+import type { Setting } from './setting.entity';
+import EventEmitter2 from 'eventemitter2';
+import { SETTING_CHANGED } from './setting.constant';
 
 const DEFAULT_SETTING: Setting = {
   program: {
@@ -39,6 +41,8 @@ export class SettingService implements OnModuleInit {
     }
   }
 
+  // constructor(private eventEmitter: EventEmitter2) {}
+
   getSetting() {
     return this.setting;
   }
@@ -48,6 +52,7 @@ export class SettingService implements OnModuleInit {
     this.setting = { ...this.setting, ...setting };
     const file = path.join(this.PATH, this.FILE);
     fs.writeFileSync(file, JSON.stringify(newSetting));
+    // this.eventEmitter.emit(SETTING_CHANGED, newSetting);
     return newSetting;
   }
 }

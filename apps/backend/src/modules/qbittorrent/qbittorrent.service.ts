@@ -13,15 +13,24 @@ export class QbittorrentService implements OnModuleInit {
 
   async onModuleInit() {
     const { downloader } = this.settingService.getSetting();
-    this.qbittorrentClient = new Qbittorent(
-      downloader.host,
-      downloader.username,
-      downloader.password,
-    );
+    try {
+      this.qbittorrentClient = new Qbittorent(
+        downloader.host,
+        downloader.username,
+        downloader.password,
+      );
+      this.qbittorrentClient.login();
+    } catch (e) {
+      this.logger.error(e);
+    }
+  }
+
+  getState() {
+    return this.qbittorrentClient.isConnected;
   }
 
   async addTorrent(data: TorrentOptions) {
-    this.logger.log(`[Downloader]: add torrent ${data.urls}`);
+    this.logger.log(`Add torrent ${data.urls}`);
     return this.qbittorrentClient.addTorrent({
       ...data,
       category: this.CATEGORY,

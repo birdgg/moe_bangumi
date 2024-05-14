@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Patch } from '@nestjs/common';
-import { Setting, UpdateSettingDto } from '../../setting/setting.entity';
+import { Setting, UpdateSettingDto } from './setting.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { SettingService } from 'src/modules/setting/setting.service';
+import { SettingService } from './setting.service';
 
 @ApiTags('Setting')
 @Controller('setting')

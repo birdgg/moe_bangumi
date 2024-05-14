@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MikanController } from './mikan.controller';
 import { MikanService } from './mikan.service';
+import { BangumiModule } from '../bangumi/bangumi.module';
+import { EpisodeModule } from '../episode/episode.module';
 
 @Module({
-  controllers: [MikanController],
+  imports: [BangumiModule, EpisodeModule],
   providers: [MikanService],
 })
 export class MikanModule {}

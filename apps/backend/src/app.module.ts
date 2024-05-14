@@ -6,8 +6,10 @@ import { QbittorrentModule } from './modules/qbittorrent/qbittorrent.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RenameModule } from './modules/rename/rename.module';
-import { HttpModule } from './modules/http/http.module';
 import { SettingModule } from './modules/setting/setting.module';
+import { BangumiModule } from './modules/bangumi/bangumi.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MikanModule } from './modules/mikan/mikan.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,10 +22,12 @@ import { SettingModule } from './modules/setting/setting.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    EventEmitterModule.forRoot(),
     SettingModule,
     QbittorrentModule,
+    BangumiModule,
+    MikanModule,
     RenameModule,
-    HttpModule,
   ],
 })
 export class AppModule {}

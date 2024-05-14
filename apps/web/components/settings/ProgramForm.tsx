@@ -8,6 +8,7 @@ import type { components } from "@/queries/generatedApi";
 import { FormInput, FormSwitch } from "./FormItems";
 import { Form } from "../ui/form";
 import { bangumiClient } from "@/queries/api";
+import { useToast } from "../ui/use-toast";
 
 interface Props {
   defaultValues: components["schemas"]["Setting"]["program"];
@@ -21,16 +22,19 @@ const formSchema = z.object({
 });
 
 export default function GeneralForm({ defaultValues }: Props) {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await bangumiClient.PATCH("/api/settings", {
+    const res = await bangumiClient.PATCH("/api/setting", {
       body: { program: values },
     });
-    console.log(res);
+    toast({
+      description: "Update success",
+    });
   }
 
   return (

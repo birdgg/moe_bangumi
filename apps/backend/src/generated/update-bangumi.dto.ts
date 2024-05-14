@@ -9,5 +9,9 @@ export class UpdateBangumiDto {
 nameJp!: string;
 nameEn!: string;
 year!: number;
+group!: string;
+sub!: string;
+dpi!: string;
+source!: string;
 savePath!: string;
 }

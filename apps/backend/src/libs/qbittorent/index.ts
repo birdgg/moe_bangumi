@@ -18,6 +18,7 @@ export class Qbittorent {
   #password: string;
   #sid = '';
   #axios: AxiosInstance;
+  isConnected = false;
 
   constructor(host: string, username: string, password: string) {
     this.#host = host;
@@ -51,9 +52,19 @@ export class Qbittorent {
         return config;
       },
       (error) => {
+        console.log('error', error);
         return Promise.reject(error);
       },
     );
+    axiosInstance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+
     this.#axios = axiosInstance;
   }
 
@@ -67,6 +78,7 @@ export class Qbittorent {
     }
     const sid = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
     this.#sid = sid;
+    this.isConnected = true;
     return response;
   }
 

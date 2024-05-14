@@ -23,7 +23,7 @@ const SETTINGS: {
 ];
 
 export default async function Settings() {
-  const { data } = await bangumiClient.GET("/api/settings");
+  const { data } = await bangumiClient.GET("/api/setting");
   if (!data) {
     throw new Error("Failed to fetch settings data.");
   }

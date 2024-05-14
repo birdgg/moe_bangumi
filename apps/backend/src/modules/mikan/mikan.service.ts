@@ -1,117 +1,82 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { CronJob } from 'cron';
-import { PrismaService } from 'nestjs-prisma';
 import * as RssParser from 'rss-parser';
-import { MikanRssItem } from 'src/interfaces/response.interface';
-import { RawParserResult } from 'src/libs/parser/analyser/interface';
-import { rawParser } from 'src/libs/parser/analyser/rawParser';
-import { pick } from 'lodash';
-import { QbittorrentService } from '../qbittorrent/qbittorrent.service';
-import { mikanParser } from 'src/libs/parser/analyser/mikanParser';
-import {
-  getEpisodeName,
-  getSavePath,
-} from 'src/libs/parser/analyser/pathParser';
-import { Bangumi } from '@prisma/client';
+import { titleParser } from 'src/libs/parser/analyser/titleParser';
 import { SettingService } from '../setting/setting.service';
+import { OnEvent } from '@nestjs/event-emitter';
+import { SETTING_CHANGED } from '../setting/setting.constant';
+import { BangumisService } from '../bangumi/bangumis.service';
+import { EpisodeService } from '../episode/episode.service';
 
 @Injectable()
-export class MikanService {
+export class MikanService implements OnModuleInit {
   private readonly logger = new Logger(MikanService.name);
   private parser = new RssParser();
-  private readonly INTERVAL = 5;
-  public readonly JOB_NAME = 'mikan';
+  public readonly JOB_NAME = 'mikan_rss';
 
   constructor(
     private schedulerRegistry: SchedulerRegistry,
-    private prismaService: PrismaService,
-    private qbittorrentService: QbittorrentService,
     private settingService: SettingService,
+    private bangumisService: BangumisService,
+    private episodeService: EpisodeService,
   ) {}
 
-  addFeed(url: string) {
-    const job = new CronJob(
-      `${this.INTERVAL} * * * * *`,
-      () => {
-        this.parser.parseURL(url, (err, feed) => {
-          // @ts-expect-error
-          this.parseRssItems(feed.items);
-        });
-      },
-      null,
-      true,
-    );
-
-    this.schedulerRegistry.addCronJob(this.JOB_NAME, job);
-    job.start();
+  onModuleInit() {
+    this.setupSubscribe();
   }
 
-  private async parseRssItems(items: MikanRssItem[]) {
+  @OnEvent(SETTING_CHANGED)
+  handleSettingChanged() {
+    this.setupSubscribe();
+  }
+
+  setupSubscribe() {
+    // clear previous interval
+    try {
+      this.schedulerRegistry.deleteInterval(this.JOB_NAME);
+    } catch (e) {}
+
+    const { rssTime, mikanToken } = this.settingService.getSetting().program;
+
+    if (!mikanToken) {
+      this.logger.error('Mikan token is not set');
+      return;
+    }
+
+    this.subscribeMikan(mikanToken);
+
+    this.logger.log(`Set up mikan subscription with interval ${rssTime}`);
+    const interval = setInterval(
+      () => this.subscribeMikan(mikanToken),
+      rssTime * 1000,
+    );
+    this.schedulerRegistry.addInterval(this.JOB_NAME, interval);
+  }
+
+  private subscribeMikan(token: string) {
+    const mikanRssUrl = `https://mikanani.me/RSS/MyBangumi?token=${token}`;
+    this.parser.parseURL(mikanRssUrl, (err, feed) => {
+      this.processRss(feed.items);
+    });
+  }
+
+  private async processRss(items: RssParser.Item[]) {
     for (let index = 0; index < items.length; index++) {
       const item = items[index];
-      const result = rawParser(items[index].title);
-      if (!result) continue;
-      await this.updateToBangumi(result, item.enclosure.url, item.link);
+      const result = titleParser(items[index].title);
+      if (result.error) {
+        this.logger.error(`Error parsing title: ${result.error}`);
+        continue;
+      }
+      const bangumi = await this.bangumisService.findOrCreate(
+        result.bangumi,
+        item.link,
+      );
+      await this.episodeService.findOrCreate(
+        bangumi.id,
+        item.enclosure.url,
+        result.episode,
+      );
     }
-  }
-
-  private async updateToBangumi(
-    item: RawParserResult,
-    torrent: string,
-    link: string,
-  ) {
-    let bangumi = await this.prismaService.bangumi.findUnique({
-      where: { nameZh_season: { nameZh: item.nameZh, season: item.season } },
-    });
-
-    if (!bangumi) {
-      // save poster
-      const { poster } = await mikanParser(link);
-      bangumi = await this.prismaService.bangumi.create({
-        data: {
-          ...pick(item, ['nameZh', 'nameEn', 'season']),
-          poster,
-          savePath: getSavePath(
-            this.getBaseSavePath(),
-            item.nameZh,
-            item.season,
-          ),
-        },
-      });
-    }
-    await this.updateToEpisode(bangumi, item, torrent);
-  }
-
-  private async updateToEpisode(
-    bangumi: Bangumi,
-    item: RawParserResult,
-    torrent: string,
-  ) {
-    const episode = await this.prismaService.episode.findUnique({
-      where: {
-        bangumiId_episode: { bangumiId: bangumi.id, episode: item.episode },
-      },
-    });
-    // already downloaded
-    if (episode) return;
-    await this.prismaService.episode.create({
-      data: {
-        bangumiId: bangumi.id,
-        name: getEpisodeName(item.nameZh, item.season, item.episode),
-        ...pick(item, ['sub', 'source', 'dpi']),
-        episode: item.episode,
-        torrent,
-      },
-    });
-
-    this.qbittorrentService.addTorrent({
-      urls: torrent,
-      savepath: bangumi.savePath,
-    });
-  }
-
-  private getBaseSavePath() {
-    return this.settingService.getSetting().downloader.path;
   }
 }

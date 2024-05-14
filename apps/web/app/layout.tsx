@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { cn } from "@/lib/utils";
 import { fontSans, fontSerif } from "@/lib/fonts";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Moe Bangumi",
@@ -40,6 +41,7 @@ export default function RootLayout({
             <div className="relative flex min-h-screen flex-col bg-background">
               {children}
             </div>
+            <Toaster />
           </TooltipProvider>
         </ThemeProvider>
       </body>

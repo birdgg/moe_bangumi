@@ -35,12 +35,17 @@ model Bangumi {
   poster      String    @default("default")
   season      Int       @default(1)
   year        Int?
+  group       String?
+  sub         String?
+  dpi         String?
+  source      String?
   isCompleted Boolean   @default(false) @map("is_completed")
   offset      Int       @default(0)
   savePath    String    @map("save_path")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deleted     Boolean   @default(false)
+  /// @DtoEntityHidden
   episode     Episode[]
 
   @@unique([nameZh, season])
@@ -49,12 +54,9 @@ model Bangumi {
 model Episode {
   id        Int      @id @default(autoincrement())
   name      String
+  episode   Int
   bangumiId Int      @map("bangumi_id")
   bangumi   Bangumi  @relation(fields: [bangumiId], references: [id])
-  episode   Int
-  sub       String
-  source    String?
-  dpi       String
   torrent   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
