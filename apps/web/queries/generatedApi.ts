@@ -70,6 +70,27 @@ export interface components {
             program?: components["schemas"]["Program"];
             downloader?: components["schemas"]["Downloader"];
         };
+        Bangumi: {
+            id?: number;
+            nameZh?: string;
+            nameJp?: string | null;
+            nameEn?: string | null;
+            poster?: string;
+            season?: number;
+            year?: number | null;
+            group?: string | null;
+            sub?: string | null;
+            dpi?: string | null;
+            source?: string | null;
+            isCompleted?: boolean;
+            offset?: number;
+            savePath?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            deleted?: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -132,7 +153,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["Bangumi"][];
+                };
             };
         };
     };
