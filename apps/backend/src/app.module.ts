@@ -10,27 +10,11 @@ import { SettingModule } from './modules/setting/setting.module';
 import { BangumiModule } from './modules/bangumi/bangumi.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MikanModule } from './modules/mikan/mikan.module';
-import { LoggerModule } from 'nestjs-pino';
+import { LogModule } from './modules/log/log.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          targets: [
-            {
-              level: 'debug',
-              target: 'pino/file',
-              options: {
-                destination: `${process.cwd()}/data/app.log`,
-                mkdir: true,
-              },
-            },
-          ],
-        },
-      },
     }),
     PrismaModule.forRoot({
       isGlobal: true,
@@ -40,6 +24,7 @@ import { LoggerModule } from 'nestjs-pino';
       rootPath: join(__dirname, '..', 'public'),
     }),
     EventEmitterModule.forRoot(),
+    LogModule,
     SettingModule,
     QbittorrentModule,
     BangumiModule,
