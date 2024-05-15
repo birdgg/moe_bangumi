@@ -24,12 +24,13 @@ const SETTINGS: {
 
 export default async function Settings() {
   const { data } = await bangumiClient.GET("/api/setting");
+  console.log({ data });
   if (!data) {
     throw new Error("Failed to fetch settings data.");
   }
   return (
     <Tabs defaultValue={SETTINGS[0]!.title} className="w-[400px]">
-      <TabsList>
+      <TabsList className="mb-4">
         {SETTINGS.map((setting, index) => (
           <TabsTrigger key={index} value={setting.title}>
             {setting.title}

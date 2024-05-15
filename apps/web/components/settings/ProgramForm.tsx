@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { components } from "@/queries/generatedApi";
-import { FormInput, FormSwitch } from "./FormItems";
-import { Form } from "../ui/form";
-import { bangumiClient } from "@/queries/api";
+import { FormInput } from "./FormItems";
+import { Form, FormMessage } from "../ui/form";
 import { useToast } from "../ui/use-toast";
+import { updateSetting } from "@/queries/actions/setting";
 
 interface Props {
   defaultValues: components["schemas"]["Setting"]["program"];
@@ -17,11 +17,10 @@ interface Props {
 const formSchema = z.object({
   rssTime: z.coerce.number(),
   renameTime: z.coerce.number(),
-  mikanToken: z.string(),
-  debug: z.boolean(),
+  mikanToken: z.string().min(1),
 });
 
-export default function GeneralForm({ defaultValues }: Props) {
+export default function ProgramForm({ defaultValues }: Props) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,9 +28,7 @@ export default function GeneralForm({ defaultValues }: Props) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await bangumiClient.PATCH("/api/setting", {
-      body: { program: values },
-    });
+    const data = await updateSetting({ program: values });
     toast({
       description: "Update success",
     });
@@ -43,7 +40,6 @@ export default function GeneralForm({ defaultValues }: Props) {
         <FormInput name="rssTime" label="Interval Time Of Rss" />
         <FormInput name="renameTime" label="Interval Time Of Rename" />
         <FormInput name="mikanToken" label="Mikan token" />
-        <FormSwitch name="debug" label="Debug" />
         <Button type="submit">Submit</Button>
       </form>
     </Form>

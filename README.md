@@ -1,6 +1,6 @@
-# Turborepo starter
+# Moe Bangumi
 
-This is an official starter Turborepo.
+Track your bangumi automaticlly
 
 ## Using this example
 

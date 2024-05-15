@@ -22,8 +22,10 @@ export function BangumiCard({ poster, nameZh, season }: Props) {
         height={IMAGE_WIDTH * RADIO}
         priority={false}
       />
-      <CardContent className="pt-3">
-        <h3 className="text-lg font-semibold">{nameZh}</h3>
+      <CardContent className="py-3 ">
+        <div className="h-12">
+          <h3 className="font-semibold">{nameZh}</h3>
+        </div>
         <div className="flex flex-wrap gap-2 mt-2">
           <Badge variant="secondary">Season {season}</Badge>
         </div>

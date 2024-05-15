@@ -1,4 +1,4 @@
-import { UseFormReturn, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
   FormField,
   FormItem,
@@ -10,12 +10,11 @@ import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 
 interface Props {
-  // form: UseFormReturn<any>;
   name: string;
   label: string;
 }
 
-export function FormInput({ label, name, type }: Props) {
+export function FormInput({ label, name }: Props) {
   const form = useFormContext();
   return (
     <FormField
@@ -25,7 +24,7 @@ export function FormInput({ label, name, type }: Props) {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input type={type} {...field} />
+            <Input {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

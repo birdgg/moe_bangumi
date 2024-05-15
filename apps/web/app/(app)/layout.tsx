@@ -1,6 +1,8 @@
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 
+export const revalidate = 10;
+
 export default function RootLayout({
   children,
 }: {
