@@ -27,6 +27,9 @@ export class SettingService implements OnModuleInit {
   private setting: Setting;
 
   onModuleInit() {
+    this.logger.debug('This is a debug message'); // 不会被记录
+    this.logger.log('This is an info message'); // 会被记录到控制台
+    this.logger.error('This is an error message'); // 会被记录到控制台和文件
     if (!fs.existsSync(this.PATH)) {
       fs.mkdirSync(this.PATH, { recursive: true });
     }

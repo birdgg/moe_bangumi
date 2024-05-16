@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { LogService } from './log.service';
 
@@ -10,5 +10,10 @@ export class LogController {
   @Get()
   getLog(): string {
     return this.logService.get();
+  }
+
+  @Post('/clear')
+  clearLog(): string {
+    return this.logService.clear();
   }
 }

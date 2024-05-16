@@ -8,11 +8,22 @@ import { LOG_FILE } from './constant';
   imports: [
     LoggerModule.forRoot({
       pinoHttp: {
+        level: 'info',
+        customLevels: {
+          info: 20,
+          debug: 40,
+          warn: 50,
+          error: 60,
+        },
+        useOnlyCustomLevels: true,
         transport: {
           targets: [
-            { level: 'debug', target: 'pino-pretty' },
             {
               level: 'info',
+              target: 'pino-pretty',
+            },
+            {
+              level: 'debug',
               target: 'pino/file',
               options: {
                 destination: LOG_FILE,
