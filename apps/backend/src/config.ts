@@ -1,12 +1,25 @@
 import { INestApplication } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Logger } from 'nestjs-pino';
+import { Logger, createLogger } from 'nestjs-pretty-logger';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
+import * as path from 'node:path';
+
+const customLogger = createLogger({
+  writeToFile: {
+    loggerDir: path.resolve(process.cwd(), './logs'),
+    stdoutFileFormat: 'stdout.log',
+    errWriteToStdout: true,
+  },
+});
+Logger.setLoggerInstance(customLogger);
+
+customLogger.wrapAll();
 
 export function configApp(app: INestApplication) {
   app.setGlobalPrefix('api');
-  // pino
+
+  Logger.setLoggerInstance(customLogger);
   app.useLogger(app.get(Logger));
 
   // prisma

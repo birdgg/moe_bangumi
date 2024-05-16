@@ -18,4 +18,5 @@ export interface Torrent {
 
 export interface TorrentContent {
   name: string;
+  progress: number;
 }

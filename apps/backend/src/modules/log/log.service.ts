@@ -1,18 +1,20 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { LOG_FILE } from './constant';
 
 @Injectable()
-export class LogService implements OnModuleDestroy {
+export class LogService implements OnModuleInit {
   private logger = new Logger(LogService.name);
   constructor() {}
 
-  onModuleDestroy() {
+  onModuleInit() {
     this.clear();
   }
 
   get() {
-    return readFileSync(LOG_FILE, 'utf-8');
+    const a = readFileSync(LOG_FILE, 'utf-8');
+    console.log(a);
+    return a;
   }
 
   clear() {

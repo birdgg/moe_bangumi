@@ -1,1 +1,1 @@
-export const LOG_FILE = `${process.cwd()}/data/app.log`;
+export const LOG_FILE = `${process.cwd()}/logs/stdout.log`;

@@ -6,14 +6,17 @@ const RULES = [
   /(.*)(?:S\d{2})?EP?(\d+)(.*)/,
 ];
 
-const SUBTITLE_LANG = {
-  'zh-tw': ['tc', 'cht', '繁', 'zh-tw'],
-  zh: ['sc', 'chs', '简', 'zh'],
-};
+// const SUBTITLE_LANG = {
+//   'zh-tw': ['tc', 'cht', '繁', 'zh-tw'],
+//   zh: ['sc', 'chs', '简', 'zh'],
+// };
 
-export function torrentParser(torrent: string) {
+/**
+ * get episode
+ */
+export function torrentParser(fileName: string) {
   for (let index = 0; index < RULES.length; index++) {
-    const matched = torrent.match(RULES[index]);
+    const matched = fileName.match(RULES[index]);
     if (matched) {
       return parseInt(matched[2]);
     }

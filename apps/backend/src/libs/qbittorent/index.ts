@@ -43,25 +43,13 @@ export class Qbittorent {
         config.headers['Referer'] = this.#host;
         config.headers['Host'] = this.#host;
         if (url !== API.login) {
-          if (!this.#sid) {
-            throw new Error('[Qbittorent] not login');
-          }
           config.headers['Cookie'] = `SID=${this.#sid}`;
         }
         config.url = `/api/v2/${url}`;
         return config;
       },
       (error) => {
-        console.log('error', error);
         return Promise.reject(error);
-      },
-    );
-    axiosInstance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        console.log(error);
       },
     );
 
@@ -108,18 +96,3 @@ export class Qbittorent {
     return this.#axios.post(API.torrent_renameFile, data);
   }
 }
-
-// let a = new Qbittorent(
-//   'http://qb.auto-bangumi.orb.local',
-//   'admin',
-//   'SAHfewFzI',
-// );
-// (async function () {
-//   await a.login();
-//   await a.renameFile({
-//     hash: '2c37804c09415d3db8d7a21a75e52fb66a561b60',
-//     oldPath:
-//       'Tensei shitara Dainana Ouji Datta node, Kimama ni Majutsu wo Kiwamemasu S01E02.mkv',
-//     newPath: '1.mkv',
-//   });
-// })();

@@ -11,6 +11,8 @@ import { BangumiModule } from './modules/bangumi/bangumi.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MikanModule } from './modules/mikan/mikan.module';
 import { LogModule } from './modules/log/log.module';
+import { LoggerModule } from 'nestjs-pretty-logger';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,6 +26,7 @@ import { LogModule } from './modules/log/log.module';
       rootPath: join(__dirname, '..', 'public'),
     }),
     EventEmitterModule.forRoot(),
+    LoggerModule,
     LogModule,
     SettingModule,
     QbittorrentModule,
