@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { components } from "@/queries/generatedApi";
 import { FormInput } from "./FormItems";
 import { Form } from "../ui/form";
+import { updateSetting } from "@/queries/actions/setting";
+import { useToast } from "../ui/use-toast";
 
 interface Props {
   defaultValues: components["schemas"]["Setting"]["downloader"];
@@ -20,12 +22,16 @@ const formSchema = z.object({
 });
 
 export default function DownloaderForm({ defaultValues }: Props) {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await updateSetting({ downloader: values });
+    toast({ description: "Update success" });
+  }
 
   return (
     <Form {...form}>

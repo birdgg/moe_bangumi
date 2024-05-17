@@ -8,6 +8,9 @@
     "db:push": {
       "cache": false
     },
+    "db:deploy": {
+      "cache": false
+    },
     "api:generate": {
       "cache": false
     },

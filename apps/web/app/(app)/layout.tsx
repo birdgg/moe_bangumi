@@ -9,9 +9,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="h-screen w-full pl-[53px]">
+    <div className="h-screen w-full grid grid-cols-9">
       <Sidebar />
-      <div className="flex flex-col h-full">
+      <div className="col-span-8 h-full">
         <Header />
         <main className="flex-1 h-full overflow-auto p-4">{children}</main>
       </div>

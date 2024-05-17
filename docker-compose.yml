@@ -19,7 +19,7 @@ services:
       dockerfile: ./apps/backend/Dockerfile
     restart: always
     ports:
-      - 3001:3001
+      - 3200:3200
     networks:
       - app_network
 
