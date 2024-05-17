@@ -10,7 +10,7 @@
     },
     "build": {
       "dependsOn": ["^build", "^db:generate"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -20,8 +20,7 @@
     },
     "dev": {
       "dependsOn": ["^db:generate"],
-      "cache": false,
-      "persistent": true
+      "cache": false
     }
   }
 }
