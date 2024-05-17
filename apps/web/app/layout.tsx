@@ -17,6 +17,9 @@ export const viewport: Viewport = {
   ],
 };
 
+// skip static page in build process
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: {
@@ -28,7 +31,7 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-          fontSerif.variable
+          fontSerif.variable,
         )}
       >
         <ThemeProvider

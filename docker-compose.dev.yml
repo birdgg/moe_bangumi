@@ -1,0 +1,43 @@
+
+version: "3"
+
+services:
+  qb:
+    image: superng6/qbittorrentee:latest
+    container_name: qb
+    ports:
+      - 8989:8989
+      - 6881:6881
+      - '6881:6881/udp'
+    environment:
+      PUID: 1000
+      PGID: 100
+      WEBUIPORT: 8989
+    volumes:
+      - $HOME/Downloads:/downloads
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - app_network
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  app_network:
+    external: true

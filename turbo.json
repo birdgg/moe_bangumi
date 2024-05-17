@@ -12,7 +12,7 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["backend#db:generate", "^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
