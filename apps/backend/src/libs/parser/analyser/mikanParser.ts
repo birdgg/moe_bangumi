@@ -35,7 +35,7 @@ async function saveImage(url: string, title: string) {
   });
   const file = `${SAVE_PATH}/${filename}`;
   response.data.pipe(fs.createWriteStream(file));
-  response.data.on('end', (res) => {
+  response.data.on('end', () => {
     console.log(`Downloaded poster to ${filename}`);
   });
   return filename;

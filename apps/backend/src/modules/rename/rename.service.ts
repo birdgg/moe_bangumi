@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  OnApplicationBootstrap,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { QbittorrentService } from '../qbittorrent/qbittorrent.service';
 import { Torrent, TorrentContent } from 'src/libs/qbittorent/interface';

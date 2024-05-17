@@ -1,5 +1,5 @@
-import { RawParserResult } from './interface';
-import { getEpisodeName } from './pathParser';
+import { RawParserResult } from "./interface";
+import { getEpisodeName } from "./pathParser";
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
@@ -27,17 +27,17 @@ const CHINESE_NUMBER_MAP = {
 };
 
 const CHINESE_SUB_MAP = {
-  简: 'CHS',
-  繁: 'CHT',
-  日: 'JP',
+  简: "CHS",
+  繁: "CHT",
+  日: "JP",
 };
 
 function trimBrackets(raw: string): string {
-  return raw.replace(/[\[\]]/g, '');
+  return raw.replace(/[\[\]]/g, "");
 }
 
 function preProcess(rawName: string): string {
-  return rawName.replace('【', '[').replace('】', ']');
+  return rawName.replace("【", "[").replace("】", "]");
 }
 
 function prefixProcess(raw: string) {
@@ -45,24 +45,24 @@ function prefixProcess(raw: string) {
 
   nameArray = nameArray
     .filter((item) => {
-      return item !== '' && !/新番|月?番/.test(item);
+      return item !== "" && !/新番|月?番/.test(item);
     })
     .map((item) => item.trim());
 
   if (nameArray.length === 1) {
-    nameArray = nameArray[0].split(' ');
+    nameArray = nameArray[0].split(" ");
   }
-  return nameArray.join('/');
+  return nameArray.join("/");
 }
 
 function groupProcess(raw: string) {
-  let group = '',
-    name = '';
+  let group = "",
+    name = "";
   const matched = raw.match(/\[.*?\]/);
   if (matched) {
     group = matched[0];
   }
-  name = raw.replace(group, '');
+  name = raw.replace(group, "");
   return {
     group: trimBrackets(group),
     name,
@@ -71,7 +71,7 @@ function groupProcess(raw: string) {
 
 function seasonProcess(raw: string): [string, number] {
   let season = 1,
-    rawName = raw.replace(SEASON_RE, '');
+    rawName = raw.replace(SEASON_RE, "");
   const seasons = raw.match(SEASON_RE);
   const matchedRawName = rawName.match(/\[(.*?)\]/);
   if (matchedRawName) {
@@ -84,10 +84,10 @@ function seasonProcess(raw: string): [string, number] {
 
   for (const s of seasons) {
     if (s.match(/Season|S/)) {
-      season = parseInt(s.replace(/Season|S/g, ''));
+      season = parseInt(s.replace(/Season|S/g, ""));
       break;
     } else if (s.match(/[第 ].*[季期(部分)]|部分/)) {
-      const seasonPro = s.replace(/[第季期 ]/g, '');
+      const seasonPro = s.replace(/[第季期 ]/g, "");
       season = isNaN(parseInt(seasonPro))
         ? CHINESE_NUMBER_MAP[seasonPro]
         : parseInt(seasonPro);
@@ -103,22 +103,22 @@ function nameProcess(name: string) {
   let names = name
     .trim()
     .split(/\/|\s{2}|-{2}/)
-    .filter((name) => name !== '');
+    .filter((name) => name !== "");
 
   if (names.length === 1) {
     if (name.match(/_{1}/)) {
-      names = name.split('_');
-    } else if (name.match(' - {1}')) {
-      names = name.split('-');
+      names = name.split("_");
+    } else if (name.match(" - {1}")) {
+      names = name.split("-");
     }
   }
   if (names.length === 1) {
-    const splitSpace = names[0].split(' ');
+    const splitSpace = names[0].split(" ");
     for (const idx of [0, splitSpace.length - 1]) {
       if (splitSpace[idx].match(/^[\u4e00-\u9fa5]{2,}/)) {
         const chs = splitSpace[idx];
         splitSpace.splice(idx, 1);
-        names = [chs, splitSpace.join(' ')];
+        names = [chs, splitSpace.join(" ")];
         break;
       }
     }
@@ -138,9 +138,9 @@ function nameProcess(name: string) {
 // get sub, dpi, source
 function findTags(other: string) {
   const elements = other
-    .replace(/[\[\]()（）]/g, ' ')
-    .split(' ')
-    .filter((x) => x !== '');
+    .replace(/[\[\]()（）]/g, " ")
+    .split(" ")
+    .filter((x) => x !== "");
   let sub = null;
   let dpi = null;
   let source = null;
@@ -161,7 +161,7 @@ function cleanSub(sub: string | null) {
   if (sub === null) {
     return sub;
   }
-  return sub.replace(/_MP4|_MKV/g, '');
+  return sub.replace(/_MP4|_MKV/g, "");
 }
 
 function process(rawTitle: string): RawParserResult {
@@ -181,9 +181,9 @@ function process(rawTitle: string): RawParserResult {
   const prefixedName = prefixProcess(name);
   const [rawName, season] = seasonProcess(prefixedName);
 
-  let nameEn = '';
-  let nameZh = '';
-  let nameJp = '';
+  let nameEn = "";
+  let nameZh = "";
+  let nameJp = "";
   try {
     [nameEn, nameZh, nameJp] = nameProcess(rawName);
   } catch (error) {
@@ -205,12 +205,12 @@ function process(rawTitle: string): RawParserResult {
       sub,
       dpi,
       source,
-      savePath: '',
+      savePath: "",
     },
     episode: {
       bangumiId: 0,
       name: getEpisodeName(nameZh, season, episode),
-      torrent: '',
+      torrent: "",
       episode,
     },
   };

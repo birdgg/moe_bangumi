@@ -8,8 +8,11 @@
     "db:push": {
       "cache": false
     },
+    "api:generate": {
+      "cache": false
+    },
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
@@ -19,7 +22,7 @@
       "dependsOn": ["^build"]
     },
     "dev": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": ["backend#db:generate"],
       "cache": false
     }
   }
