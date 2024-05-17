@@ -18,10 +18,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-# RUN pnpm install --frozen-lockfile
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-
+RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
@@ -43,7 +40,6 @@ USER nextjs
 
 COPY --from=installer /app/apps/web/next.config.js .
 COPY --from=installer /app/apps/web/package.json .
-
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
