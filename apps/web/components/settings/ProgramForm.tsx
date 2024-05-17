@@ -1,12 +1,11 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { components } from "@/queries/generatedApi";
 import { FormInput } from "./FormItems";
-import { Form, FormMessage } from "../ui/form";
+import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
 import { updateSetting } from "@/queries/actions/setting";
 
@@ -15,8 +14,8 @@ interface Props {
 }
 
 const formSchema = z.object({
-  rssTime: z.coerce.number(),
-  renameTime: z.coerce.number(),
+  rssTime: z.coerce.number().min(7200),
+  renameTime: z.coerce.number().min(60),
   mikanToken: z.string().min(1),
 });
 
@@ -28,7 +27,7 @@ export default function ProgramForm({ defaultValues }: Props) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const data = await updateSetting({ program: values });
+    await updateSetting({ program: values });
     toast({
       description: "Update success",
     });

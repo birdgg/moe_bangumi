@@ -43,7 +43,6 @@ export class QbittorrentService implements OnModuleInit {
       filter: 'completed',
       category: this.CATEGORY,
     });
-    console.log(response);
     return response.data as Torrent[];
   }
 

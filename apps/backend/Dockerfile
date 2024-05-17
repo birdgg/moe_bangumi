@@ -33,4 +33,6 @@ FROM base as runner
 WORKDIR /app
 COPY --from=sourcer /app/ .
 ENV NODE_ENV production
+EXPOSE 3200
+ENV PORT 3200
 CMD [ "node", "apps/backend/dist/main.js" ]

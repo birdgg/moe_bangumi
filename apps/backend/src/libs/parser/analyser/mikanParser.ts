@@ -10,7 +10,6 @@ const SAVE_PATH = path.join(process.cwd(), '/public');
  * scrape infomation from mikan bangumi detail page
  */
 export async function mikanParser(url: string) {
-  console.log(`mikanParser: ${url}`);
   const res = await axios.get(url);
   const html = res.data;
   const $ = cheerio.load(html);

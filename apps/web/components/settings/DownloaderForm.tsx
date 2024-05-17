@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { components } from "@/queries/generatedApi";
-import { FormInput, FormSwitch } from "./FormItems";
+import { FormInput } from "./FormItems";
 import { Form } from "../ui/form";
 
 interface Props {
@@ -13,10 +13,10 @@ interface Props {
 }
 
 const formSchema = z.object({
-  host: z.string(),
-  username: z.string(),
-  password: z.string(),
-  path: z.string(),
+  host: z.string().min(1),
+  username: z.string().min(1),
+  password: z.string().min(1),
+  path: z.string().min(1),
 });
 
 export default function DownloaderForm({ defaultValues }: Props) {

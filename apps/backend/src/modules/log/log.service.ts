@@ -13,7 +13,6 @@ export class LogService implements OnModuleInit {
 
   get() {
     const a = readFileSync(LOG_FILE, 'utf-8');
-    console.log(a);
     return a;
   }
 
