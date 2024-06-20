@@ -26,14 +26,16 @@ COPY turbo.json turbo.json
 
 RUN pnpm dlx turbo build --filter=backend
 RUN pnpm dlx turbo db:deploy --filter=backend
+RUN pnpm prune --prod
 
 FROM base as runner
 WORKDIR /app
 RUN addgroup --system --gid 1001 nestjs
 RUN adduser --system --uid 1001 nestjs
 USER nestjs
-COPY --from=installer /app .
+COPY --from=installer --chown=nestjs:nodejs /app .
+WORKDIR /app/apps
 ENV NODE_ENV production
 EXPOSE 3200
 ENV PORT 3200
-CMD node apps/backend/dist/main.js
+CMD node backend/dist/main.js

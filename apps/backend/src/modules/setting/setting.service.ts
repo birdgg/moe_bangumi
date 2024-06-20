@@ -1,29 +1,29 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import type { Setting } from './setting.entity';
-import EventEmitter2 from 'eventemitter2';
-import { SETTING_CHANGED } from './setting.constant';
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import * as fs from "fs";
+import * as path from "path";
+import type { Setting } from "./setting.entity";
+import EventEmitter2 from "eventemitter2";
+import { SETTING_CHANGED } from "./setting.constant";
 
 const DEFAULT_SETTING: Setting = {
   program: {
     rssTime: 7200,
     renameTime: 60,
-    mikanToken: '',
+    mikanToken: "",
   },
   downloader: {
-    host: 'qb:8989',
-    username: 'admin',
-    password: 'adminadmin',
-    path: '/downloads/bangumi',
+    host: "qb:8989",
+    username: "admin",
+    password: "adminadmin",
+    path: "/downloads/bangumi",
   },
 };
 
 @Injectable()
 export class SettingService implements OnModuleInit {
   private readonly logger = new Logger(SettingService.name);
-  private readonly PATH = `${process.cwd()}/config`;
-  private readonly FILE = 'config.json';
+  private readonly PATH = `${process.cwd()}/data`;
+  private readonly FILE = "config.json";
   private setting: Setting;
 
   onModuleInit() {
@@ -32,7 +32,7 @@ export class SettingService implements OnModuleInit {
     }
     const file = path.join(this.PATH, this.FILE);
     try {
-      const data = fs.readFileSync(file, 'utf-8');
+      const data = fs.readFileSync(file, "utf-8");
       this.setting = JSON.parse(data) as Setting;
     } catch (e) {
       // init config.json
