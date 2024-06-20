@@ -12,9 +12,9 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
-    "turbo": "latest"
+    "turbo": "2.0.4"
   },
-  "packageManager": "pnpm@7.26.0",
+  "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": ">=18"
   }
