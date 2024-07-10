@@ -1,12 +1,13 @@
 import { type ServerInferResponses, initContract } from '@ts-rest/core';
 // import { bangumiContract } from './bangumi';
+import type { } from "@ts-rest/core";
 import { SettingSchema, settingContract } from './setting';
 
 const c = initContract();
 
 export const contract = c.router(
 	{
-		settings: settingContract,
+		setting: settingContract,
 		// bangumi: bangumiContract,
 	},
 	{
@@ -15,7 +16,7 @@ export const contract = c.router(
 );
 
 export const schemas = {
-	settings: SettingSchema,
+	setting: SettingSchema,
 };
 
 export type ResponseShapes = ServerInferResponses<typeof contract>;
