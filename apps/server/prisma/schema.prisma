@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "zod-prisma"
+  output   = "../../../packages/shared-api/src/generated/zod"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data/data.db"
+}
+
+model Bangumi {
+  id        Int      @id @default(autoincrement())
+  nameZh    String   @map("name_zh")
+  nameJp    String?  @map("name_jp")
+  nameEn    String?  @map("name_en")
+  poster    String   @default("default")
+  season    Int      @default(1)
+  // 字幕组
+  group     String?
+  // 字幕
+  sub       String?
+  // 分辨率
+  dpi       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  // episode     Episode[]
+
+  @@unique([nameZh, season])
+}
+
+// model Episode {
+//   id         Int      @id @default(autoincrement())
+//   name       String
+//   episodeNum Int      @map("episode_num")
+//   bangumiId  Int      @map("bangumi_id")
+//   bangumi    Bangumi  @relation(fields: [bangumiId], references: [id])
+//   torrent    String
+//   createdAt  DateTime @default(now()) @map("created_at")
+//   updatedAt  DateTime @updatedAt @map("updated_at")
+
+//   @@unique([bangumiId, episodeNum])
+// }
