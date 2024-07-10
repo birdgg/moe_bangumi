@@ -1,17 +1,18 @@
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { contract } from '@repo/shared-api';
-import { SettingsService } from './setting.service';
+import { SettingService } from './setting.service';
 import { Controller } from '@nestjs/common';
 
 
 @Controller()
-export class MyController {
-  constructor(private readonly setting: SettingsService) { }
+export class SettingController {
+  constructor(private readonly setting: SettingService) { }
 
   @TsRestHandler(contract.setting)
   async handler() {
     return tsRestHandler(contract.setting, {
       get: async () => {
+        console.log('get')
         return {
           status: 200,
           body: this.setting.get()

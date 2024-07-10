@@ -18,5 +18,9 @@
   "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@scalar/nestjs-api-reference": "^0.3.100",
+    "server": "^1.0.39"
   }
 }

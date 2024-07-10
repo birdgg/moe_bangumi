@@ -16,8 +16,8 @@ const DEFAULT_SETTING: Setting = {
 };
 
 @Injectable()
-export class SettingsService implements OnModuleInit {
-	private readonly logger = new Logger(SettingsService.name);
+export class SettingService implements OnModuleInit {
+	private readonly logger = new Logger(SettingService.name);
 	private readonly FILE = `${process.cwd()}/data/setting.json`;
 	private setting?: Setting;
 
