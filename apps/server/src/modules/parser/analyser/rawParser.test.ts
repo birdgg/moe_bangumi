@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { type RawParserResult, rawParser } from './rawParser';
 
 const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
@@ -63,6 +64,6 @@ describe('rawParser', () => {
   });
 
   test('should throw error when title is a collection', () => {
-    expect(() => rawParser(failedTitle)).toThrow();
+    expect(() => rawParser(failedTitle)).toThrowError();
   });
 });
