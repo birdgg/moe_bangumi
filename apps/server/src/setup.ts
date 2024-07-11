@@ -18,7 +18,7 @@ export function setup(app: INestApplication) {
       },
     },
     {
-      setOperationId: true,
+      setOperationId: 'concatenated-path',
     },
   );
   app.use(

@@ -9,8 +9,9 @@ generator client {
 }
 
 generator zod {
-  provider = "zod-prisma"
-  output   = "../../../packages/shared-api/src/generated/zod"
+  provider    = "zod-prisma"
+  modelSuffix = "Schema"
+  output      = "../../../packages/shared-api/src/generated/zod"
 }
 
 datasource db {

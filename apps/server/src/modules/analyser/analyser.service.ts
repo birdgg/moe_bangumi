@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { rawParser } from './analyser/rawParser';
+import { rawParser } from './analysers/rawParser';
 
 @Injectable()
 export class AnalyserService {
-  analyseMikanRssTitle(title: string) {
+  mikanTitle(title: string) {
     return rawParser(title);
   }
 }
