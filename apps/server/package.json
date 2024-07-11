@@ -21,6 +21,7 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
@@ -29,6 +30,7 @@
     "@repo/shared-api": "workspace:*",
     "@ts-rest/nest": "^3.45.2",
     "@ts-rest/open-api": "^3.45.2",
+    "axios": "^1.7.2",
     "nestjs-prisma": "^0.23.0",
     "reflect-metadata": "^0.1.13",
     "rss-parser": "^3.13.0",

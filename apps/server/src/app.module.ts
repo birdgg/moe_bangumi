@@ -5,9 +5,11 @@ import { AnalyserModule } from '@/modules/analyser/analyser.module';
 import { BangumiModule } from '@/modules/bangumi/bangumi.module';
 import { MikanModule } from '@/modules/mikan/mikan.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     ScheduleModule.forRoot(),
     PrismaModule.forRoot({
       isGlobal: true,
