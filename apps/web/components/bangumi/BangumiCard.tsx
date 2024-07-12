@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import type { Bangumi } from "@/libs/client";
 import Image from "next/image";
 
@@ -10,7 +10,8 @@ export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
   const posterSrc =
     poster === "default"
       ? "placeholder.svg"
-      : `http://localhost:3001/posters/${poster}`;
+      : `${process.env.NEXT_PUBLIC_SERVER_URL}/posters/${poster}`;
+
   return (
     <Card className="col-span-1 w-full overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
       <Image
