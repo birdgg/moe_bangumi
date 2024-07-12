@@ -1,0 +1,59 @@
+import * as cheerio from 'cheerio';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import axios from 'axios';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
+import { MIKAN_URL } from '@/constants/mikan.constant';
+
+const SAVE_PATH = path.join(process.cwd(), '/public/posters');
+
+@Injectable()
+export class PosterService implements OnModuleInit {
+  private logger = new Logger(PosterService.name);
+
+  onModuleInit() {
+    if (!fs.existsSync(SAVE_PATH)) {
+      fs.mkdirSync(SAVE_PATH, { recursive: true });
+    }
+  }
+
+  async getFromMikan(url: string) {
+    const response = await fetch(url);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    const posterString = $('.bangumi-poster').attr('style');
+    const poster = posterString.match(/url\('?(.*?)"?\)/i)[1].split('?')[0];
+    const posterUrl = `${MIKAN_URL}${poster}`;
+    const ext = path.extname(poster);
+
+    return this.saveImage(posterUrl, ext);
+  }
+
+  private async getFromTMDB() {}
+
+  private async saveImage(url: string, ext: string) {
+    const filename = `${this.getHash(url)}${ext}`;
+
+    if (fs.existsSync(path.join(SAVE_PATH, filename))) {
+      return filename;
+    }
+
+    const response = await axios.get(url, {
+      responseType: 'stream',
+    });
+    const file = `${SAVE_PATH}/${filename}`;
+    response.data.pipe(fs.createWriteStream(file));
+    response.data.on('error', (err) => {
+      this.logger.error(err);
+    });
+    response.data.on('end', () => {
+      this.logger.debug(`Downloaded poster to ${filename}`);
+    });
+    return filename;
+  }
+
+  private getHash(url: string) {
+    return crypto.createHash('md5').update(url).digest('hex').substring(0, 8);
+  }
+}

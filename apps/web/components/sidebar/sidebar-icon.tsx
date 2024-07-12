@@ -6,16 +6,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/libs/utils";
+import { IconProps } from "@radix-ui/react-icons/dist/types";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SVGProps } from "react";
 
 interface Props {
   name: string;
   route: string;
   tooltip?: string;
-  Icon: React.ElementType<SVGProps<SVGSVGElement>>;
+  Icon: React.ComponentType<IconProps>;
 }
 
 export default function SidebarIcon({ name, Icon, route }: Props) {
@@ -37,7 +37,7 @@ export default function SidebarIcon({ name, Icon, route }: Props) {
               className="absolute h-9 w-9 z-[-1] rounded-lg bg-accent"
             />
           )}
-          <Icon />
+          <Icon className="h-6 w-6" />
           <span className="sr-only">{name}</span>
         </Link>
       </TooltipTrigger>

@@ -1,19 +1,28 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import type { Bangumi } from "@/libs/client";
+import Image from "next/image";
 
+const IMAGE_RATIO = 0.7;
+const IMAGE_WIDTH = 250;
+const IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO;
 export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
   const tags = [group, sub, dpi];
+  const posterSrc =
+    poster === "default"
+      ? "placeholder.svg"
+      : `http://localhost:3001/posters/${poster}`;
   return (
-    <Card className="col-span-1 w-full max-w-[300px] aspect-[3/4] overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-2 hover:shadow-xl">
-      <img
-        src={poster === "default" ? "placeholder.svg" : poster}
+    <Card className="col-span-1 w-full overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+      <Image
+        src={posterSrc}
         alt="poster"
-        height={300}
+        width={IMAGE_WIDTH}
+        height={IMAGE_HEIGHT}
         className="w-full object-cover"
       />
-      <CardContent className="p-4">
-        <h3 className="text-xl font-bold">{nameZh}</h3>
-        <div className="mt-2 flex flex-wrap gap-2">
+      <CardTitle className="font-bold p-2 mt-2">{nameZh}</CardTitle>
+      <CardFooter className="px-2 mt-2">
+        <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
               key={tag}
@@ -23,7 +32,7 @@ export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
             </span>
           ))}
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 }

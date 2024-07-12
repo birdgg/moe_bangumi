@@ -5,15 +5,25 @@ import { AnalyserModule } from '@/modules/analyser/analyser.module';
 import { BangumiModule } from '@/modules/bangumi/bangumi.module';
 import { MikanModule } from '@/modules/mikan/mikan.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { HttpModule } from '@nestjs/axios';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    HttpModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'public'),
+    }),
+    EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     PrismaModule.forRoot({
       isGlobal: true,
     }),
+    // order matters
     AnalyserModule,
     BangumiModule,
     SettingModule,

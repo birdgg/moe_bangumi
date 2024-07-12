@@ -1,8 +1,9 @@
 import * as z from "zod"
 
-export const BangumiModel = z.object({
+export const BangumiSchema = z.object({
   id: z.number().int(),
-  nameZh: z.string(),
+  originName: z.string(),
+  nameZh: z.string().nullish(),
   nameJp: z.string().nullish(),
   nameEn: z.string().nullish(),
   poster: z.string(),

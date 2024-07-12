@@ -1,12 +1,12 @@
 import { Prisma } from '@prisma/client';
 
 export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
-	episodeNum: number;
+  episodeNum: number;
 }
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
-	/(.*|\[.*])( -? \d+|\[\d+]|\[\d+.?[vV]\d]|\[\d+\(\d+\)\]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[Ee][Pp]?\d+)(.*)/;
+  /(.*|\[.*])( -? \d+|\[\d+]|\[\d+.?[vV]\d]|\[\d+\(\d+\)\]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[Ee][Pp]?\d+)(.*)/;
 const DPI_RE = /1080|720|2160|4K/;
 const SOURCE_RE = /B-Global|[Bb]aha|[Bb]ilibili|AT-X|Web/;
 const SUB_RE = /[(简繁日)字幕]|CH|BIG5|GB/;
@@ -17,183 +17,185 @@ const SUB_ZH_RE = /[\u4e00-\u9fa5]{2,}/;
 const SUB_EN_RE = /[a-zA-Z]{3,}/;
 
 const CHINESE_NUMBER_MAP = {
-	一: 1,
-	二: 2,
-	三: 3,
-	四: 4,
-	五: 5,
-	六: 6,
-	七: 7,
-	八: 8,
-	九: 9,
-	十: 10,
+  一: 1,
+  二: 2,
+  三: 3,
+  四: 4,
+  五: 5,
+  六: 6,
+  七: 7,
+  八: 8,
+  九: 9,
+  十: 10,
 };
 
 const CHINESE_SUB_MAP = {
-	简: 'CHS',
-	繁: 'CHT',
-	日: 'JP',
+  简: 'CHS',
+  繁: 'CHT',
+  日: 'JP',
 };
 
 function removeBrackets(str: string): string {
-	return str.replace(/[\[\]]/g, '');
+  return str.replace(/[\[\]]/g, '');
 }
 
 function preProcess(str: string) {
-	let nameArray = str.split(/\/|\[|\]/);
+  let nameArray = str.split(/\/|\[|\]/);
 
-	nameArray = nameArray
-		.filter((item) => {
-			return item !== '' && !/新番|月?番/.test(item);
-		})
-		.map((item) => item.trim());
+  nameArray = nameArray
+    .filter((item) => {
+      return item !== '' && !/新番|月?番/.test(item);
+    })
+    .map((item) => item.trim());
 
-	if (nameArray.length === 1) {
-		nameArray = nameArray[0].split(' ');
-	}
-	return nameArray.join('/');
+  if (nameArray.length === 1) {
+    nameArray = nameArray[0].split(' ');
+  }
+  return nameArray.join('/');
 }
 
 function getGroup(str: string) {
-	const matchedGroup = str.match(/\[([^\]]+)\]/);
-	const group = matchedGroup ? matchedGroup[1] : '';
-	const rawSeasonAndName = matchedGroup
-		? str.replace(matchedGroup[0], '')
-		: str;
-	return { group, rawSeasonAndName };
+  const matchedGroup = str.match(/\[([^\]]+)\]/);
+  const group = matchedGroup ? matchedGroup[1] : '';
+  const rawSeasonAndName = matchedGroup
+    ? str.replace(matchedGroup[0], '')
+    : str;
+  return { group, rawSeasonAndName };
 }
 
 function getSeason(str: string) {
-	let season = 1;
-	const rawName = removeBrackets(str.replace(SEASON_RE, ''));
-	const matchedSeason = str.match(SEASON_RE) || [];
+  let season = 1;
+  const rawName = removeBrackets(str.replace(SEASON_RE, ''));
+  const matchedSeason = str.match(SEASON_RE) || [];
 
-	for (const s of matchedSeason) {
-		if (/Season|S/.test(s)) {
-			season = Number.parseInt(s.replace(/Season|S/g, ''));
-			break;
-		}
-		if (/[第 ].*[季期(部分)]|部分/.test(s)) {
-			const seasonPro = s.replace(/[第季期 ]/g, '');
-			season = Number.isNaN(Number.parseInt(seasonPro))
-				? CHINESE_NUMBER_MAP[seasonPro]
-				: Number.parseInt(seasonPro);
-			break;
-		}
-	}
+  for (const s of matchedSeason) {
+    if (/Season|S/.test(s)) {
+      season = Number.parseInt(s.replace(/Season|S/g, ''));
+      break;
+    }
+    if (/[第 ].*[季期(部分)]|部分/.test(s)) {
+      const seasonPro = s.replace(/[第季期 ]/g, '');
+      season = Number.isNaN(Number.parseInt(seasonPro))
+        ? CHINESE_NUMBER_MAP[seasonPro]
+        : Number.parseInt(seasonPro);
+      break;
+    }
+  }
 
-	return { season, rawName };
+  return { season, rawName };
 }
 
 function getNames(str: string) {
-	const result = {
-		nameJp: '',
-		nameZh: '',
-		nameEn: '',
-	};
-	let names = str
-		.trim()
-		.split(/\/|\s{2}|-{2}/)
-		.filter((name) => name !== '');
+  const result = {
+    nameJp: '',
+    nameZh: '',
+    nameEn: '',
+  };
+  let names = str
+    .trim()
+    .split(/\/|\s{2}|-{2}/)
+    .filter((name) => name !== '');
 
-	if (names.length === 1) {
-		if (str.match(/_{1}/)) {
-			names = str.split('_');
-		} else if (str.match(' - {1}')) {
-			names = str.split('-');
-		}
-	}
-	if (names.length === 1) {
-		const nameArray = names[0].split(' ');
-		for (const idx of [0, nameArray.length - 1]) {
-			if (nameArray[idx].match(/^[\u4e00-\u9fa5]{2,}/)) {
-				const chs = nameArray[idx];
-				nameArray.splice(idx, 1);
-				names = [chs, nameArray.join(' ')];
-				break;
-			}
-		}
-	}
+  if (names.length === 1) {
+    if (str.match(/_{1}/)) {
+      names = str.split('_');
+    } else if (str.match(' - {1}')) {
+      names = str.split('-');
+    }
+  }
+  if (names.length === 1) {
+    const nameArray = names[0].split(' ');
+    for (const idx of [0, nameArray.length - 1]) {
+      if (nameArray[idx].match(/^[\u4e00-\u9fa5]{2,}/)) {
+        const chs = nameArray[idx];
+        nameArray.splice(idx, 1);
+        names = [chs, nameArray.join(' ')];
+        break;
+      }
+    }
+  }
 
-	names
-		.map((name) => name.trim())
-		.forEach((name) => {
-			if (name.match(SUB_JP_RE)) {
-				result.nameJp = name;
-			} else if (name.match(SUB_ZH_RE)) {
-				result.nameZh = name;
-			} else if (name.match(SUB_EN_RE)) {
-				result.nameEn = name;
-			}
-		});
+  names
+    .map((name) => name.trim())
+    .forEach((name) => {
+      if (name.match(SUB_JP_RE)) {
+        result.nameJp = name;
+      } else if (name.match(SUB_ZH_RE)) {
+        result.nameZh = name;
+      } else if (name.match(SUB_EN_RE)) {
+        result.nameEn = name;
+      }
+    });
 
-	return result;
+  return result;
 }
 
 function bangumiProcess(str: string) {
-	const { group, rawSeasonAndName } = getGroup(str);
-	const { season, rawName } = getSeason(preProcess(rawSeasonAndName));
-	const { nameJp, nameZh, nameEn } = getNames(rawName);
+  const { group, rawSeasonAndName } = getGroup(str);
+  const { season, rawName } = getSeason(preProcess(rawSeasonAndName));
+  const { nameJp, nameZh, nameEn } = getNames(rawName);
+  const originName = nameEn ?? nameZh;
 
-	return {
-		group,
-		season,
-		nameJp,
-		nameZh,
-		nameEn,
-	};
+  return {
+    originName,
+    group,
+    season,
+    nameJp,
+    nameZh,
+    nameEn,
+  };
 }
 
 function episodeProcess(str: string) {
-	const episodeStr = EPISODE_RE.exec(str);
-	return episodeStr ? Number.parseInt(episodeStr[0]) : 1;
+  const episodeStr = EPISODE_RE.exec(str);
+  return episodeStr ? Number.parseInt(episodeStr[0]) : 1;
 }
 
 // get sub, dpi
 function tagsProcess(other: string) {
-	const elements = other
-		.replace(/[\[\]()（）]/g, ' ')
-		.split(' ')
-		.filter((x) => x !== '');
-	let sub = '';
-	let dpi = '';
+  const elements = other
+    .replace(/[\[\]()（）]/g, ' ')
+    .split(' ')
+    .filter((x) => x !== '');
+  let sub = '';
+  let dpi = '';
 
-	for (const element of elements) {
-		const matched = element.match(SUB_RE);
-		if (matched) {
-			sub = CHINESE_SUB_MAP[matched[0]] || element;
-		} else if (DPI_RE.test(element)) {
-			dpi = element;
-		}
-	}
-	return [cleanSub(sub), dpi];
+  for (const element of elements) {
+    const matched = element.match(SUB_RE);
+    if (matched) {
+      sub = CHINESE_SUB_MAP[matched[0]] || element;
+    } else if (DPI_RE.test(element)) {
+      dpi = element;
+    }
+  }
+  return [cleanSub(sub), dpi];
 }
 
 function cleanSub(sub: string | null) {
-	if (sub === null) {
-		return sub;
-	}
-	return sub.replace(/_MP4|_MKV/g, '');
+  if (sub === null) {
+    return sub;
+  }
+  return sub.replace(/_MP4|_MKV/g, '');
 }
 
 export function rawParser(str: string): RawParserResult {
-	const title = str.trim().replace('【', '[').replace('】', ']');
+  const title = str.trim().replace('【', '[').replace('】', ']');
 
-	const matchedTitle = TITLE_RE.exec(title);
-	if (!matchedTitle) {
-		throw new Error(`Not match title regex: ${title}`);
-	}
-	const [rawBangumi, rawEpisode, tags] = matchedTitle
-		.slice(1, 4)
-		.map((x) => x.trim());
+  const matchedTitle = TITLE_RE.exec(title);
+  if (!matchedTitle) {
+    throw new Error(`Not match title regex: ${title}`);
+  }
+  const [rawBangumi, rawEpisode, tags] = matchedTitle
+    .slice(1, 4)
+    .map((x) => x.trim());
 
-	const bangumi = bangumiProcess(rawBangumi);
-	const episodeNum = episodeProcess(rawEpisode);
-	const [sub, dpi] = tagsProcess(tags);
-	return {
-		...bangumi,
-		sub,
-		dpi,
-		episodeNum,
-	};
+  const bangumi = bangumiProcess(rawBangumi);
+  const episodeNum = episodeProcess(rawEpisode);
+  const [sub, dpi] = tagsProcess(tags);
+  return {
+    ...bangumi,
+    sub,
+    dpi,
+    episodeNum,
+  };
 }
