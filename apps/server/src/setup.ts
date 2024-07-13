@@ -4,8 +4,11 @@ import { generateOpenApi } from '@ts-rest/open-api';
 import { contract } from '@repo/shared-api';
 import { HttpAdapterHost } from '@nestjs/core';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
+import { Logger } from './modules/logger/logger.service';
 
 export function setup(app: INestApplication) {
+  app.useLogger(app.get(Logger));
+
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 

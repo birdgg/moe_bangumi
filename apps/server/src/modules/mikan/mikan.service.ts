@@ -6,15 +6,11 @@ import { AnalyserService } from '@/modules/analyser/analyser.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MIKAN_RSS_URL } from '@/constants/mikan.constant';
 import { PosterService } from '../poster/poster.service';
-import { Mutex } from 'async-mutex';
 
 @Injectable()
 export class MikanService implements OnModuleInit {
   private readonly logger = new Logger(MikanService.name);
   private readonly rssParser = new RssParser();
-  private readonly mikanMutex = new Mutex();
-  private;
-
   constructor(
     private readonly settingService: SettingService,
     private readonly analyserService: AnalyserService,

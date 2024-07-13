@@ -3,9 +3,9 @@ import { AppModule } from './app.module';
 import { setup } from './setup';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
-  setup(app)
+  setup(app);
 
   await app.listen(3001);
 }

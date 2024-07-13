@@ -9,6 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from '@/modules/logger/logger.module';
 
 @Module({
   imports: [
@@ -18,12 +19,12 @@ import { ConfigModule } from '@nestjs/config';
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'public'),
     }),
+    LoggerModule,
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     PrismaModule.forRoot({
       isGlobal: true,
     }),
-    // order matters
     AnalyserModule,
     BangumiModule,
     SettingModule,
