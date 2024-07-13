@@ -20,36 +20,38 @@ datasource db {
 }
 
 model Bangumi {
-  id         Int      @id @default(autoincrement())
-  originName String   @map("origin_name")
-  nameZh     String?  @map("name_zh")
-  nameJp     String?  @map("name_jp")
-  nameEn     String?  @map("name_en")
-  poster     String   @default("default")
-  season     Int      @default(1)
+  id         Int       @id @default(autoincrement())
+  originName String    @map("origin_name")
+  nameZh     String?   @map("name_zh")
+  nameJp     String?   @map("name_jp")
+  nameEn     String?   @map("name_en")
+  poster     String    @default("default")
+  season     Int       @default(1)
   // 字幕组
   group      String?
   // 字幕
   sub        String?
   // 分辨率
   dpi        String?
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-  // episode     Episode[]
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  episodes   Episode[]
 
   @@unique([originName, season])
   @@index([originName, season])
 }
 
-// model Episode {
-//   id        Int      @id @default(autoincrement())
-//   nameZh    String?  @map("name_zh")
-//   nameJp    String?  @map("name_jp")
-//   nameEn    String?  @map("name_en")
-//   episode   Int      @map("episode")
-//   // bangumiId  Int      @map("bangumi_id")
-//   // bangumi    Bangumi  @relation(fields: [bangumiId], references: [id])
-//   // torrent   String
-//   createdAt DateTime @default(now()) @map("created_at")
-//   updatedAt DateTime @updatedAt @map("updated_at")
-// }
+model Episode {
+  id        Int      @id @default(autoincrement())
+  nameZh    String?  @map("name_zh")
+  nameJp    String?  @map("name_jp")
+  nameEn    String?  @map("name_en")
+  episode   Int      @map("episode")
+  bangumiId Int      @map("bangumi_id")
+  bangumi   Bangumi  @relation(fields: [bangumiId], references: [id])
+  torrent   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([episode, bangumiId])
+}

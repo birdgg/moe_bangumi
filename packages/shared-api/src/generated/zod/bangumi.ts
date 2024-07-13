@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { CompleteEpisode, RelatedEpisodeSchema } from "./index"
 
 export const BangumiSchema = z.object({
   id: z.number().int(),
@@ -14,3 +15,16 @@ export const BangumiSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 })
+
+export interface CompleteBangumi extends z.infer<typeof BangumiSchema> {
+  episodes: CompleteEpisode[]
+}
+
+/**
+ * RelatedBangumiSchema contains all relations on your model in addition to the scalars
+ *
+ * NOTE: Lazy required in case of potential circular dependencies within schema
+ */
+export const RelatedBangumiSchema: z.ZodSchema<CompleteBangumi> = z.lazy(() => BangumiSchema.extend({
+  episodes: RelatedEpisodeSchema.array(),
+}))

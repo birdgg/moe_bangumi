@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
-  episodeNum: number;
+  episode: number;
 }
 
 const EPISODE_RE = /\d+/;
@@ -190,12 +190,12 @@ export function rawParser(str: string): RawParserResult {
     .map((x) => x.trim());
 
   const bangumi = bangumiProcess(rawBangumi);
-  const episodeNum = episodeProcess(rawEpisode);
+  const episode = episodeProcess(rawEpisode);
   const [sub, dpi] = tagsProcess(tags);
   return {
     ...bangumi,
     sub,
     dpi,
-    episodeNum,
+    episode,
   };
 }

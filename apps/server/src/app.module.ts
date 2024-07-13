@@ -10,6 +10,7 @@ import path from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from '@/modules/logger/logger.module';
+import { EpisodeModule } from './modules/episode/episode.module';
 
 @Module({
   imports: [
@@ -25,9 +26,10 @@ import { LoggerModule } from '@/modules/logger/logger.module';
     PrismaModule.forRoot({
       isGlobal: true,
     }),
+    SettingModule,
     AnalyserModule,
     BangumiModule,
-    SettingModule,
+    EpisodeModule,
     MikanModule,
   ],
 })
