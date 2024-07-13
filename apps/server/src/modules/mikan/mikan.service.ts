@@ -1,9 +1,9 @@
-import { SettingService } from '@/modules/setting/setting.service';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import RssParser from 'rss-parser';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { SettingService } from '@/modules/setting/setting.service';
 import { BangumiService } from '@/modules/bangumi/bangumi.service';
 import { AnalyserService } from '@/modules/analyser/analyser.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { MIKAN_RSS_URL } from '@/constants/mikan.constant';
 import { PosterService } from '../poster/poster.service';
 

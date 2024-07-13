@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BangumiModule } from '../bangumi/bangumi.module';
-import { MikanService } from './mikan.service';
 import { PosterModule } from '../poster/poster.module';
+import { MikanService } from './mikan.service';
 
 @Module({
   imports: [BangumiModule, PosterModule],

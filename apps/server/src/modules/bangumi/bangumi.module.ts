@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { BangumiService } from './bangumi.service';
 import { BangumiController } from '@/modules/bangumi/bangumi.contrller';
+import { BangumiService } from './bangumi.service';
 
 @Module({
   controllers: [BangumiController],

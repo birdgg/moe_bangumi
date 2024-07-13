@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { type Prisma } from "@prisma/client";
 
 export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
   episode: number;
@@ -8,9 +8,9 @@ const EPISODE_RE = /\d+/;
 const TITLE_RE =
   /(.*|\[.*])( -? \d+|\[\d+]|\[\d+.?[vV]\d]|\[\d+\(\d+\)\]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[Ee][Pp]?\d+)(.*)/;
 const DPI_RE = /1080|720|2160|4K/;
-const SOURCE_RE = /B-Global|[Bb]aha|[Bb]ilibili|AT-X|Web/;
+// const SOURCE_RE = /B-Global|[Bb]aha|[Bb]ilibili|AT-X|Web/;
 const SUB_RE = /[(简繁日)字幕]|CH|BIG5|GB/;
-const PREFIX_RE = /[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff-]/;
+// const PREFIX_RE = /[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff-]/;
 const SEASON_RE = /S\d{1,2}|Season \d{1,2}|[第].[季期]/g;
 const SUB_JP_RE = /[\u0800-\u4e00]{2,}/;
 const SUB_ZH_RE = /[\u4e00-\u9fa5]{2,}/;
@@ -30,13 +30,13 @@ const CHINESE_NUMBER_MAP = {
 };
 
 const CHINESE_SUB_MAP = {
-  简: 'CHS',
-  繁: 'CHT',
-  日: 'JP',
+  简: "CHS",
+  繁: "CHT",
+  日: "JP",
 };
 
 function removeBrackets(str: string): string {
-  return str.replace(/[\[\]]/g, '');
+  return str.replace(/[\[\]]/g, "");
 }
 
 function preProcess(str: string) {
@@ -44,37 +44,37 @@ function preProcess(str: string) {
 
   nameArray = nameArray
     .filter((item) => {
-      return item !== '' && !/新番|月?番/.test(item);
+      return item !== "" && !/新番|月?番/.test(item);
     })
     .map((item) => item.trim());
 
   if (nameArray.length === 1) {
-    nameArray = nameArray[0].split(' ');
+    nameArray = nameArray[0].split(" ");
   }
-  return nameArray.join('/');
+  return nameArray.join("/");
 }
 
 function getGroup(str: string) {
-  const matchedGroup = str.match(/\[([^\]]+)\]/);
-  const group = matchedGroup ? matchedGroup[1] : '';
+  const matchedGroup = /\[([^\]]+)\]/.exec(str);
+  const group = matchedGroup ? matchedGroup[1] : "";
   const rawSeasonAndName = matchedGroup
-    ? str.replace(matchedGroup[0], '')
+    ? str.replace(matchedGroup[0], "")
     : str;
   return { group, rawSeasonAndName };
 }
 
 function getSeason(str: string) {
   let season = 1;
-  const rawName = removeBrackets(str.replace(SEASON_RE, ''));
+  const rawName = removeBrackets(str.replace(SEASON_RE, ""));
   const matchedSeason = str.match(SEASON_RE) || [];
 
   for (const s of matchedSeason) {
     if (/Season|S/.test(s)) {
-      season = Number.parseInt(s.replace(/Season|S/g, ''));
+      season = Number.parseInt(s.replace(/Season|S/g, ""));
       break;
     }
     if (/[第 ].*[季期(部分)]|部分/.test(s)) {
-      const seasonPro = s.replace(/[第季期 ]/g, '');
+      const seasonPro = s.replace(/[第季期 ]/g, "");
       season = Number.isNaN(Number.parseInt(seasonPro))
         ? CHINESE_NUMBER_MAP[seasonPro]
         : Number.parseInt(seasonPro);
@@ -87,29 +87,29 @@ function getSeason(str: string) {
 
 function getNames(str: string) {
   const result = {
-    nameJp: '',
-    nameZh: '',
-    nameEn: '',
+    nameJp: "",
+    nameZh: "",
+    nameEn: "",
   };
   let names = str
     .trim()
     .split(/\/|\s{2}|-{2}/)
-    .filter((name) => name !== '');
+    .filter((name) => name !== "");
 
   if (names.length === 1) {
-    if (str.match(/_{1}/)) {
-      names = str.split('_');
-    } else if (str.match(' - {1}')) {
-      names = str.split('-');
+    if (/_{1}/.exec(str)) {
+      names = str.split("_");
+    } else if (/ - {1}/.exec(str)) {
+      names = str.split("-");
     }
   }
   if (names.length === 1) {
-    const nameArray = names[0].split(' ');
+    const nameArray = names[0].split(" ");
     for (const idx of [0, nameArray.length - 1]) {
-      if (nameArray[idx].match(/^[\u4e00-\u9fa5]{2,}/)) {
+      if (/^[\u4e00-\u9fa5]{2,}/.exec(nameArray[idx])) {
         const chs = nameArray[idx];
         nameArray.splice(idx, 1);
-        names = [chs, nameArray.join(' ')];
+        names = [chs, nameArray.join(" ")];
         break;
       }
     }
@@ -118,11 +118,11 @@ function getNames(str: string) {
   names
     .map((name) => name.trim())
     .forEach((name) => {
-      if (name.match(SUB_JP_RE)) {
+      if (SUB_JP_RE.exec(name)) {
         result.nameJp = name;
-      } else if (name.match(SUB_ZH_RE)) {
+      } else if (SUB_ZH_RE.exec(name)) {
         result.nameZh = name;
-      } else if (name.match(SUB_EN_RE)) {
+      } else if (SUB_EN_RE.exec(name)) {
         result.nameEn = name;
       }
     });
@@ -154,14 +154,14 @@ function episodeProcess(str: string) {
 // get sub, dpi
 function tagsProcess(other: string) {
   const elements = other
-    .replace(/[\[\]()（）]/g, ' ')
-    .split(' ')
-    .filter((x) => x !== '');
-  let sub = '';
-  let dpi = '';
+    .replace(/[\[\]()（）]/g, " ")
+    .split(" ")
+    .filter((x) => x !== "");
+  let sub = "";
+  let dpi = "";
 
   for (const element of elements) {
-    const matched = element.match(SUB_RE);
+    const matched = SUB_RE.exec(element);
     if (matched) {
       sub = CHINESE_SUB_MAP[matched[0]] || element;
     } else if (DPI_RE.test(element)) {
@@ -175,11 +175,11 @@ function cleanSub(sub: string | null) {
   if (sub === null) {
     return sub;
   }
-  return sub.replace(/_MP4|_MKV/g, '');
+  return sub.replace(/_MP4|_MKV/g, "");
 }
 
 export function rawParser(str: string): RawParserResult {
-  const title = str.trim().replace('【', '[').replace('】', ']');
+  const title = str.trim().replace("【", "[").replace("】", "]");
 
   const matchedTitle = TITLE_RE.exec(title);
   if (!matchedTitle) {

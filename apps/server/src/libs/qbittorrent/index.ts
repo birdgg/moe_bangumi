@@ -1,18 +1,14 @@
-import axios, { AxiosInstance } from 'axios';
-import * as https from 'https';
-import { TorrentListOptions, TorrentOptions } from './types';
-import { isDev } from '@/utils/env';
-
-const API_PATH = {
-  login: 'auth/login',
-};
+import * as https from "node:https";
+import axios, { type AxiosInstance } from "axios";
+import { isDev } from "@/utils/env";
+import { type TorrentListOptions, type TorrentOptions } from "./types";
 
 export class Qbittorent {
   #host: string;
   #username: string;
   #password: string;
-  #sid = '';
-  #axios: AxiosInstance;
+  #sid = "";
+  #axios!: AxiosInstance;
   isConnected = false;
 
   constructor(host: string, username: string, password: string) {
@@ -27,7 +23,7 @@ export class Qbittorent {
     const axiosInstance = axios.create({
       baseURL: this.#host,
     });
-    axiosInstance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    axiosInstance.defaults.headers.post["Content-Type"] = "multipart/form-data";
     if (isDev()) {
       const httpsAgent = new https.Agent({ rejectUnauthorized: false });
       axiosInstance.defaults.httpsAgent = httpsAgent;
@@ -35,10 +31,10 @@ export class Qbittorent {
     axiosInstance.interceptors.request.use(
       (config) => {
         const { url } = config;
-        config.headers['Referer'] = this.#host;
-        config.headers['Host'] = this.#host;
+        config.headers.Referer = this.#host;
+        config.headers.Host = this.#host;
         if (this.#sid) {
-          config.headers['Cookie'] = `SID=${this.#sid}`;
+          config.headers.Cookie = `SID=${this.#sid}`;
         }
         config.url = `/api/v2/${url}`;
         return config;
@@ -52,42 +48,45 @@ export class Qbittorent {
   }
 
   async login() {
-    const response = await this.#axios.post('auth/login', {
+    const response = await this.#axios.post("auth/login", {
       username: this.#username,
       password: this.#password,
     });
-    if (response.data == 'Failed') {
-      throw new Error('qbittorrent login failed');
+    if (response.data === "Failed") {
+      throw new Error("qbittorrent login failed");
     }
-    const sid = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
-    this.#sid = sid;
-    this.isConnected = true;
+    // @ts-expect-error need to be fix
+    const sid = response.headers["set-cookie"][0].split(";")[0].split("=")[1];
+    if (sid) {
+      this.#sid = sid;
+      this.isConnected = true;
+    }
     return response;
   }
 
   getVersion() {
-    return this.#axios.get('app/version');
+    return this.#axios.get("app/version");
   }
 
   // torrent
 
   addTorrent(data: TorrentOptions) {
-    return this.#axios.post('torrents/add', data);
+    return this.#axios.post("torrents/add", data);
   }
 
   getTorrentList(options: TorrentListOptions) {
-    return this.#axios.get('torrents/info', {
+    return this.#axios.get("torrents/info", {
       params: options,
     });
   }
 
   getTorrentContents(hash: string) {
-    return this.#axios.get('torrents/files', {
+    return this.#axios.get("torrents/files", {
       params: { hash },
     });
   }
 
   renameFile(data: { hash: string; oldPath: string; newPath: string }) {
-    return this.#axios.post('torrents/renameFile', data);
+    return this.#axios.post("torrents/renameFile", data);
   }
 }

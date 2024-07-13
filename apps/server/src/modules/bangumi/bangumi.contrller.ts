@@ -1,7 +1,7 @@
-import { BangumiService } from '@/modules/bangumi/bangumi.service';
 import { Controller } from '@nestjs/common';
 import { contract } from '@repo/shared-api';
 import { tsRestHandler, TsRestHandler } from '@ts-rest/nest';
+import { BangumiService } from '@/modules/bangumi/bangumi.service';
 
 @Controller()
 export class BangumiController {

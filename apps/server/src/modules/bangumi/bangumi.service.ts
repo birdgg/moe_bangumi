@@ -1,9 +1,9 @@
-import { POSTER_DOWNLOADED } from '@/constants/event.constant';
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma/client';
 import { Mutex } from 'async-mutex';
 import { PrismaService } from 'nestjs-prisma';
+import { POSTER_DOWNLOADED } from '@/constants/event.constant';
 
 @Injectable()
 export class BangumiService {

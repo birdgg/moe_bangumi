@@ -1,6 +1,6 @@
+import path from 'node:path';
+import process from 'node:process';
 import { ConsoleLogger, Injectable } from '@nestjs/common';
-import path from 'path';
-import process from 'process';
 import pino, { Level, LoggerOptions } from 'pino';
 
 const transport: LoggerOptions['transport'] = {

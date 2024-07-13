@@ -1,9 +1,9 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as crypto from 'node:crypto';
 import * as cheerio from 'cheerio';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import axios from 'axios';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
 import { MIKAN_URL } from '@/constants/mikan.constant';
 
 const SAVE_PATH = path.join(process.cwd(), '/public/posters');
@@ -23,7 +23,7 @@ export class PosterService implements OnModuleInit {
     const html = await response.text();
     const $ = cheerio.load(html);
     const posterString = $('.bangumi-poster').attr('style');
-    const poster = posterString.match(/url\('?(.*?)"?\)/i)[1].split('?')[0];
+    const poster = (/url\('?(.*?)"?\)/i.exec(posterString))[1].split('?')[0];
     const posterUrl = `${MIKAN_URL}${poster}`;
     const ext = path.extname(poster);
 

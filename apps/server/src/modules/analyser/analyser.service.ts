@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { rawParser } from './analysers/rawParser';
+import { Injectable } from "@nestjs/common";
+import { rawParser } from "./analysers/raw-parser";
 
 @Injectable()
 export class AnalyserService {

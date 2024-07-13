@@ -1,10 +1,10 @@
-import { INestApplication } from '@nestjs/common';
-import { apiReference } from '@scalar/nestjs-api-reference';
-import { generateOpenApi } from '@ts-rest/open-api';
-import { contract } from '@repo/shared-api';
-import { HttpAdapterHost } from '@nestjs/core';
-import { PrismaClientExceptionFilter } from 'nestjs-prisma';
-import { Logger } from './modules/logger/logger.service';
+import { INestApplication } from "@nestjs/common";
+import { apiReference } from "@scalar/nestjs-api-reference";
+import { generateOpenApi } from "@ts-rest/open-api";
+import { contract } from "@repo/shared-api";
+import { HttpAdapterHost } from "@nestjs/core";
+import { PrismaClientExceptionFilter } from "nestjs-prisma";
+import { Logger } from "./modules/logger/logger.service";
 
 export function setup(app: INestApplication) {
   app.useLogger(app.get(Logger));
@@ -16,16 +16,16 @@ export function setup(app: INestApplication) {
     contract,
     {
       info: {
-        title: 'Moe Bangumi API',
-        version: '1.0.0',
+        title: "Moe Bangumi API",
+        version: "1.0.0",
       },
     },
     {
-      setOperationId: 'concatenated-path',
+      setOperationId: "concatenated-path",
     },
   );
   app.use(
-    '/swagger',
+    "/swagger",
     apiReference({
       spec: {
         content: document,
