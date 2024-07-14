@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
 	episodeNum: number;

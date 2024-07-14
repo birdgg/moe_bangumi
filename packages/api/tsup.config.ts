@@ -4,7 +4,7 @@ const entries = ['index', 'setting', 'bangumi', 'episode']
 
 export default defineConfig({
   entry: entries.map(e => `src/${e}.ts`),
-  dts: false,
+  dts: true,
   treeshake: true,
   outDir: 'dist',
   format: ['cjs', 'esm'],

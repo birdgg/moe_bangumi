@@ -2,14 +2,14 @@ import { MIKAN_RSS_URL } from "@/constants/mikan.constant";
 import { AnalyserService } from "@/modules/analyser/analyser.service";
 import { BangumiService } from "@/modules/bangumi/bangumi.service";
 import { SettingService } from "@/modules/setting/setting.service";
-import { Injectable, Logger } from "@nestjs/common";
+import { isDev } from "@/utils/env";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import RssParser from "rss-parser";
 import { EpisodeService } from "../episode/episode.service";
-import { PosterService } from "../poster/poster.service";
 
 @Injectable()
-export class MikanService {
+export class MikanService implements OnModuleInit {
 	private readonly logger = new Logger(MikanService.name);
 	private readonly rssParser = new RssParser();
 	constructor(
@@ -17,18 +17,16 @@ export class MikanService {
 		private readonly analyserService: AnalyserService,
 		private readonly bangumiService: BangumiService,
 		private readonly episodeService: EpisodeService,
-		private posterService: PosterService,
 	) {}
 
-	@Cron(
-		process.env.NODE_ENV === "development"
-			? CronExpression.EVERY_5_MINUTES
-			: CronExpression.EVERY_HOUR,
-		{
-			name: "MIKAN_RSS",
-			disabled: false,
-		},
-	)
+	onModuleInit() {
+		this.logger.log("Mikan service started");
+	}
+
+	@Cron(isDev() ? CronExpression.EVERY_5_MINUTES : CronExpression.EVERY_HOUR, {
+		name: "MIKAN_RSS",
+		disabled: false,
+	})
 	fetchRss() {
 		this.rssParser.parseURL(this._getRssUrl(), (_, feed) => {
 			this._processRss(feed.items);
@@ -36,7 +34,7 @@ export class MikanService {
 	}
 
 	private _getRssUrl() {
-		const mikanToken = this.settingService.get().general.mikanToken;
+		const mikanToken = this.settingService.get().mikan.token;
 		if (!mikanToken) throw new Error("Mikan token not setted");
 		return `${MIKAN_RSS_URL}${mikanToken}`;
 	}

@@ -5,12 +5,12 @@ const c = initContract();
 
 export const SettingSchema = z.object({
 	mikan: z.object({
-		mikanToken: z.string().min(1),
+		token: z.string().min(1),
 	}),
 	downloader: z.object({
-		host: z.string(),
-		username: z.string(),
-		password: z.string(),
+		host: z.string().min(1),
+		username: z.string().min(1),
+		password: z.string().min(1),
 		savePath: z.string(),
 	}),
 });

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type { Prisma } from "@prisma/client";
-import type { PrismaService } from "nestjs-prisma";
+import { Prisma } from "@prisma/client";
+import { PrismaService } from "nestjs-prisma";
 import { PosterService } from "../poster/poster.service";
 
 @Injectable()

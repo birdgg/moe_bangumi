@@ -3,38 +3,39 @@
 import { updateSetting } from "@/actions/setting";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schemas } from "@repo/shared-api";
+import { Setting, SettingSchema } from "@repo/api/setting";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
-import { FormInput } from "./form-items";
-import type { SettingFormProps } from "./types";
+import { FormInput, FormSectionHeader } from "./form-items";
 
-const generalSchema = schemas.setting.shape.general;
+const schema = SettingSchema.pick({ mikan: true, downloader: true });
 
-export const GeneralForm: React.FC<SettingFormProps<"general">> = ({
-	defaultValues,
+export const GeneralForm: React.FC<{ setting: Partial<Setting> }> = ({
+	setting,
 }) => {
+	const { mikan, downloader } = setting;
 	const { toast } = useToast();
-	const form = useForm<z.infer<typeof generalSchema>>({
-		resolver: zodResolver(generalSchema),
-		defaultValues,
+	const form = useForm<z.infer<typeof schema>>({
+		resolver: zodResolver(schema),
+		defaultValues: { mikan, downloader },
 	});
 
-	const onSubmit = form.handleSubmit(async (data) => {
-		const { status, body } = await updateSetting({ general: data });
-		if (status === 200) {
-			toast({ description: "Setting updated" });
-		} else {
-			toast({ description: body as string, variant: "destructive" });
-		}
-	});
+	const onSubmit = async (data: z.infer<typeof schema>) => {
+		await updateSetting(data);
+		toast({ description: "Setting updated" });
+	};
 
 	return (
 		<Form {...form}>
-			<form className="space-y-10" onSubmit={onSubmit}>
-				<FormInput name="mikanToken" label="Mikan token" />
+			<form className="space-y-10" onSubmit={form.handleSubmit(onSubmit)}>
+				<FormSectionHeader title="Mikan" />
+				<FormInput name="mikan.token" label="Mikan token" />
+				<FormSectionHeader title="Downloader" />
+				<FormInput name="downloader.host" label="Host" />
+				<FormInput name="downloader.username" label="Username" />
+				<FormInput name="downloader.password" label="Password" />
 				<Button type="submit">Submit</Button>
 			</form>
 		</Form>

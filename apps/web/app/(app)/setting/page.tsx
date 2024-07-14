@@ -6,7 +6,6 @@ const SETTINGS = [
 	{
 		title: "General",
 		Form: GeneralForm,
-		key: "general",
 	},
 ];
 
@@ -25,10 +24,9 @@ export default async function SettingPage() {
 					</TabsTrigger>
 				))}
 			</TabsList>
-			{SETTINGS.map(({ title, Form, key }) => (
-				<TabsContent key={key} value={title}>
-					{/* @ts-expect-error -- i can not solve out */}
-					<Form defaultValues={body[key]} />
+			{SETTINGS.map(({ title, Form }) => (
+				<TabsContent key={title} value={title} className="w-1/3">
+					<Form setting={body} />
 				</TabsContent>
 			))}
 		</Tabs>
