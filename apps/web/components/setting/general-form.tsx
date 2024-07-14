@@ -13,7 +13,9 @@ import { SettingFormProps } from "./types";
 
 const generalSchema = schemas.setting.shape.general;
 
-export function GeneralForm({ defaultValues }: SettingFormProps<"general">) {
+export const GeneralForm: React.FC<SettingFormProps<"general">> = ({
+  defaultValues,
+}) => {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof generalSchema>>({
     resolver: zodResolver(generalSchema),
@@ -37,4 +39,4 @@ export function GeneralForm({ defaultValues }: SettingFormProps<"general">) {
       </form>
     </Form>
   );
-}
+};

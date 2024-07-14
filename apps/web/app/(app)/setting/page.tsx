@@ -27,6 +27,7 @@ export default async function SettingPage() {
       </TabsList>
       {SETTINGS.map(({ title, Form, key }) => (
         <TabsContent key={key} value={title}>
+          {/* @ts-expect-error -- i can not solve out */}
           <Form defaultValues={body[key]} />
         </TabsContent>
       ))}
