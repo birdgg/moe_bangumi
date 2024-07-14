@@ -1,23 +1,23 @@
 {
-  "name": "moe-bangumi",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "test": "turbo test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "husky": "^9.0.11",
-    "prettier": "^3.2.5",
-    "turbo": "^2.0.6",
-    "@repo/eslint-config": "workspace:*",
-    "typescript": "^5.4.5"
-  },
-  "packageManager": "pnpm@8.15.6",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "moe-bangumi",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"lint": "biome check .",
+		"lint:fix": "biome check . --write",
+		"test": "turbo test",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.3",
+		"@repo/eslint-config": "workspace:*",
+		"husky": "^9.0.11",
+		"turbo": "^2.0.6",
+		"typescript": "^5.4.5"
+	},
+	"packageManager": "pnpm@8.15.6",
+	"engines": {
+		"node": ">=18"
+	}
 }

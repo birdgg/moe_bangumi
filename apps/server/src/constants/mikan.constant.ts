@@ -1,4 +1,4 @@
-export const MIKAN_URL = 'https://mikanani.me';
+export const MIKAN_URL = "https://mikanani.me";
 
 export const MIKAN_RSS_URL = `${MIKAN_URL}/RSS/MyBangumi?token=`;
 

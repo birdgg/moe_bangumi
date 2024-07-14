@@ -1,8 +1,8 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
-  "typescript.preferences.importModuleSpecifier": "shortest"
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		}
+	],
+	"typescript.preferences.importModuleSpecifier": "shortest"
 }

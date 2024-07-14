@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'nestjs-prisma';
+import { Injectable } from "@nestjs/common";
+import type { Prisma } from "@prisma/client";
+import type { PrismaService } from "nestjs-prisma";
 
 @Injectable()
 export class EpisodeService {
-  constructor(private prismaService: PrismaService) {}
+	constructor(private prismaService: PrismaService) {}
 
-  async create(data: Prisma.EpisodeUncheckedCreateInput) {
-    return this.prismaService.episode.create({
-      data,
-    });
-  }
+	async create(data: Prisma.EpisodeUncheckedCreateInput) {
+		return this.prismaService.episode.create({
+			data,
+		});
+	}
 }

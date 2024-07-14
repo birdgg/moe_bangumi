@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { BangumiController } from '@/modules/bangumi/bangumi.contrller';
-import { BangumiService } from './bangumi.service';
+import { BangumiController } from "@/modules/bangumi/bangumi.contrller";
+import { Module } from "@nestjs/common";
+import { BangumiService } from "./bangumi.service";
 
 @Module({
-  controllers: [BangumiController],
-  providers: [BangumiService],
-  exports: [BangumiService],
+	controllers: [BangumiController],
+	providers: [BangumiService],
+	exports: [BangumiService],
 })
 export class BangumiModule {}

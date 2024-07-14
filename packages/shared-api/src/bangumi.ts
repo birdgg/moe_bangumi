@@ -6,16 +6,16 @@ const c = initContract();
 
 export type Bangumi = z.infer<typeof BangumiSchema>;
 export const bangumiContract = c.router(
-  {
-    get: {
-      method: "GET",
-      path: "/",
-      responses: {
-        200: z.array(BangumiSchema),
-      },
-    },
-  },
-  {
-    pathPrefix: "/bangumis",
-  }
+	{
+		get: {
+			method: "GET",
+			path: "/",
+			responses: {
+				200: z.array(BangumiSchema),
+			},
+		},
+	},
+	{
+		pathPrefix: "/bangumis",
+	},
 );

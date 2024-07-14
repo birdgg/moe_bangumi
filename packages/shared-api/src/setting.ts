@@ -1,5 +1,5 @@
-import { initContract } from '@ts-rest/core';
-import { z } from 'zod';
+import { initContract } from "@ts-rest/core";
+import { z } from "zod";
 
 const c = initContract();
 
@@ -20,15 +20,15 @@ export type Setting = z.infer<typeof SettingSchema>;
 export const settingContract = c.router(
 	{
 		get: {
-			method: 'GET',
-			path: '/',
+			method: "GET",
+			path: "/",
 			responses: {
 				200: SettingSchema,
 			},
 		},
 		post: {
-			method: 'POST',
-			path: '/',
+			method: "POST",
+			path: "/",
 			responses: {
 				200: SettingSchema,
 			},
@@ -36,6 +36,6 @@ export const settingContract = c.router(
 		},
 	},
 	{
-		pathPrefix: '/setting',
+		pathPrefix: "/setting",
 	},
 );

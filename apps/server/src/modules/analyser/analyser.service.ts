@@ -3,8 +3,8 @@ import { rawParser } from "./analysers/raw-parser";
 
 @Injectable()
 export class AnalyserService {
-  // TODO: we can cache analyse result for a day
-  mikanTitle(title: string) {
-    return rawParser(title);
-  }
+	// TODO: we can cache analyse result for a day
+	mikanTitle(title: string) {
+		return rawParser(title);
+	}
 }

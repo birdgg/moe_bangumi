@@ -1,17 +1,17 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Setting } from '@repo/shared-api';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
+import type { Setting } from "@repo/shared-api";
 
 const DEFAULT_SETTING: Setting = {
 	general: {
-		mikanToken: '',
+		mikanToken: "",
 	},
 	downloader: {
-		host: '',
-		username: 'admin',
-		password: 'adminadmin',
-		savePath: '/downloads',
+		host: "",
+		username: "admin",
+		password: "adminadmin",
+		savePath: "/downloads",
 	},
 };
 
@@ -26,7 +26,7 @@ export class SettingService implements OnModuleInit {
 	}
 
 	get(): Setting {
-		return this.setting
+		return this.setting;
 	}
 
 	update(setting: Partial<Setting>) {
@@ -42,7 +42,7 @@ export class SettingService implements OnModuleInit {
 			fs.mkdirSync(filePath, { recursive: true });
 			fs.writeFileSync(this.FILE, JSON.stringify(DEFAULT_SETTING));
 		}
-		const data = fs.readFileSync(this.FILE, 'utf-8');
+		const data = fs.readFileSync(this.FILE, "utf-8");
 		this.setting = JSON.parse(data) as Setting;
 	}
 }

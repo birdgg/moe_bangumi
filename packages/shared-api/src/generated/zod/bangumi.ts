@@ -1,23 +1,23 @@
-import * as z from "zod"
-import { CompleteEpisode, RelatedEpisodeSchema } from "./index"
+import * as z from "zod";
+import { type CompleteEpisode, RelatedEpisodeSchema } from "./index";
 
 export const BangumiSchema = z.object({
-  id: z.number().int(),
-  originName: z.string(),
-  nameZh: z.string().nullish(),
-  nameJp: z.string().nullish(),
-  nameEn: z.string().nullish(),
-  poster: z.string(),
-  season: z.number().int(),
-  group: z.string().nullish(),
-  sub: z.string().nullish(),
-  dpi: z.string().nullish(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-})
+	id: z.number().int(),
+	originName: z.string(),
+	nameZh: z.string().nullish(),
+	nameJp: z.string().nullish(),
+	nameEn: z.string().nullish(),
+	poster: z.string(),
+	season: z.number().int(),
+	group: z.string().nullish(),
+	sub: z.string().nullish(),
+	dpi: z.string().nullish(),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+});
 
 export interface CompleteBangumi extends z.infer<typeof BangumiSchema> {
-  episodes: CompleteEpisode[]
+	episodes: CompleteEpisode[];
 }
 
 /**
@@ -25,6 +25,8 @@ export interface CompleteBangumi extends z.infer<typeof BangumiSchema> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const RelatedBangumiSchema: z.ZodSchema<CompleteBangumi> = z.lazy(() => BangumiSchema.extend({
-  episodes: RelatedEpisodeSchema.array(),
-}))
+export const RelatedBangumiSchema: z.ZodSchema<CompleteBangumi> = z.lazy(() =>
+	BangumiSchema.extend({
+		episodes: RelatedEpisodeSchema.array(),
+	}),
+);

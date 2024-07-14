@@ -5,18 +5,18 @@ import { SettingSchema, settingContract } from "./setting";
 const c = initContract();
 
 export const contract = c.router(
-  {
-    setting: settingContract,
-    bangumi: bangumiContract,
-  },
-  {
-    pathPrefix: "/api",
-    strictStatusCodes: true,
-  }
+	{
+		setting: settingContract,
+		bangumi: bangumiContract,
+	},
+	{
+		pathPrefix: "/api",
+		strictStatusCodes: true,
+	},
 );
 
 export const schemas = {
-  setting: SettingSchema,
+	setting: SettingSchema,
 };
 
 export type { Setting } from "./setting";
