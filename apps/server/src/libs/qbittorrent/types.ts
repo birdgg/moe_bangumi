@@ -1,3 +1,8 @@
+export interface QbittorrentParams {
+	host: string;
+	username: string;
+	password: string;
+}
 export interface TorrentOptions {
 	urls: string;
 	savepath: string;

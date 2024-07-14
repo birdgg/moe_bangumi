@@ -1,0 +1,15 @@
+
+services:
+  qb:
+    image: superng6/qbittorrentee:latest
+    container_name: qb
+    ports:
+      - 8989:8989
+      - 6881:6881
+      - '6881:6881/udp'
+    environment:
+      PUID: 1000
+      PGID: 100
+      WEBUIPORT: 8989
+    volumes:
+      - $HOME/Downloads:/downloads
