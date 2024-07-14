@@ -38,7 +38,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["logger.service.ts"],
+			"include": ["logger.ts"],
 			"linter": {
 				"rules": {
 					"suspicious": {

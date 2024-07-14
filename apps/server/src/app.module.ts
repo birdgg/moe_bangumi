@@ -10,12 +10,14 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
+import { DownloaderModule } from "./modules/downloader/downloader.module";
 import { EpisodeModule } from "./modules/episode/episode.module";
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
+			envFilePath: [".env", ".env.local"],
 		}),
 		ServeStaticModule.forRoot({
 			rootPath: path.join(__dirname, "..", "public"),
@@ -27,6 +29,7 @@ import { EpisodeModule } from "./modules/episode/episode.module";
 			isGlobal: true,
 		}),
 		SettingModule,
+		DownloaderModule,
 		AnalyserModule,
 		BangumiModule,
 		EpisodeModule,
