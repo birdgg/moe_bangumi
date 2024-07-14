@@ -4,7 +4,7 @@ import { z } from "zod";
 const c = initContract();
 
 export const SettingSchema = z.object({
-	general: z.object({
+	mikan: z.object({
 		mikanToken: z.string().min(1),
 	}),
 	downloader: z.object({
