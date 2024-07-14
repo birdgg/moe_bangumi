@@ -44,7 +44,7 @@ export class SettingService implements OnModuleInit {
 		}
 		const data = fs.readFileSync(this.FILE, "utf-8");
 
-		this.logger.log("Load setting");
 		this.setting = JSON.parse(data) as Setting;
+		this.logger.log("Load setting");
 	}
 }

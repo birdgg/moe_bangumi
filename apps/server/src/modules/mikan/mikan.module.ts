@@ -1,10 +1,12 @@
 import { Module } from "@nestjs/common";
+import { AnalyserModule } from "../analyser/analyser.module";
 import { BangumiModule } from "../bangumi/bangumi.module";
 import { EpisodeModule } from "../episode/episode.module";
+import { SettingModule } from "../setting/setting.module";
 import { MikanService } from "./mikan.service";
 
 @Module({
-	imports: [BangumiModule, EpisodeModule],
+	imports: [SettingModule, AnalyserModule, BangumiModule, EpisodeModule],
 	providers: [MikanService],
 	exports: [MikanService],
 })

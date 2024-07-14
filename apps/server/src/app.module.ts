@@ -1,5 +1,4 @@
 import path from "node:path";
-import { AnalyserModule } from "@/modules/analyser/analyser.module";
 import { BangumiModule } from "@/modules/bangumi/bangumi.module";
 import { LoggerModule } from "@/modules/logger/logger.module";
 import { MikanModule } from "@/modules/mikan/mikan.module";
@@ -10,7 +9,6 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
-import { DownloaderModule } from "./modules/downloader/downloader.module";
 import { EpisodeModule } from "./modules/episode/episode.module";
 
 @Module({
@@ -29,8 +27,6 @@ import { EpisodeModule } from "./modules/episode/episode.module";
 			isGlobal: true,
 		}),
 		SettingModule,
-		DownloaderModule,
-		AnalyserModule,
 		BangumiModule,
 		EpisodeModule,
 		MikanModule,

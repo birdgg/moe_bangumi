@@ -1,13 +1,21 @@
 import { isDataCreated } from "@/utils/database";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { Mutex } from "async-mutex";
 import { PrismaService } from "nestjs-prisma";
+import { PathAnalyserService } from "../analyser/path-analyser.service";
+import { DownloaderService } from "../downloader/downloader.service";
+import { SettingService } from "../setting/setting.service";
 
 @Injectable()
 export class EpisodeService {
-	episodeMutex = new Mutex();
-	constructor(private prismaService: PrismaService) {}
+	logger = new Logger(EpisodeService.name);
+	constructor(
+		private prismaService: PrismaService,
+		private downloaderService: DownloaderService,
+		private settingService: SettingService,
+		private pathAnalyserService: PathAnalyserService,
+	) {}
 
 	async create(data: Prisma.EpisodeUncheckedCreateInput) {
 		return this.prismaService.episode.create({
@@ -27,19 +35,20 @@ export class EpisodeService {
 		query: Prisma.EpisodeBangumi_episodeCompoundUniqueInput,
 		data: Prisma.EpisodeUncheckedCreateInput,
 	) {
-		const episode = await this.episodeMutex.runExclusive(async () => {
-			return this.prismaService.episode.upsert({
-				where: {
-					bangumi_episode: query,
-				},
-				create: data,
-				update: {},
-			});
+		let episode = await this.prismaService.episode.findUnique({
+			where: {
+				bangumi_episode: query,
+			},
+			include: { bangumi: true },
 		});
-		const isCreated = isDataCreated(episode);
+		if (episode) return;
+		episode = await this.prismaService.episode.create({
+			data,
+			include: { bangumi: true },
+		});
 
-		if (isCreated) {
-			// add to qbittorrent
-		}
+		const savePath = this.pathAnalyserService.getSavePath(episode);
+		this.logger.log(`Downloading ${episode.bangumi.nameZh} to ${savePath}`);
+		this.downloaderService.addTorrent(episode.torrent, savePath);
 	}
 }

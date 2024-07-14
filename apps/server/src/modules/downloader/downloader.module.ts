@@ -1,8 +1,9 @@
-import { Global, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
+import { SettingModule } from "../setting/setting.module";
 import { DownloaderService } from "./downloader.service";
 
-@Global()
 @Module({
+	imports: [SettingModule],
 	providers: [DownloaderService],
 	exports: [DownloaderService],
 })

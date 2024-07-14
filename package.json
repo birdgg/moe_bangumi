@@ -7,6 +7,7 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write",
 		"test": "turbo test",
+		"db:studio": "turbo db:studio",
 		"prepare": "husky"
 	},
 	"devDependencies": {

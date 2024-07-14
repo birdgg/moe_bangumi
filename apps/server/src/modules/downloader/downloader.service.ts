@@ -1,6 +1,7 @@
 import { Qbittorent } from "@/libs/qbittorrent";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { SettingService } from "../setting/setting.service";
+import { TORRENT_CATEGORY } from "./downloader.constant";
 
 @Injectable()
 export class DownloaderService implements OnModuleInit {
@@ -13,12 +14,15 @@ export class DownloaderService implements OnModuleInit {
 		this.client = new Qbittorent(downloader);
 		await this.client.login();
 		if (this.client.isConnected) {
-			this.logger.log("Downloader connect successfully");
+			this.logger.log("Downloader connectted");
 		}
 	}
 
 	async addTorrent(url: string, savepath: string) {
-		this.logger.log(`Add torrent: ${url}`);
-		this.client.addTorrent({ urls: url, savepath });
+		this.client.addTorrent({
+			urls: url,
+			savepath,
+			category: TORRENT_CATEGORY,
+		});
 	}
 }

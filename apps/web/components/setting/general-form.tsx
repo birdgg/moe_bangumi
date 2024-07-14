@@ -36,6 +36,7 @@ export const GeneralForm: React.FC<{ setting: Partial<Setting> }> = ({
 				<FormInput name="downloader.host" label="Host" />
 				<FormInput name="downloader.username" label="Username" />
 				<FormInput name="downloader.password" label="Password" />
+				<FormInput name="downloader.savePath" label="Save path" />
 				<Button type="submit">Submit</Button>
 			</form>
 		</Form>

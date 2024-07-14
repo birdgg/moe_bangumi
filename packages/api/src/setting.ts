@@ -11,7 +11,7 @@ export const SettingSchema = z.object({
 		host: z.string().min(1),
 		username: z.string().min(1),
 		password: z.string().min(1),
-		savePath: z.string(),
+		savePath: z.string().startsWith("/"),
 	}),
 });
 
