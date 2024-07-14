@@ -1,11 +1,12 @@
 import { MIKAN_RSS_URL } from "@/constants/mikan.constant";
-import type { AnalyserService } from "@/modules/analyser/analyser.service";
-import type { BangumiService } from "@/modules/bangumi/bangumi.service";
-import type { SettingService } from "@/modules/setting/setting.service";
+import { AnalyserService } from "@/modules/analyser/analyser.service";
+import { BangumiService } from "@/modules/bangumi/bangumi.service";
+import { SettingService } from "@/modules/setting/setting.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import RssParser from "rss-parser";
-import type { PosterService } from "../poster/poster.service";
+import { EpisodeService } from "../episode/episode.service";
+import { PosterService } from "../poster/poster.service";
 
 @Injectable()
 export class MikanService {
@@ -15,6 +16,7 @@ export class MikanService {
 		private readonly settingService: SettingService,
 		private readonly analyserService: AnalyserService,
 		private readonly bangumiService: BangumiService,
+		private readonly episodeService: EpisodeService,
 		private posterService: PosterService,
 	) {}
 
@@ -28,13 +30,11 @@ export class MikanService {
 		},
 	)
 	fetchRss() {
-		this.logger.debug("Fetching Mikan RSS");
 		this.rssParser.parseURL(this._getRssUrl(), (_, feed) => {
 			this._processRss(feed.items);
 		});
 	}
 
-	// TODO: init onModuleInit
 	private _getRssUrl() {
 		const mikanToken = this.settingService.get().general.mikanToken;
 		if (!mikanToken) throw new Error("Mikan token not setted");
@@ -45,19 +45,28 @@ export class MikanService {
 		for (const item of items) {
 			if (!item.title) continue;
 			try {
-				const { episode, ...bangumiInput } = this.analyserService.mikanTitle(
+				const { episodeNum, ...bangumiInput } = this.analyserService.mikanTitle(
 					item.title,
 				);
-				const bangumi = await this.bangumiService.findByNameSeason({
-					originName: bangumiInput.originName,
-					season: bangumiInput.season!,
-				});
-
-				if (!bangumi) {
-					const poster = await this.posterService.getFromMikan(item.link!);
-					await this.bangumiService.create({ ...bangumiInput, poster });
-				}
-				// TODO: download epoisode
+				const bangumi = await this.bangumiService.findOrCreate(
+					{
+						originName: bangumiInput.originName,
+						season: bangumiInput.season,
+					},
+					bangumiInput,
+					item.link!,
+				);
+				await this.episodeService.findOrCreate(
+					{
+						bangumiId: bangumi.id,
+						num: episodeNum,
+					},
+					{
+						bangumiId: bangumi.id,
+						num: episodeNum,
+						torrent: item.enclosure!.url,
+					},
+				);
 			} catch (e) {
 				this.logger.error(e);
 			}

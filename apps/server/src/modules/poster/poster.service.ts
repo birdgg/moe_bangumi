@@ -18,13 +18,18 @@ export class PosterService implements OnModuleInit {
 		}
 	}
 
+	/**
+	 *
+	 * @param url Mikan bangumi detail url
+	 * @returns poster filename
+	 */
 	async getFromMikan(url: string) {
 		const response = await fetch(url);
 		const html = await response.text();
 		const $ = cheerio.load(html);
 		const posterString = $(".bangumi-poster").attr("style")!;
 		const matchedPoster = /url\('?(?<rawPoster>.*?)"?\)/i.exec(posterString);
-		if (!matchedPoster?.groups?.rawPoster) return;
+		if (!matchedPoster?.groups?.rawPoster) return "";
 		const poster = matchedPoster.groups.rawPoster.split("?")[0]!;
 
 		const posterUrl = `${MIKAN_URL}${poster}`;

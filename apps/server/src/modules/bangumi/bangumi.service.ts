@@ -1,34 +1,36 @@
 import { Injectable, Logger } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
-import { Mutex } from "async-mutex";
 import type { PrismaService } from "nestjs-prisma";
+import { PosterService } from "../poster/poster.service";
 
 @Injectable()
 export class BangumiService {
 	private logger = new Logger(BangumiService.name);
-	private bangumiMutex = new Mutex();
-	constructor(private readonly prismaService: PrismaService) {}
+	constructor(
+		private readonly prismaService: PrismaService,
+		private readonly posterService: PosterService,
+	) {}
 
 	async findAll() {
 		const bangumis = await this.prismaService.bangumi.findMany();
 		return bangumis;
 	}
 
-	async findByNameSeason(
-		select: Prisma.BangumiOriginNameSeasonCompoundUniqueInput,
+	async findOrCreate(
+		select: Prisma.BangumiName_seasonCompoundUniqueInput,
+		data: Prisma.BangumiUncheckedCreateWithoutEpisodesInput,
+		posterLink: string,
 	) {
-		return this.prismaService.bangumi.findUnique({
-			where: {
-				originName_season: select,
-			},
+		const bangumi = await this.prismaService.bangumi.findUnique({
+			where: { name_season: select },
 		});
-	}
-
-	async create(data: Prisma.BangumiUncheckedCreateInput) {
-		this.bangumiMutex.runExclusive(async () => {
-			await this.prismaService.bangumi.create({
-				data,
-			});
+		if (bangumi) return bangumi;
+		const poster = await this.posterService.getFromMikan(posterLink);
+		return this.prismaService.bangumi.create({
+			data: {
+				...data,
+				poster,
+			},
 		});
 	}
 }

@@ -11,7 +11,7 @@ const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
 			season: 1,
 			sub: "CHS",
 			dpi: "1080P",
-			episode: 1,
+			episodeNum: 1,
 		},
 	},
 	{
@@ -23,7 +23,7 @@ const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
 			season: 3,
 			sub: "CHS",
 			dpi: "1080p",
-			episode: 13,
+			episodeNum: 13,
 		},
 	},
 	{
@@ -35,7 +35,7 @@ const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
 			group: "爱恋字幕社&漫猫字幕社",
 			sub: "CHS",
 			dpi: "1080p",
-			episode: 17,
+			episodeNum: 17,
 		},
 	},
 	{
@@ -47,7 +47,7 @@ const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
 			group: "LoliHouse",
 			sub: "CHS",
 			dpi: "1080p",
-			episode: 6,
+			episodeNum: 6,
 		},
 	},
 ];
