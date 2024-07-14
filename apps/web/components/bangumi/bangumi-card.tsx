@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import type { Bangumi } from "@/libs/client";
-import Image from "next/image";
 
 const IMAGE_RATIO = 0.7;
 const IMAGE_WIDTH = 250;

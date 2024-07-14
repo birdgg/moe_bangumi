@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 export function ThemeSwitch() {
   const { setTheme, theme } = useTheme();
   const ThemeIcon =
+    // eslint-disable-next-line no-nested-ternary -- just for simple code
     theme === "system" ? DesktopIcon : theme === "light" ? SunIcon : MoonIcon;
 
   return (

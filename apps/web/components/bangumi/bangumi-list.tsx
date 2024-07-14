@@ -1,5 +1,5 @@
 import { client } from "@/libs/client";
-import { BangumiCard } from "./BangumiCard";
+import { BangumiCard } from "./bangumi-card";
 
 export async function BangumiList() {
   const { body: bangumis } = await client.bangumi.get();

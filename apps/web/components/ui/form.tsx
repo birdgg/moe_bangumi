@@ -11,7 +11,6 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form"
-
 import { cn } from "@/libs/utils"
 import { Label } from "@/components/ui/label"
 
@@ -118,7 +117,7 @@ const FormControl = React.forwardRef<
           ? `${formDescriptionId}`
           : `${formDescriptionId} ${formMessageId}`
       }
-      aria-invalid={!!error}
+      aria-invalid={Boolean(error)}
       {...props}
     />
   )

@@ -1,16 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { Form } from "../ui/form";
-import { FormInput } from "./FormItems";
-
-import { SettingFormProps } from "./types";
-import { updateSetting } from "@/actions/setting";
-import { useToast } from "../ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schemas } from "@repo/shared-api";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { updateSetting } from "@/actions/setting";
+import { Form } from "../ui/form";
+import { useToast } from "../ui/use-toast";
+import { FormInput } from "./form-items";
+import { SettingFormProps } from "./types";
 
 const generalSchema = schemas.setting.shape.general;
 

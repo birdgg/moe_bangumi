@@ -1,20 +1,20 @@
-import path from 'node:path';
-import process from 'node:process';
-import { ConsoleLogger, Injectable } from '@nestjs/common';
-import pino, { Level, LoggerOptions } from 'pino';
+import path from "node:path";
+import process from "node:process";
+import { ConsoleLogger, Injectable } from "@nestjs/common";
+import { Level, LoggerOptions, pino } from "pino";
 
-const transport: LoggerOptions['transport'] = {
+const transport: LoggerOptions["transport"] = {
   targets: [
     {
-      level: 'debug',
-      target: 'pino-pretty',
+      level: "debug",
+      target: "pino-pretty",
       options: { colorize: true, levelFirst: true },
     },
     {
-      level: 'info',
-      target: 'pino/file',
+      level: "info",
+      target: "pino/file",
       options: {
-        destination: path.resolve(process.cwd(), 'data/data.log'),
+        destination: path.resolve(process.cwd(), "data/data.log"),
         mkdir: true,
       },
     },
@@ -24,40 +24,40 @@ const transport: LoggerOptions['transport'] = {
 @Injectable()
 export class Logger extends ConsoleLogger {
   ignoreContext = [
-    'NestApplication',
-    'NestFactory',
-    'InstanceLoader',
-    'RouterExplorer',
-    'RoutesResolver',
+    "NestApplication",
+    "NestFactory",
+    "InstanceLoader",
+    "RouterExplorer",
+    "RoutesResolver",
   ];
   pinoLogger = pino({
-    level: 'debug',
+    level: "debug",
     base: undefined,
     transport,
   });
 
   verbose(message: any, ...optionalParams: any[]) {
-    this.call('trace', message, ...optionalParams);
+    this.call("trace", message, ...optionalParams);
   }
 
   debug(message: any, ...optionalParams: any[]) {
-    this.call('debug', message, ...optionalParams);
+    this.call("debug", message, ...optionalParams);
   }
 
   log(message: any, ...optionalParams: any[]) {
-    this.call('info', message, ...optionalParams);
+    this.call("info", message, ...optionalParams);
   }
 
   warn(message: any, ...optionalParams: any[]) {
-    this.call('warn', message, ...optionalParams);
+    this.call("warn", message, ...optionalParams);
   }
 
   error(message: any, ...optionalParams: any[]) {
-    this.call('error', message, ...optionalParams);
+    this.call("error", message, ...optionalParams);
   }
 
   fatal(message: any, ...optionalParams: any[]) {
-    this.call('fatal', message, ...optionalParams);
+    this.call("fatal", message, ...optionalParams);
   }
 
   private call(level: Level, message: any, ...optionalParams: any[]) {
@@ -75,7 +75,7 @@ export class Logger extends ConsoleLogger {
       return;
     }
 
-    if (typeof message === 'object') {
+    if (typeof message === "object") {
       if (message instanceof Error) {
         objArg.err = message;
       } else {
@@ -97,10 +97,10 @@ export class Logger extends ConsoleLogger {
     params: any[],
   ): params is [string] {
     return (
-      level === 'error' &&
-      typeof message === 'string' &&
+      level === "error" &&
+      typeof message === "string" &&
       params.length === 1 &&
-      typeof params[0] === 'string' &&
+      typeof params[0] === "string" &&
       /\n\s*at /.test(params[0])
     );
   }

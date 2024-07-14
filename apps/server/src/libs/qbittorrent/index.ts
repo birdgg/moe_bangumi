@@ -36,10 +36,10 @@ export class Qbittorent {
         if (this.#sid) {
           config.headers.Cookie = `SID=${this.#sid}`;
         }
-        config.url = `/api/v2/${url}`;
+        config.url = `/api/v2/${url ?? ""}`;
         return config;
       },
-      (error) => {
+      (error: Error) => {
         return Promise.reject(error);
       },
     );

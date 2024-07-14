@@ -1,17 +1,15 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   extends: [
-    "./base.js",
     require.resolve("@vercel/style-guide/eslint/browser"),
     require.resolve("@vercel/style-guide/eslint/node"),
-    require.resolve("@vercel/style-guide/eslint/react"),
+    "./base.js",
     require.resolve("@vercel/style-guide/eslint/next"),
   ],
   globals: {
     React: true,
     JSX: true,
   },
-  plugins: ["only-warn"],
   ignorePatterns: [
     // Ignore dotfiles
     ".*.js",
@@ -19,8 +17,12 @@ module.exports = {
   ],
   overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
   rules: {
-    "turbo/no-undeclared-env-vars": ["error", {
-      allowList: ["NEXT_PUBLIC_"]
-    }]
-  }
+    "import/no-default-export": "off",
+    "turbo/no-undeclared-env-vars": [
+      "error",
+      {
+        allowList: ["NEXT_PUBLIC_"],
+      },
+    ],
+  },
 };

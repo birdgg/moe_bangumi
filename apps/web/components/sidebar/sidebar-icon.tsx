@@ -1,15 +1,15 @@
 "use client";
 
+import { IconProps } from "@radix-ui/react-icons/dist/types";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/libs/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/libs/utils";
-import { IconProps } from "@radix-ui/react-icons/dist/types";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 interface Props {
   name: string;

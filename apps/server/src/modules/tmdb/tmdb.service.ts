@@ -1,8 +1,4 @@
-import { Injectable } from '@nestjs/common';
-
-const TMDB_URL = 'https://api.themoviedb.org/3';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class TMDBService {
-  searchTv(query: string) {}
-}
+export class TMDBService {}

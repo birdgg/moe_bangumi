@@ -1,15 +1,8 @@
-import { GeneralForm } from "@/components/setting/GeneralForm";
-import { SettingFormProps } from "@/components/setting/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { client } from "@/libs/client";
-import type { Setting } from "@repo/shared-api";
+import { GeneralForm } from "@/components/setting/general-form";
 
-const SETTINGS: {
-  title: string;
-  // eslint-disable-next-line no-unused-vars
-  Form: (_: SettingFormProps<any>) => JSX.Element;
-  key: keyof Setting;
-}[] = [
+const SETTINGS = [
   {
     title: "General",
     Form: GeneralForm,
@@ -17,7 +10,7 @@ const SETTINGS: {
   },
 ];
 
-export default async function () {
+export default async function SettingPage() {
   const { body, status } = await client.setting.get();
   if (status !== 200) {
     throw new Error("Failed to fetch settings");

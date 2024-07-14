@@ -6,7 +6,7 @@ export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
-  /(.*|\[.*])( -? \d+|\[\d+]|\[\d+.?[vV]\d]|\[\d+\(\d+\)\]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[Ee][Pp]?\d+)(.*)/;
+  /(?<rawBangumi>.*|\[.*])(?<rawEpisode> -? \d+|\[\d+]|\[\d+.?[vV]\d]|\[\d+\(\d+\)\]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[Ee][Pp]?\d+)(?<rawTags>.*)/;
 const DPI_RE = /1080|720|2160|4K/;
 // const SOURCE_RE = /B-Global|[Bb]aha|[Bb]ilibili|AT-X|Web/;
 const SUB_RE = /[(简繁日)字幕]|CH|BIG5|GB/;
@@ -36,7 +36,7 @@ const CHINESE_SUB_MAP = {
 };
 
 function removeBrackets(str: string): string {
-  return str.replace(/[\[\]]/g, "");
+  return str.replace(/[[\]]/g, "");
 }
 
 function preProcess(str: string) {
@@ -49,14 +49,15 @@ function preProcess(str: string) {
     .map((item) => item.trim());
 
   if (nameArray.length === 1) {
-    nameArray = nameArray[0].split(" ");
+    nameArray = nameArray[0]!.split(" ");
   }
   return nameArray.join("/");
 }
 
 function getGroup(str: string) {
-  const matchedGroup = /\[([^\]]+)\]/.exec(str);
-  const group = matchedGroup ? matchedGroup[1] : "";
+  const matchedGroup = /\[(?<group>[^\]]+)\]/.exec(str);
+  // const group = matchedGroup ? matchedGroup[1] : "";
+  const group = matchedGroup?.groups?.group ?? "";
   const rawSeasonAndName = matchedGroup
     ? str.replace(matchedGroup[0], "")
     : str;
@@ -66,7 +67,7 @@ function getGroup(str: string) {
 function getSeason(str: string) {
   let season = 1;
   const rawName = removeBrackets(str.replace(SEASON_RE, ""));
-  const matchedSeason = str.match(SEASON_RE) || [];
+  const matchedSeason = str.match(SEASON_RE) ?? [];
 
   for (const s of matchedSeason) {
     if (/Season|S/.test(s)) {
@@ -104,10 +105,10 @@ function getNames(str: string) {
     }
   }
   if (names.length === 1) {
-    const nameArray = names[0].split(" ");
+    const nameArray = names[0]!.split(" ");
     for (const idx of [0, nameArray.length - 1]) {
-      if (/^[\u4e00-\u9fa5]{2,}/.exec(nameArray[idx])) {
-        const chs = nameArray[idx];
+      if (/^[\u4e00-\u9fa5]{2,}/.exec(nameArray[idx]!)) {
+        const chs = nameArray[idx]!;
         nameArray.splice(idx, 1);
         names = [chs, nameArray.join(" ")];
         break;
@@ -134,7 +135,7 @@ function bangumiProcess(str: string) {
   const { group, rawSeasonAndName } = getGroup(str);
   const { season, rawName } = getSeason(preProcess(rawSeasonAndName));
   const { nameJp, nameZh, nameEn } = getNames(rawName);
-  const originName = nameEn ?? nameZh;
+  const originName = nameEn === "" ? nameZh : nameEn;
 
   return {
     originName,
@@ -154,7 +155,7 @@ function episodeProcess(str: string) {
 // get sub, dpi
 function tagsProcess(other: string) {
   const elements = other
-    .replace(/[\[\]()（）]/g, " ")
+    .replace(/[[\]()（）]/g, " ")
     .split(" ")
     .filter((x) => x !== "");
   let sub = "";
@@ -185,13 +186,13 @@ export function rawParser(str: string): RawParserResult {
   if (!matchedTitle) {
     throw new Error(`Not match title regex: ${title}`);
   }
-  const [rawBangumi, rawEpisode, tags] = matchedTitle
-    .slice(1, 4)
-    .map((x) => x.trim());
 
-  const bangumi = bangumiProcess(rawBangumi);
-  const episode = episodeProcess(rawEpisode);
-  const [sub, dpi] = tagsProcess(tags);
+  // @ts-expect-error https://github.com/microsoft/TypeScript/issues/30921
+  const { rawBangumi, rawEpisode, rawTags } = matchedTitle.groups;
+
+  const bangumi = bangumiProcess(rawBangumi as string);
+  const episode = episodeProcess(rawEpisode as string);
+  const [sub, dpi] = tagsProcess(rawTags as string);
   return {
     ...bangumi,
     sub,

@@ -1,12 +1,13 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import * as crypto from 'node:crypto';
-import * as cheerio from 'cheerio';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import axios from 'axios';
-import { MIKAN_URL } from '@/constants/mikan.constant';
+ 
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as crypto from "node:crypto";
+import * as cheerio from "cheerio";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import axios from "axios";
+import { MIKAN_URL } from "@/constants/mikan.constant";
 
-const SAVE_PATH = path.join(process.cwd(), '/public/posters');
+const SAVE_PATH = path.join(process.cwd(), "/public/posters");
 
 @Injectable()
 export class PosterService implements OnModuleInit {
@@ -22,15 +23,16 @@ export class PosterService implements OnModuleInit {
     const response = await fetch(url);
     const html = await response.text();
     const $ = cheerio.load(html);
-    const posterString = $('.bangumi-poster').attr('style');
-    const poster = (/url\('?(.*?)"?\)/i.exec(posterString))[1].split('?')[0];
+    const posterString = $(".bangumi-poster").attr("style")!;
+    const matchedPoster = /url\('?(?<rawPoster>.*?)"?\)/i.exec(posterString);
+    if (!matchedPoster?.groups?.rawPoster) return;
+    const poster = matchedPoster.groups.rawPoster.split("?")[0]!;
+
     const posterUrl = `${MIKAN_URL}${poster}`;
     const ext = path.extname(poster);
 
     return this.saveImage(posterUrl, ext);
   }
-
-  private async getFromTMDB() {}
 
   private async saveImage(url: string, ext: string) {
     const filename = `${this.getHash(url)}${ext}`;
@@ -40,20 +42,20 @@ export class PosterService implements OnModuleInit {
     }
 
     const response = await axios.get(url, {
-      responseType: 'stream',
+      responseType: "stream",
     });
     const file = `${SAVE_PATH}/${filename}`;
     response.data.pipe(fs.createWriteStream(file));
-    response.data.on('error', (err) => {
+    response.data.on("error", (err) => {
       this.logger.error(err);
     });
-    response.data.on('end', () => {
+    response.data.on("end", () => {
       this.logger.debug(`Downloaded poster to ${filename}`);
     });
     return filename;
   }
 
   private getHash(url: string) {
-    return crypto.createHash('md5').update(url).digest('hex').substring(0, 8);
+    return crypto.createHash("md5").update(url).digest("hex").substring(0, 8);
   }
 }
