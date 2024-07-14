@@ -28,7 +28,7 @@
 		"@nestjs/schedule": "^4.1.0",
 		"@nestjs/serve-static": "^4.0.2",
 		"@prisma/client": "5.16.2",
-		"@repo/shared-api": "workspace:*",
+		"@repo/api": "workspace:*",
 		"@repo/tmdb": "workspace:*",
 		"@ts-rest/nest": "^3.45.2",
 		"@ts-rest/open-api": "^3.45.2",

@@ -1,7 +1,7 @@
 import { Controller } from "@nestjs/common";
-import { contract } from "@repo/shared-api";
+import { contract } from "@repo/api";
 import { TsRestHandler, tsRestHandler } from "@ts-rest/nest";
-import type { SettingService } from "./setting.service";
+import { SettingService } from "./setting.service";
 
 @Controller()
 export class SettingController {

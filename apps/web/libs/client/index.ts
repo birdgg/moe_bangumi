@@ -1,5 +1,5 @@
-import { contract } from "@repo/shared-api";
 import { type ClientInferResponseBody, initClient } from "@ts-rest/core";
+import { contract } from "../../../../packages/api/dist/index.mjs";
 
 export const client = initClient(contract, {
 	baseUrl: "http://localhost:3001",

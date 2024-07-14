@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
-import { contract } from "@repo/shared-api";
+import { contract } from "@repo/api";
 import { apiReference } from "@scalar/nestjs-api-reference";
 import { generateOpenApi } from "@ts-rest/open-api";
 import { PrismaClientExceptionFilter } from "nestjs-prisma";
