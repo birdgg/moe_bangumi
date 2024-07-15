@@ -1,7 +1,13 @@
 import * as https from "node:https";
 import { isDev } from "@/utils/env";
 import axios, { type AxiosInstance } from "axios";
-import { QbittorrentParams, TorrentListOptions, TorrentOptions } from "./types";
+import {
+	QbittorrentParams,
+	Torrent,
+	TorrentContent,
+	TorrentListOptions,
+	TorrentOptions,
+} from "./types";
 
 export class Qbittorent {
 	private host: string;
@@ -79,13 +85,13 @@ export class Qbittorent {
 	}
 
 	getTorrentList(options: TorrentListOptions) {
-		return this.axios.get("torrents/info", {
+		return this.axios.get<Torrent[]>("torrents/info", {
 			params: options,
 		});
 	}
 
-	getTorrentContents(hash: string) {
-		return this.axios.get("torrents/files", {
+	getTorrentContent(hash: string) {
+		return this.axios.get<TorrentContent>("torrents/files", {
 			params: { hash },
 		});
 	}
@@ -93,6 +99,4 @@ export class Qbittorent {
 	renameFile(data: { hash: string; oldPath: string; newPath: string }) {
 		return this.axios.post("torrents/renameFile", data);
 	}
-
-	private makeRequest() {}
 }

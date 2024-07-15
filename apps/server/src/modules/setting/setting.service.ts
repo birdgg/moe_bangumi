@@ -29,6 +29,14 @@ export class SettingService implements OnModuleInit {
 		return this.setting!;
 	}
 
+	/**
+	 * make sure savePath always end with /
+	 */
+	getSavePath() {
+		const savePath = this.get().downloader.savePath;
+		return savePath.endsWith("/") ? savePath : `${savePath}/`;
+	}
+
 	update(setting: Partial<Setting>) {
 		const newSetting = { ...this.setting, ...setting };
 		this.setting = { ...this.setting, ...setting } as Setting;

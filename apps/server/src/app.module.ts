@@ -10,6 +10,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
 import { EpisodeModule } from "./modules/episode/episode.module";
+import { RenameModule } from "./modules/rename/rename.module";
 
 @Module({
 	imports: [
@@ -30,6 +31,7 @@ import { EpisodeModule } from "./modules/episode/episode.module";
 		BangumiModule,
 		EpisodeModule,
 		MikanModule,
+		RenameModule,
 	],
 })
 export class AppModule {}
