@@ -1,1 +1,3 @@
-export const TORRENT_CATEGORY = "bangumi";
+export const CATEGORY_BANGUMI = "bangumi";
+
+export const TAG_UNRENAMED = "unrenamed";

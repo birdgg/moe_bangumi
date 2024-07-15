@@ -1,5 +1,4 @@
 import path from "node:path";
-import { torrentParser } from "@/libs/parser/torrent.parser";
 import { TorrentContent } from "@/libs/qbittorrent/types";
 import { padNumber } from "@/utils/string";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
@@ -10,7 +9,8 @@ import {
 } from "../downloader/downloader.service";
 import { SettingService } from "../setting/setting.service";
 import { MEDIA_EXT, SEASON_REGEX, SUB_EXT } from "./rename.constant";
-
+import { RenameFile } from "./rename.types";
+import { torrentParser } from "./torrent.parser";
 @Injectable()
 export class RenameService implements OnModuleInit {
 	private readonly logger = new Logger(RenameService.name);
@@ -28,7 +28,7 @@ export class RenameService implements OnModuleInit {
 	@Interval(1000 * 60 * 5)
 	async rename() {
 		this.logger.log("Start rename job");
-		const torrents = await this.downloaderService.getCompletedTorrentList();
+		const torrents = await this.downloaderService.getUnrenamedTorrentList();
 		for (const torrent of torrents) {
 			this.handler(torrent);
 		}
@@ -39,17 +39,20 @@ export class RenameService implements OnModuleInit {
 		// TODO: process collection and sub files
 		if (mediaFiles.length === 0) return;
 
+		// TODO: refactor push getInfoFromPath in torrentParser
 		const { bangumi, season } = this.getInfoFromPath(torrent.save_path);
 		const { episode, ext } = torrentParser({
 			contentName: mediaFiles[0]!.name,
 			season,
 		});
-		const newPath = this.genFileName(bangumi, season, episode, ext);
-		this.downloaderService.renameTorrent(
-			torrent.hash,
-			mediaFiles[0]!.name,
-			newPath,
-		);
+		this.renameFile({
+			hash: torrent.hash,
+			oldFile: mediaFiles[0]!.name,
+			bangumi,
+			season,
+			episode,
+			ext,
+		});
 	}
 
 	/**
@@ -96,5 +99,17 @@ export class RenameService implements OnModuleInit {
 		ext: string,
 	) {
 		return `${bangumi} S${padNumber(season)}E${padNumber(episode)}${ext}`;
+	}
+
+	private renameFile({
+		hash,
+		oldFile,
+		bangumi,
+		season,
+		episode,
+		ext,
+	}: RenameFile) {
+		const newPath = this.genFileName(bangumi, season, episode, ext);
+		this.downloaderService.renameTorrent(hash, oldFile, newPath);
 	}
 }

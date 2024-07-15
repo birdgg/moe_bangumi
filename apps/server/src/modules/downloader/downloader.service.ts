@@ -1,8 +1,9 @@
 import { Qbittorent } from "@/libs/qbittorrent";
 import { Torrent, TorrentContent } from "@/libs/qbittorrent/types";
+import { getErrorMessage } from "@/utils/error";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { SettingService } from "../setting/setting.service";
-import { TORRENT_CATEGORY } from "./downloader.constant";
+import { CATEGORY_BANGUMI, TAG_UNRENAMED } from "./downloader.constant";
 
 export type TorrentWithContent = Torrent & { content: TorrentContent[] };
 
@@ -25,14 +26,16 @@ export class DownloaderService implements OnModuleInit {
 		this.client.addTorrent({
 			urls: url,
 			savepath,
-			category: TORRENT_CATEGORY,
+			category: CATEGORY_BANGUMI,
+			tags: TAG_UNRENAMED,
 		});
 	}
 
-	async getCompletedTorrentList() {
+	async getUnrenamedTorrentList() {
 		const { data: torrents } = await this.client.getTorrentList({
 			filter: "completed",
-			category: TORRENT_CATEGORY,
+			category: CATEGORY_BANGUMI,
+			tag: TAG_UNRENAMED,
 		});
 		for (const torrent of torrents) {
 			const { data: content } = await this.client.getTorrentContent(
@@ -46,9 +49,16 @@ export class DownloaderService implements OnModuleInit {
 	}
 
 	async renameTorrent(hash: string, oldPath: string, newPath: string) {
-		this.logger.log(`Rename torrent ${oldPath} to ${newPath}`);
-		this.client.renameFile({ hash, oldPath, newPath }).catch((e) => {
-			this.logger.error(e.response.data);
-		});
+		try {
+			await this.client.renameFile({ hash, oldPath, newPath });
+			await this.client.removeTorrentTag(hash, TAG_UNRENAMED);
+			this.logger.log(`Rename torrent ${oldPath} to ${newPath}`);
+		} catch (e) {
+			this.logger.error(getErrorMessage(e));
+		}
+	}
+
+	async removeTorrentTag(hash: string, tag: string) {
+		this.client.removeTorrentTag(hash, tag);
 	}
 }

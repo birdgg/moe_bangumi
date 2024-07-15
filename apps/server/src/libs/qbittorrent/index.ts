@@ -80,6 +80,7 @@ export class Qbittorent {
 	}
 
 	// torrent
+
 	addTorrent(data: TorrentOptions) {
 		return this.axios.post("torrents/add", data);
 	}
@@ -98,5 +99,14 @@ export class Qbittorent {
 
 	renameFile(data: { hash: string; oldPath: string; newPath: string }) {
 		return this.axios.post("torrents/renameFile", data);
+	}
+
+	/**
+	 *
+	 * @param hashes split by |
+	 * @param tags split by ,
+	 */
+	removeTorrentTag(hashes: string, tags: string) {
+		return this.axios.post("torrents/removeTags", { hashes, tags });
 	}
 }
