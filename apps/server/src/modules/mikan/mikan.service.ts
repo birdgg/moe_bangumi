@@ -19,7 +19,7 @@ export class MikanService implements OnModuleInit {
 	) {}
 
 	onModuleInit() {
-		this.fetchRss();
+		this.logger.log("MikanService initialized");
 	}
 
 	@Interval("MIKAN_RSS", 1000 * 60 * 2)

@@ -22,7 +22,6 @@ export class RenameService implements OnModuleInit {
 
 	onModuleInit() {
 		this.logger.log("RenameService initialized");
-		this.rename();
 	}
 
 	@Interval(1000 * 60 * 5)
