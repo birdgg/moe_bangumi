@@ -1,4 +1,5 @@
 import path from "node:path";
+import { ONE_MINUTE } from "@/constants/date.constant";
 import { TorrentContent } from "@/libs/qbittorrent/types";
 import { padNumber } from "@/utils/string";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
@@ -8,7 +9,12 @@ import {
 	TorrentWithContent,
 } from "../downloader/downloader.service";
 import { SettingService } from "../setting/setting.service";
-import { MEDIA_EXT, SEASON_REGEX, SUB_EXT } from "./rename.constant";
+import {
+	MEDIA_EXT,
+	RENAME_JOB,
+	SEASON_REGEX,
+	SUB_EXT,
+} from "./rename.constant";
 import { RenameFile } from "./rename.types";
 import { torrentParser } from "./torrent.parser";
 @Injectable()
@@ -24,7 +30,7 @@ export class RenameService implements OnModuleInit {
 		this.logger.log("RenameService initialized");
 	}
 
-	@Interval(1000 * 60 * 5)
+	@Interval(RENAME_JOB, ONE_MINUTE * 5)
 	async rename() {
 		this.logger.log("Start rename job");
 		const torrents = await this.downloaderService.getUnrenamedTorrentList();

@@ -3,6 +3,7 @@ import { BangumiModule } from "@/modules/bangumi/bangumi.module";
 import { LoggerModule } from "@/modules/logger/logger.module";
 import { MikanModule } from "@/modules/mikan/mikan.module";
 import { SettingModule } from "@/modules/setting/setting.module";
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -25,6 +26,9 @@ import { RenameModule } from "./modules/rename/rename.module";
 		EventEmitterModule.forRoot(),
 		ScheduleModule.forRoot(),
 		PrismaModule.forRoot({
+			isGlobal: true,
+		}),
+		CacheModule.register({
 			isGlobal: true,
 		}),
 		SettingModule,

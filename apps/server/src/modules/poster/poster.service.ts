@@ -1,7 +1,7 @@
-import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { MIKAN_URL } from "@/constants/mikan.constant";
+import { MIKAN_URL } from "@/modules/mikan/mikan.constant";
+import { md5Hash } from "@/utils/crypto";
 import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -60,6 +60,6 @@ export class PosterService implements OnModuleInit {
 	}
 
 	private getHash(url: string) {
-		return crypto.createHash("md5").update(url).digest("hex").substring(0, 8);
+		return md5Hash(url, { length: 8 });
 	}
 }

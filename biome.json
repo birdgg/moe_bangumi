@@ -36,6 +36,11 @@
 			}
 		}
 	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	},
 	"overrides": [
 		{
 			"include": ["logger.ts"],
