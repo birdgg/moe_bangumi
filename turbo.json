@@ -22,6 +22,10 @@
 		"db:generate": {
 			"cache": false
 		},
+		"db:push": {
+			"cache": false
+		},
+		"db:migrate": {},
 		"db:studio": {},
 		"test": {},
 		"test:watch": {

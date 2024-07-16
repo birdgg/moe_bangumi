@@ -1,2 +1,31 @@
+# compiled output
+/dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+tmp
+out
+release.zip
+
+data
+assets
+.env
+
 node_modules
 **/node_modules

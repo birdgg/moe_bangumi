@@ -16,7 +16,7 @@ generator zod {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./data/data.db"
+  url      = "file:../data/data.db"
 }
 
 model Bangumi {
