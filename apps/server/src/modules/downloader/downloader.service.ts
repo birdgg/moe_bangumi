@@ -23,12 +23,16 @@ export class DownloaderService implements OnModuleInit {
 	}
 
 	async addTorrent(url: string, savepath: string) {
-		this.client.addTorrent({
-			urls: url,
-			savepath,
-			category: CATEGORY_BANGUMI,
-			tags: TAG_UNRENAMED,
-		});
+		this.client
+			.addTorrent({
+				urls: url,
+				savepath,
+				category: CATEGORY_BANGUMI,
+				tags: TAG_UNRENAMED,
+			})
+			.catch((e) => {
+				this.logger.error(getErrorMessage(e));
+			});
 	}
 
 	async getUnrenamedTorrentList() {

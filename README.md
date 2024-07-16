@@ -1,2 +1,2 @@
 # TODO
-- [ ] remove jest peer dependency
+- [ ] move tests to single folder

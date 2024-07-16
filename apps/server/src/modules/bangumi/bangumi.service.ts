@@ -26,6 +26,7 @@ export class BangumiService {
 		});
 		if (bangumi) return bangumi;
 		const poster = await this.posterService.getFromMikan(posterLink);
+		this.logger.log(`Create new bangumi ${data.nameZh}`);
 		return this.prismaService.bangumi.create({
 			data: {
 				...data,

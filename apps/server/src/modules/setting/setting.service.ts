@@ -1,11 +1,19 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import {
+	HttpException,
+	HttpStatus,
+	Injectable,
+	Logger,
+	OnModuleInit,
+} from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Setting } from "@repo/api/setting";
+import { EVENT_SETTING_UPDATED } from "./setting.constant";
 
 const DEFAULT_SETTING: Setting = {
 	mikan: {
-		token: "IrNydFnGd1%2fZ56onK1aljQ%3d%3d",
+		token: "",
 	},
 	downloader: {
 		host: "http://localhost:8989",
@@ -20,6 +28,8 @@ export class SettingService implements OnModuleInit {
 	private readonly logger = new Logger(SettingService.name);
 	private readonly FILE = `${process.cwd()}/data/setting.json`;
 	private setting?: Setting;
+
+	constructor(private eventEmitter: EventEmitter2) {}
 
 	onModuleInit() {
 		this._load();
@@ -40,8 +50,17 @@ export class SettingService implements OnModuleInit {
 	update(setting: Partial<Setting>) {
 		const newSetting = { ...this.setting, ...setting };
 		this.setting = { ...this.setting, ...setting } as Setting;
-		fs.writeFileSync(this.FILE, JSON.stringify(newSetting));
-		return newSetting as Setting;
+		try {
+			fs.writeFileSync(this.FILE, JSON.stringify(newSetting));
+			this.eventEmitter.emit(EVENT_SETTING_UPDATED, newSetting);
+			return newSetting as Setting;
+		} catch (e) {
+			this.logger.error(e);
+			throw new HttpException(
+				"Failed to update setting",
+				HttpStatus.INTERNAL_SERVER_ERROR,
+			);
+		}
 	}
 
 	private _load() {

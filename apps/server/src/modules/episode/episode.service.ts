@@ -46,6 +46,9 @@ export class EpisodeService {
 			data,
 			include: { bangumi: true },
 		});
+		this.logger.log(
+			`Create new episode ${episode.bangumi.nameZh} ${episode.num}`,
+		);
 
 		const savePath = this.pathAnalyserService.getSavePath(episode);
 		this.logger.log(`Downloading ${episode.bangumi.nameZh} to ${savePath}`);
