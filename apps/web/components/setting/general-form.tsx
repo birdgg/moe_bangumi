@@ -1,6 +1,5 @@
 "use client";
 
-import { updateSetting } from "@/actions/setting";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Setting, SettingSchema } from "@repo/api/setting";
@@ -23,7 +22,6 @@ export const GeneralForm: React.FC<{ setting: Partial<Setting> }> = ({
 	});
 
 	const onSubmit = async (data: z.infer<typeof schema>) => {
-		await updateSetting(data);
 		toast({ description: "Setting updated" });
 	};
 

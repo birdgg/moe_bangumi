@@ -14,24 +14,28 @@ export function setup(app: INestApplication) {
 	const { httpAdapter } = app.get(HttpAdapterHost);
 	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-	const document = generateOpenApi(
-		contract,
-		{
-			info: {
-				title: "Moe Bangumi API",
-				version: "1.0.0",
+	if (process.env.NODE_ENV === "development") {
+		const document = generateOpenApi(
+			contract,
+			{
+				info: {
+					title: "Moe Bangumi API",
+					version: "1.0.0",
+				},
 			},
-		},
-		{
-			setOperationId: "concatenated-path",
-		},
-	);
-	app.use(
-		"/swagger",
-		apiReference({
-			spec: {
-				content: document,
+			{
+				setOperationId: "concatenated-path",
 			},
-		}),
-	);
+		);
+		app.use(
+			"/swagger",
+			apiReference({
+				spec: {
+					content: document,
+				},
+			}),
+		);
+
+		app.enableCors();
+	}
 }

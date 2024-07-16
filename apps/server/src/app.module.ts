@@ -21,6 +21,7 @@ import { RenameModule } from "./modules/rename/rename.module";
 		}),
 		ServeStaticModule.forRoot({
 			rootPath: path.join(__dirname, "..", "public"),
+			exclude: ["/api/(.*)"],
 		}),
 		LoggerModule,
 		EventEmitterModule.forRoot(),

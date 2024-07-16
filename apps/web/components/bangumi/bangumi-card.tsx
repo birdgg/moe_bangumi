@@ -1,5 +1,5 @@
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
-import type { Bangumi } from "@/libs/client";
+import type { Bangumi } from "@repo/api/bangumi";
 import Image from "next/image";
 
 const IMAGE_RATIO = 0.7;

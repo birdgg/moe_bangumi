@@ -1,3 +1,5 @@
+"use client";
+
 import { BangumiList } from "@/components/bangumi/bangumi-list";
 import { Suspense } from "react";
 

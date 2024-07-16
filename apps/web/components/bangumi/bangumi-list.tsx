@@ -1,13 +1,15 @@
-import { client } from "@/libs/client";
+"use client";
+
+import { useBangumis } from "@/queries/bangumi";
 import { BangumiCard } from "./bangumi-card";
 
 export async function BangumiList() {
-	const { body: bangumis } = await client.bangumi.get();
+	const data = useBangumis();
 	return (
 		<div className="grid grid-cols-7 gap-4">
-			{bangumis.map((bangumi) => (
-				<BangumiCard key={bangumi.id} {...bangumi} />
-			))}
+			{/* {bangumis.map((bangumi) => (
+        <BangumiCard key={bangumi.id} {...bangumi} />
+      ))} */}
 		</div>
 	);
 }
