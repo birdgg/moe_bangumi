@@ -1,10 +1,12 @@
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Bangumi } from "@repo/api/bangumi";
 import Image from "next/image";
 
 const IMAGE_RATIO = 0.7;
 const IMAGE_WIDTH = 250;
 const IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO;
+
 export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
 	const tags = [group, sub, dpi];
 	const posterSrc =
@@ -19,6 +21,7 @@ export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
 				alt="poster"
 				width={IMAGE_WIDTH}
 				height={IMAGE_HEIGHT}
+				priority={true}
 				className="w-full object-cover"
 			/>
 			<CardTitle className="font-bold p-2 mt-2">{nameZh}</CardTitle>
@@ -37,3 +40,23 @@ export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
 		</Card>
 	);
 }
+
+export const BangumiCardSkeleton = () => {
+	return (
+		<>
+			{new Array(5).fill(1).map((_, i) => (
+				<div
+					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+					key={i}
+					className="col-span-1 w-full rounded-lg flex flex-col space-y-4"
+				>
+					<Skeleton className="h-[345px] w-full rounded-xl" />
+					<div className="space-y-2">
+						<Skeleton className="h-4 w-[100px]" />
+						<Skeleton className="h-4 w-[150px]" />
+					</div>
+				</div>
+			))}
+		</>
+	);
+};
