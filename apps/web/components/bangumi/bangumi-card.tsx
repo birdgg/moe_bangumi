@@ -44,7 +44,7 @@ export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
 export const BangumiCardSkeleton = () => {
 	return (
 		<>
-			{new Array(5).fill(1).map((_, i) => (
+			{new Array(3).fill(1).map((_, i) => (
 				<div
 					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 					key={i}

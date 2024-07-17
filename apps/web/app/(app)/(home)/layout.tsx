@@ -3,5 +3,9 @@ export default function Layout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <div className="grid grid-cols-7 gap-4">{children}</div>;
+	return (
+		<div className="grid grid-cols-3 lg:grid-cols-5 2xl:grid-cols-7 gap-5">
+			{children}
+		</div>
+	);
 }

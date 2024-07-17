@@ -1,7 +1,7 @@
 "use client";
 
 import { useSuspenseBangumis } from "@/queries/bangumi";
-import { BangumiCard, BangumiCardSkeleton } from "./bangumi-card";
+import { BangumiCard } from "./bangumi-card";
 
 export function BangumiList() {
 	const { data } = useSuspenseBangumis();
