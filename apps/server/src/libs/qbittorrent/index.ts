@@ -9,6 +9,7 @@ import {
 	TorrentOptions,
 } from "./types";
 
+// TODO: refactor with ofetch
 export class Qbittorent {
 	private host: string;
 	private username: string;
@@ -59,10 +60,14 @@ export class Qbittorent {
 	}
 
 	async login() {
-		const response = await this.axios.post("auth/login", {
-			username: this.username,
-			password: this.password,
-		});
+		const response = await this.axios
+			.post("auth/login", {
+				username: this.username,
+				password: this.password,
+			})
+			.catch((e) => {
+				throw new Error("[qbittorrent] ECONNREFUSED");
+			});
 		if (response.data === "Failed") {
 			throw new Error("[qbittorrent] login failed");
 		}

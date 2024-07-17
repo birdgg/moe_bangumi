@@ -16,10 +16,12 @@ export class DownloaderService implements OnModuleInit {
 	async onModuleInit() {
 		const downloader = this.settingService.get().downloader;
 		this.client = new Qbittorent(downloader);
-		await this.client.login();
-		if (this.client.isConnected) {
-			this.logger.log("Downloader connectted");
+		try {
+			await this.client.login();
+		} catch (e) {
+			this.logger.error(getErrorMessage(e));
 		}
+		this.logger.log("Downloader connectted");
 	}
 
 	async addTorrent(url: string, savepath: string) {
