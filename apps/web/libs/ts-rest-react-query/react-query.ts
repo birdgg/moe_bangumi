@@ -26,7 +26,6 @@ import {
 	ZodInferOrType,
 	evaluateFetchApiArgs,
 	fetchApi,
-	getRouteQuery,
 	isAppRoute,
 } from "@ts-rest/core";
 import { useMemo } from "react";
@@ -34,6 +33,7 @@ import {
 	AppRouteFunctions,
 	AppRouteFunctionsWithQueryClient,
 	DataReturnQueries,
+	RequestArgs,
 } from "./inner-types";
 
 const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
@@ -60,15 +60,14 @@ const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
 	};
 };
 
-const getRouteQueryKey = <TAppRoute extends AppRoute>(
-	route: TAppRoute,
-	args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
-) => {
-	const baseQueryKey = route.path
-		.split("/")
-		.filter((part) => part !== "")
-		.join(".");
-	return (args ? [baseQueryKey, args] : [baseQueryKey]) as QueryKey;
+const getRouteQueryKey = <TAppRoute extends AppRoute>(route: TAppRoute) => {
+	return (args?: ClientInferRequest<AppRouteMutation, ClientArgs>) => {
+		const baseQueryKey = route.path
+			.split("/")
+			.filter((part) => part !== "")
+			.join(".");
+		return (args ? [baseQueryKey, args] : [baseQueryKey]) as QueryKey;
+	};
 };
 
 const getRouteUseQuery = <
@@ -150,7 +149,7 @@ const getRouteUseSuspenseQuery = <
 	clientArgs: TClientArgs,
 ) => {
 	return (_?: {
-		queryKey: QueryKey;
+		queryKey?: QueryKey;
 		args?: ClientInferRequest<AppRouteMutation, ClientArgs>;
 		options?: TanStackUseQueryOptions<TAppRoute["responses"]>;
 	}) => {
@@ -160,7 +159,7 @@ const getRouteUseSuspenseQuery = <
 			options: undefined,
 		};
 		const dataFn = queryFn(route, clientArgs, args);
-		const targetQueryKey = queryKey || getRouteQueryKey(route, args);
+		const targetQueryKey = queryKey || getRouteQueryKey(route)(args);
 
 		return useSuspenseQuery({
 			queryKey: targetQueryKey,
@@ -282,11 +281,11 @@ export const initQueryClient = <
 		return Object.fromEntries(
 			Object.entries(innerRouter).map(([key, subRouter]) => {
 				if (isAppRoute(subRouter)) {
+					const getQueryKey = getRouteQueryKey(subRouter);
 					return [
 						key,
 						{
-							query: getRouteQuery(subRouter, clientArgs),
-							mutation: getRouteQuery(subRouter, clientArgs),
+							getQueryKey,
 							useQuery: getRouteUseQuery(subRouter, clientArgs),
 							useQueries: getRouteUseQueries(subRouter, clientArgs),
 							useInfiniteQuery: getRouteUseInfiniteQuery(subRouter, clientArgs),
@@ -402,10 +401,12 @@ export const initQueryClient = <
 							},
 							setQueryData: (
 								queryClient: QueryClient,
-								queryKey: QueryKey,
+								args:
+									| ClientInferRequest<AppRouteMutation, ClientArgs>
+									| undefined,
 								updater: any,
 							) => {
-								return queryClient.setQueryData(queryKey, updater);
+								return queryClient.setQueryData(getQueryKey(args), updater);
 							},
 						},
 					];
@@ -465,7 +466,6 @@ export const useTsRestQueryClient = <
 					return [
 						key,
 						{
-							...routeFunctions,
 							fetchQuery: (
 								queryKey: QueryKey,
 								args: ClientInferRequest<AppRouteMutation, ClientArgs>,
@@ -529,8 +529,8 @@ export const useTsRestQueryClient = <
 								),
 							getQueriesData: (filters: QueryFilters) =>
 								routeFunctions.getQueriesData(queryClient, filters),
-							setQueryData: (queryKey: QueryKey, updater: any) =>
-								routeFunctions.setQueryData(queryClient, queryKey, updater),
+							setQueryData: (args: RequestArgs, updater: any) =>
+								routeFunctions.setQueryData(queryClient, args, updater),
 						},
 					];
 				}

@@ -8,11 +8,11 @@ import {
 } from "@tanstack/react-query";
 import {
 	AppRoute,
-	AppRouteFunction,
 	AppRouteMutation,
 	AppRouteQuery,
 	AreAllPropertiesOptional,
 	ClientArgs,
+	ClientInferRequest,
 	PartialClientInferRequest,
 } from "@ts-rest/core";
 import {
@@ -49,14 +49,8 @@ export type AppRouteFunctions<
 	useSuspenseQueries: TAppRoute extends AppRouteQuery
 		? DataReturnQueries<TAppRoute, TClientArgs>
 		: never;
-	query: TAppRoute extends AppRouteQuery
-		? AppRouteFunction<TAppRoute, TClientArgs>
-		: never;
 	useMutation: TAppRoute extends AppRouteMutation
 		? DataReturnMutation<TAppRoute, TClientArgs>
-		: never;
-	mutation: TAppRoute extends AppRouteMutation
-		? AppRouteFunction<TAppRoute, TClientArgs>
 		: never;
 	fetchQuery: TAppRoute extends AppRouteQuery
 		? DataReturnFetchQuery<TAppRoute, TClientArgs>
@@ -87,7 +81,7 @@ export type AppRouteFunctions<
 export type AppRouteFunctionsWithQueryClient<
 	TAppRoute extends AppRoute,
 	TClientArgs extends ClientArgs,
-> = AppRouteFunctions<TAppRoute, TClientArgs> & {
+> = {
 	fetchQuery: TAppRoute extends AppRouteQuery
 		? DataReturnFetchQueryHook<TAppRoute, TClientArgs>
 		: never;
@@ -309,7 +303,8 @@ export type DataReturnGetQueriesDataHook<TAppRoute extends AppRoute> = (
 
 export type DataReturnSetQueryData<TAppRoute extends AppRoute> = (
 	queryClient: QueryClient,
-	queryKey: QueryKey,
+	// queryKey: QueryKey,
+	args: RequestArgs,
 	updater:
 		| DataResponse<TAppRoute>
 		| undefined
@@ -319,7 +314,8 @@ export type DataReturnSetQueryData<TAppRoute extends AppRoute> = (
 ) => DataResponse<TAppRoute> | undefined;
 
 export type DataReturnSetQueryDataHook<TAppRoute extends AppRoute> = (
-	queryKey: QueryKey,
+	// queryKey: QueryKey,
+	args: RequestArgs | undefined,
 	updater:
 		| DataResponse<TAppRoute>
 		| undefined
@@ -327,3 +323,5 @@ export type DataReturnSetQueryDataHook<TAppRoute extends AppRoute> = (
 				oldData: DataResponse<TAppRoute> | undefined,
 		  ) => DataResponse<TAppRoute> | undefined),
 ) => DataResponse<TAppRoute> | undefined;
+
+export type RequestArgs = ClientInferRequest<AppRouteMutation, ClientArgs>;

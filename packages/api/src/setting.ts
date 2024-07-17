@@ -16,6 +16,7 @@ export const SettingSchema = z.object({
 });
 
 export type Setting = z.infer<typeof SettingSchema>;
+export type PartialSetting = Partial<Setting>
 
 export const settingContract = c.router(
 	{
