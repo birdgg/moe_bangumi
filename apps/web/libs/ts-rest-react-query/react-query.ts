@@ -1,19 +1,19 @@
 import * as tanstackReactQuery from "@tanstack/react-query";
 import {
 	FetchQueryOptions,
+	QueryClient,
 	QueryFilters,
 	QueryFunction,
 	QueryFunctionContext,
 	QueryKey,
 	UseInfiniteQueryOptions as TanStackUseInfiniteQueryOptions,
-	useInfiniteQuery,
 	UseMutationOptions as TanStackUseMutationOptions,
-	useMutation,
 	UseQueryOptions as TanStackUseQueryOptions,
+	useInfiniteQuery,
+	useMutation,
 	useQueries,
 	useQuery,
 	useQueryClient,
-	QueryClient,
 } from "@tanstack/react-query";
 import {
 	AppRoute,
@@ -21,12 +21,12 @@ import {
 	AppRouter,
 	ClientArgs,
 	ClientInferRequest,
+	Without,
+	ZodInferOrType,
 	evaluateFetchApiArgs,
 	fetchApi,
 	getRouteQuery,
 	isAppRoute,
-	Without,
-	ZodInferOrType,
 } from "@ts-rest/core";
 import { useMemo } from "react";
 import {
@@ -95,7 +95,7 @@ const getRouteUseQueries = <
 			};
 		});
 
-		return useQueries({ queries, context: args.context });
+		return useQueries({ queries });
 	};
 };
 
@@ -121,6 +121,7 @@ const getRouteUseInfiniteQuery = <
 			return innerDataFn(undefined as any);
 		};
 
+		// @ts-ignore
 		return useInfiniteQuery({ queryKey, queryFn: dataFn, ...options });
 	};
 };
@@ -137,23 +138,11 @@ const getRouteUseSuspenseQuery = <
 		args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
 		options?: TanStackUseQueryOptions<TAppRoute["responses"]>,
 	) => {
-		// check if tanstackReactQuery has the exported method useSuspenseQuery
-		// if not, fallback to useQuery passing { suspense: true } in options
-		if (typeof tanstackReactQuery.useSuspenseQuery === "function") {
-			const useSuspenseQuery =
-				tanstackReactQuery.useSuspenseQuery as typeof tanstackReactQuery.useQuery;
-			const dataFn = queryFn(route, clientArgs, args);
+		const useSuspenseQuery =
+			tanstackReactQuery.useSuspenseQuery as typeof tanstackReactQuery.useQuery;
+		const dataFn = queryFn(route, clientArgs, args);
 
-			return useSuspenseQuery({ queryKey, queryFn: dataFn, ...options });
-		} else {
-			const dataFn = queryFn(route, clientArgs, args);
-
-			const optionsWithSuspense = options
-				? { ...options, suspense: true }
-				: { suspense: true };
-
-			return useQuery({ queryKey, queryFn: dataFn, ...optionsWithSuspense });
-		}
+		return useSuspenseQuery({ queryKey, queryFn: dataFn, ...options });
 	};
 };
 
@@ -175,15 +164,9 @@ const getRouteUseSuspenseQueries = <
 			};
 		});
 
-		// check if tanstackReactQuery has the exported method useSuspenseQuery
-		// if not, fallback to useQuery passing { suspense: true } in options
-		if (typeof tanstackReactQuery.useSuspenseQueries === "function") {
-			const useSuspenseQueries =
-				tanstackReactQuery.useSuspenseQueries as typeof tanstackReactQuery.useQueries;
-			return useSuspenseQueries({ queries, context: args.context });
-		} else {
-			return useQueries({ queries, context: args.context });
-		}
+		const useSuspenseQueries =
+			tanstackReactQuery.useSuspenseQueries as typeof tanstackReactQuery.useQueries;
+		return useSuspenseQueries({ queries });
 	};
 };
 
@@ -210,24 +193,14 @@ const getRouteUseSuspenseInfiniteQuery = <
 		};
 		// check if tanstackReactQuery has the exported method useSuspenseQuery
 		// if not, fallback to useQuery passing { suspense: true } in options
-		if (typeof tanstackReactQuery.useSuspenseInfiniteQuery === "function") {
-			const useSuspenseInfiniteQuery =
-				tanstackReactQuery.useSuspenseInfiniteQuery as typeof tanstackReactQuery.useInfiniteQuery;
-			return useSuspenseInfiniteQuery({
-				queryKey,
-				queryFn: dataFn,
-				...options,
-			});
-		} else {
-			const optionsWithSuspense = options
-				? { ...options, suspense: true }
-				: { suspense: true };
-			return useInfiniteQuery({
-				queryKey,
-				queryFn: dataFn,
-				...optionsWithSuspense,
-			});
-		}
+		const useSuspenseInfiniteQuery =
+			tanstackReactQuery.useSuspenseInfiniteQuery as typeof tanstackReactQuery.useInfiniteQuery;
+		return useSuspenseInfiniteQuery({
+			queryKey,
+			// @ts-ignore
+			queryFn: dataFn,
+			...options,
+		});
 	};
 };
 
@@ -323,6 +296,7 @@ export const initQueryClient = <
 							) => {
 								return queryClient.fetchInfiniteQuery({
 									queryKey,
+									// @ts-expect-error
 									queryFn: async (context) => {
 										const resultingQueryArgs = argsMapper(context);
 
@@ -361,6 +335,7 @@ export const initQueryClient = <
 							) => {
 								return queryClient.prefetchInfiniteQuery({
 									queryKey,
+									// @ts-expect-error
 									queryFn: async (context) => {
 										const resultingQueryArgs = argsMapper(context);
 
@@ -375,12 +350,8 @@ export const initQueryClient = <
 									...options,
 								});
 							},
-							getQueryData: (
-								queryClient: QueryClient,
-								queryKey: QueryKey,
-								filters?: QueryFilters,
-							) => {
-								return queryClient.getQueryData(queryKey, filters);
+							getQueryData: (queryClient: QueryClient, queryKey: QueryKey) => {
+								return queryClient.getQueryData(queryKey);
 							},
 							ensureQueryData: (
 								queryClient: QueryClient,
@@ -411,9 +382,8 @@ export const initQueryClient = <
 							},
 						},
 					];
-				} else {
-					return [key, recursiveInit(subRouter)];
 				}
+				return [key, recursiveInit(subRouter)];
 			}),
 		);
 	};
@@ -536,12 +506,12 @@ export const useTsRestQueryClient = <
 								routeFunctions.setQueryData(queryClient, queryKey, updater),
 						},
 					];
-				} else {
-					return [key, recursiveInit(subRouter, innerClient[key] as any)];
 				}
+				return [key, recursiveInit(subRouter, innerClient[key] as any)];
 			}),
 		);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	return useMemo(() => recursiveInit(router, client), [client]);
 };
