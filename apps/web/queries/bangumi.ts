@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "./client";
 
 const bangumisKey = ["bangumis"];

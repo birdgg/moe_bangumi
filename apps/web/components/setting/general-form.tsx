@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useSettingMutation } from "@/queries/setting";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Setting, SettingSchema } from "@repo/api/setting";
 import { useForm } from "react-hook-form";
@@ -16,13 +17,21 @@ export const GeneralForm: React.FC<{ setting: Partial<Setting> }> = ({
 }) => {
 	const { mikan, downloader } = setting;
 	const { toast } = useToast();
+	const { mutate } = useSettingMutation();
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
 		defaultValues: { mikan, downloader },
 	});
 
 	const onSubmit = async (data: z.infer<typeof schema>) => {
-		toast({ description: "Setting updated" });
+		mutate(
+			{ body: data },
+			{
+				onSuccess() {
+					toast({ description: "Setting updated" });
+				},
+			},
+		);
 	};
 
 	return (
