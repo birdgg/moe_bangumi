@@ -14,6 +14,7 @@ import {
 	useQueries,
 	useQuery,
 	useQueryClient,
+	useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
 	AppRoute,
@@ -57,6 +58,17 @@ const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
 
 		return result;
 	};
+};
+
+const getRouteQueryKey = <TAppRoute extends AppRoute>(
+	route: TAppRoute,
+	args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
+) => {
+	const baseQueryKey = route.path
+		.split("/")
+		.filter((part) => part !== "")
+		.join(".");
+	return (args ? [baseQueryKey, args] : [baseQueryKey]) as QueryKey;
 };
 
 const getRouteUseQuery = <
@@ -137,21 +149,21 @@ const getRouteUseSuspenseQuery = <
 	route: TAppRoute,
 	clientArgs: TClientArgs,
 ) => {
-	return ({
-		queryKey,
-		args,
-		options,
-	}: {
+	return (_?: {
 		queryKey: QueryKey;
 		args?: ClientInferRequest<AppRouteMutation, ClientArgs>;
 		options?: TanStackUseQueryOptions<TAppRoute["responses"]>;
 	}) => {
-		const useSuspenseQuery =
-			tanstackReactQuery.useSuspenseQuery as typeof tanstackReactQuery.useQuery;
+		const { queryKey, args, options } = _ || {
+			queryKey: undefined,
+			args: undefined,
+			options: undefined,
+		};
 		const dataFn = queryFn(route, clientArgs, args);
+		const targetQueryKey = queryKey || getRouteQueryKey(route, args);
 
 		return useSuspenseQuery({
-			queryKey,
+			queryKey: targetQueryKey,
 			queryFn: dataFn,
 			select(d) {
 				// body is guaranteed to be defined
