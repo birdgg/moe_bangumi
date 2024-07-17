@@ -113,17 +113,10 @@ export type DataReturnQuery<
 	TAppRoute extends AppRoute,
 	TClientArgs extends ClientArgs,
 	TArgs = PartialClientInferRequest<TAppRoute, TClientArgs>,
-> = AreAllPropertiesOptional<TArgs> extends true
-	? <TData = DataResponseBody<TAppRoute>>(_: {
-			queryKey: QueryKey;
-			args?: TArgs;
-			options?: UseQueryOptions<TAppRoute, TData>;
-		}) => UseQueryResult<TAppRoute, TData>
-	: <TData = DataResponseBody<TAppRoute>>(_: {
-			queryKey: QueryKey;
-			args: TArgs;
-			options?: UseQueryOptions<TAppRoute, TData>;
-		}) => UseQueryResult<TAppRoute, TData>;
+> = <TData = DataResponseBody<TAppRoute>>(_?: {
+	args?: TArgs;
+	options?: UseQueryOptions<TAppRoute, TData>;
+}) => UseQueryResult<TAppRoute, TData>;
 
 export type DataReturnSuspenseQuery<
 	TAppRoute extends AppRoute,

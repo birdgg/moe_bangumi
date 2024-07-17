@@ -78,16 +78,16 @@ const getRouteUseQuery = <
 	route: TAppRoute,
 	clientArgs: TClientArgs,
 ) => {
-	return ({
-		queryKey,
-		args,
-		options,
-	}: {
-		queryKey: QueryKey;
+	return (_?: {
 		args?: ClientInferRequest<AppRouteMutation, ClientArgs>;
 		options?: TanStackUseQueryOptions<TAppRoute["responses"]>;
 	}) => {
+		const { args, options } = _ || {
+			args: undefined,
+			options: undefined,
+		};
 		const dataFn = queryFn(route, clientArgs, args);
+		const queryKey = getRouteQueryKey(route)(args);
 
 		return useQuery({ queryKey, queryFn: dataFn, ...options });
 	};

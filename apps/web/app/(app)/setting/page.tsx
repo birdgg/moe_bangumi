@@ -14,7 +14,7 @@ import { useCallback } from "react";
 // ];
 
 export default function SettingPage() {
-	const { data } = client.setting.get.useSuspenseQuery();
+	const { data } = client.setting.get.useQuery();
 	const { toast } = useToast();
 	const { mutate } = client.setting.post.useMutation({
 		onSuccess() {
@@ -28,6 +28,8 @@ export default function SettingPage() {
 		},
 		[mutate],
 	);
+
+	if (!data) return null;
 	return (
 		<GeneralForm setting={data} update={update} />
 		// <Tabs defaultValue={SETTINGS[0]!.title}>
