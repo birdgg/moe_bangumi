@@ -3,7 +3,7 @@
 import { BangumiList } from "@/components/bangumi/bangumi-list";
 import { Suspense } from "react";
 
-export default async function HomePage() {
+export default function HomePage() {
 	return (
 		<Suspense fallback={<div>loading</div>}>
 			<BangumiList />

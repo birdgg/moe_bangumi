@@ -64,6 +64,16 @@
 					}
 				}
 			}
+		},
+		{
+			"include": ["apps/web/libs/ts-rest-react-query/*.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
 		}
 	]
 }

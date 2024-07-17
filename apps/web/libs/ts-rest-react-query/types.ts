@@ -5,6 +5,7 @@ import {
 	UseMutationResult as TanStackUseMutationResult,
 	UseQueryOptions as TanStackUseQueryOptions,
 	UseQueryResult as TanStackUseQueryResult,
+	UseSuspenseQueryResult as TanStackUseSuspenseQueryResult,
 } from "@tanstack/react-query";
 import {
 	AppRoute,
@@ -23,6 +24,12 @@ export type DataResponse<TAppRoute extends AppRoute> = ClientInferResponses<
 	SuccessfulHttpStatusCode,
 	"force"
 >;
+
+export type DataResponseBody<TAppRoute extends AppRoute> = ClientInferResponses<
+	TAppRoute,
+	SuccessfulHttpStatusCode,
+	"force"
+>["body"];
 
 // Error response if it's not a 2XX
 export type ErrorResponse<TAppRoute extends AppRoute> = ClientInferResponses<
@@ -47,6 +54,11 @@ export type UseQueryResult<
 	TAppRoute extends AppRoute,
 	TData = DataResponse<TAppRoute>,
 > = TanStackUseQueryResult<TData, ErrorResponse<TAppRoute>>;
+
+export type UseSuspenseQueryResult<
+	TAppRoute extends AppRoute,
+	TData = DataResponse<TAppRoute>,
+> = TanStackUseSuspenseQueryResult<TData, ErrorResponse<TAppRoute>>;
 
 export type UseInfiniteQueryOptions<
 	TAppRoute extends AppRoute,

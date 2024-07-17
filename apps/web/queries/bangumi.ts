@@ -1,14 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "./client";
 
-export const useBangumis = () => {
-	const { data } = useSuspenseQuery({
-		queryKey: ["bangumis"],
-		queryFn: async () => {
-			const { body } = await client.bangumi.get();
-			return body;
-		},
-	});
+const bangumisKey = ["bangumis"];
 
-	return data;
+export const useSuspenseBangumis = () => {
+	return client.bangumi.get.useSuspenseQuery({
+		queryKey: bangumisKey,
+	});
 };

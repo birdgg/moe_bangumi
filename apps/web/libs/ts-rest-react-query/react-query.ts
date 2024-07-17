@@ -66,11 +66,15 @@ const getRouteUseQuery = <
 	route: TAppRoute,
 	clientArgs: TClientArgs,
 ) => {
-	return (
-		queryKey: QueryKey,
-		args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
-		options?: TanStackUseQueryOptions<TAppRoute["responses"]>,
-	) => {
+	return ({
+		queryKey,
+		args,
+		options,
+	}: {
+		queryKey: QueryKey;
+		args?: ClientInferRequest<AppRouteMutation, ClientArgs>;
+		options?: TanStackUseQueryOptions<TAppRoute["responses"]>;
+	}) => {
 		const dataFn = queryFn(route, clientArgs, args);
 
 		return useQuery({ queryKey, queryFn: dataFn, ...options });
@@ -133,16 +137,29 @@ const getRouteUseSuspenseQuery = <
 	route: TAppRoute,
 	clientArgs: TClientArgs,
 ) => {
-	return (
-		queryKey: QueryKey,
-		args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
-		options?: TanStackUseQueryOptions<TAppRoute["responses"]>,
-	) => {
+	return ({
+		queryKey,
+		args,
+		options,
+	}: {
+		queryKey: QueryKey;
+		args?: ClientInferRequest<AppRouteMutation, ClientArgs>;
+		options?: TanStackUseQueryOptions<TAppRoute["responses"]>;
+	}) => {
 		const useSuspenseQuery =
 			tanstackReactQuery.useSuspenseQuery as typeof tanstackReactQuery.useQuery;
 		const dataFn = queryFn(route, clientArgs, args);
 
-		return useSuspenseQuery({ queryKey, queryFn: dataFn, ...options });
+		return useSuspenseQuery({
+			queryKey,
+			queryFn: dataFn,
+			select(d) {
+				// body is guaranteed to be defined
+				const data = d as { body: unknown };
+				return data.body;
+			},
+			...options,
+		});
 	};
 };
 
@@ -191,8 +208,6 @@ const getRouteUseSuspenseInfiniteQuery = <
 
 			return innerDataFn(undefined as any);
 		};
-		// check if tanstackReactQuery has the exported method useSuspenseQuery
-		// if not, fallback to useQuery passing { suspense: true } in options
 		const useSuspenseInfiniteQuery =
 			tanstackReactQuery.useSuspenseInfiniteQuery as typeof tanstackReactQuery.useInfiniteQuery;
 		return useSuspenseInfiniteQuery({

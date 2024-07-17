@@ -17,12 +17,14 @@ import {
 } from "@ts-rest/core";
 import {
 	DataResponse,
+	DataResponseBody,
 	UseInfiniteQueryOptions,
 	UseInfiniteQueryResult,
 	UseMutationOptions,
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseQueryResult,
 } from "./types";
 
 export type AppRouteFunctions<
@@ -32,10 +34,19 @@ export type AppRouteFunctions<
 	useQuery: TAppRoute extends AppRouteQuery
 		? DataReturnQuery<TAppRoute, TClientArgs>
 		: never;
+	useSuspenseQuery: TAppRoute extends AppRouteQuery
+		? DataReturnSuspenseQuery<TAppRoute, TClientArgs>
+		: never;
 	useInfiniteQuery: TAppRoute extends AppRouteQuery
 		? DataReturnInfiniteQuery<TAppRoute, TClientArgs>
 		: never;
+	useSuspenseInfiniteQuery: TAppRoute extends AppRouteQuery
+		? DataReturnInfiniteQuery<TAppRoute, TClientArgs>
+		: never;
 	useQueries: TAppRoute extends AppRouteQuery
+		? DataReturnQueries<TAppRoute, TClientArgs>
+		: never;
+	useSuspenseQueries: TAppRoute extends AppRouteQuery
 		? DataReturnQueries<TAppRoute, TClientArgs>
 		: never;
 	query: TAppRoute extends AppRouteQuery
@@ -109,16 +120,32 @@ export type DataReturnQuery<
 	TClientArgs extends ClientArgs,
 	TArgs = PartialClientInferRequest<TAppRoute, TClientArgs>,
 > = AreAllPropertiesOptional<TArgs> extends true
-	? <TData = DataResponse<TAppRoute>>(
-			queryKey: QueryKey,
-			args?: TArgs,
-			options?: UseQueryOptions<TAppRoute, TData>,
-		) => UseQueryResult<TAppRoute, TData>
-	: <TData = DataResponse<TAppRoute>>(
-			queryKey: QueryKey,
-			args: TArgs,
-			options?: UseQueryOptions<TAppRoute, TData>,
-		) => UseQueryResult<TAppRoute, TData>;
+	? <TData = DataResponse<TAppRoute>>(_: {
+			queryKey: QueryKey;
+			args?: TArgs;
+			options?: UseQueryOptions<TAppRoute, TData>;
+		}) => UseQueryResult<TAppRoute, TData>
+	: <TData = DataResponse<TAppRoute>>(_: {
+			queryKey: QueryKey;
+			args: TArgs;
+			options?: UseQueryOptions<TAppRoute, TData>;
+		}) => UseQueryResult<TAppRoute, TData>;
+
+export type DataReturnSuspenseQuery<
+	TAppRoute extends AppRoute,
+	TClientArgs extends ClientArgs,
+	TArgs = PartialClientInferRequest<TAppRoute, TClientArgs>,
+> = AreAllPropertiesOptional<TArgs> extends true
+	? <TData = DataResponseBody<TAppRoute>>(_: {
+			queryKey: QueryKey;
+			args?: TArgs;
+			options?: UseQueryOptions<TAppRoute, TData>;
+		}) => UseSuspenseQueryResult<TAppRoute, TData>
+	: <TData = DataResponseBody<TAppRoute>>(_: {
+			queryKey: QueryKey;
+			args: TArgs;
+			options?: UseQueryOptions<TAppRoute, TData>;
+		}) => UseSuspenseQueryResult<TAppRoute, TData>;
 
 export type DataReturnQueriesOptions<
 	TAppRoute extends AppRoute,
