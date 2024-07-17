@@ -114,12 +114,12 @@ export type DataReturnQuery<
 	TClientArgs extends ClientArgs,
 	TArgs = PartialClientInferRequest<TAppRoute, TClientArgs>,
 > = AreAllPropertiesOptional<TArgs> extends true
-	? <TData = DataResponse<TAppRoute>>(_: {
+	? <TData = DataResponseBody<TAppRoute>>(_: {
 			queryKey: QueryKey;
 			args?: TArgs;
 			options?: UseQueryOptions<TAppRoute, TData>;
 		}) => UseQueryResult<TAppRoute, TData>
-	: <TData = DataResponse<TAppRoute>>(_: {
+	: <TData = DataResponseBody<TAppRoute>>(_: {
 			queryKey: QueryKey;
 			args: TArgs;
 			options?: UseQueryOptions<TAppRoute, TData>;
@@ -303,25 +303,23 @@ export type DataReturnGetQueriesDataHook<TAppRoute extends AppRoute> = (
 
 export type DataReturnSetQueryData<TAppRoute extends AppRoute> = (
 	queryClient: QueryClient,
-	// queryKey: QueryKey,
 	args: RequestArgs,
 	updater:
-		| DataResponse<TAppRoute>
+		| DataResponseBody<TAppRoute>
 		| undefined
 		| ((
-				oldData: DataResponse<TAppRoute> | undefined,
-		  ) => DataResponse<TAppRoute> | undefined),
-) => DataResponse<TAppRoute> | undefined;
+				oldData: DataResponseBody<TAppRoute> | undefined,
+		  ) => DataResponseBody<TAppRoute> | undefined),
+) => DataResponseBody<TAppRoute> | undefined;
 
 export type DataReturnSetQueryDataHook<TAppRoute extends AppRoute> = (
-	// queryKey: QueryKey,
 	args: RequestArgs | undefined,
 	updater:
-		| DataResponse<TAppRoute>
+		| DataResponseBody<TAppRoute>
 		| undefined
 		| ((
-				oldData: DataResponse<TAppRoute> | undefined,
-		  ) => DataResponse<TAppRoute> | undefined),
-) => DataResponse<TAppRoute> | undefined;
+				oldData: DataResponseBody<TAppRoute> | undefined,
+		  ) => DataResponseBody<TAppRoute> | undefined),
+) => DataResponseBody<TAppRoute> | undefined;
 
 export type RequestArgs = ClientInferRequest<AppRouteMutation, ClientArgs>;

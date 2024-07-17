@@ -56,7 +56,8 @@ const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
 			throw result;
 		}
 
-		return result;
+		// bad bad code, but works
+		return result.body as TAppRoute["responses"];
 	};
 };
 
@@ -164,11 +165,6 @@ const getRouteUseSuspenseQuery = <
 		return useSuspenseQuery({
 			queryKey: targetQueryKey,
 			queryFn: dataFn,
-			select(d) {
-				// body is guaranteed to be defined
-				const data = d as { body: unknown };
-				return data.body;
-			},
 			...options,
 		});
 	};

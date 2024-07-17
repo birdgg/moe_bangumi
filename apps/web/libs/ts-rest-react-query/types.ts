@@ -83,7 +83,7 @@ export type UseMutationOptions<
 	TAppRoute extends AppRoute,
 	TClientArgsOrClient extends ClientArgs | InitClientReturn<any, any>,
 > = TanStackUseMutationOptions<
-	DataResponse<TAppRoute>,
+	DataResponseBody<TAppRoute>,
 	ErrorResponse<TAppRoute>,
 	TClientArgsOrClient extends ClientArgs
 		? PartialClientInferRequest<TAppRoute, TClientArgsOrClient>
@@ -100,7 +100,7 @@ export type UseMutationResult<
 	TAppRoute extends AppRoute,
 	TClientArgsOrClient extends ClientArgs | InitClientReturn<any, any>,
 > = TanStackUseMutationResult<
-	DataResponse<TAppRoute>,
+	DataResponseBody<TAppRoute>,
 	ErrorResponse<TAppRoute>,
 	TClientArgsOrClient extends ClientArgs
 		? PartialClientInferRequest<TAppRoute, TClientArgsOrClient>
