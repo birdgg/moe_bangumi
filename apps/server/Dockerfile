@@ -36,8 +36,10 @@ FROM base AS runner
 WORKDIR /app
 RUN addgroup --system --gid 1001 nestjs
 RUN adduser --system --uid 1001 nestjs
+# RUN chown -R nestjs:nestjs /app
+# RUN chmod 755 /app
 USER nestjs
-COPY --from=installer /app .
+COPY --from=installer --chown=nestjs:nestjs /app .
 WORKDIR /app/apps/server
-
+ENV DATABASE_URL /app/app.db
 CMD ["pnpm", "start:migrate:prod"]

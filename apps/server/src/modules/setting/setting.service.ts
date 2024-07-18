@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
-import * as path from "node:path";
+import { dirname, join } from "node:path";
+import { DATA_DIR } from "@/constants/path.constant";
 import {
 	HttpException,
 	HttpStatus,
@@ -26,7 +27,7 @@ const DEFAULT_SETTING: Setting = {
 @Injectable()
 export class SettingService implements OnModuleInit {
 	private readonly logger = new Logger(SettingService.name);
-	private readonly FILE = `${process.cwd()}/data/setting.json`;
+	private readonly FILE = join(DATA_DIR, "setting.json");
 	private setting?: Setting;
 
 	constructor(private eventEmitter: EventEmitter2) {}
@@ -64,9 +65,7 @@ export class SettingService implements OnModuleInit {
 	}
 
 	private _load() {
-		const filePath = path.dirname(this.FILE);
 		if (!fs.existsSync(this.FILE)) {
-			fs.mkdirSync(filePath, { recursive: true });
 			fs.writeFileSync(this.FILE, JSON.stringify(DEFAULT_SETTING));
 		}
 		const data = fs.readFileSync(this.FILE, "utf-8");

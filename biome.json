@@ -66,11 +66,21 @@
 			}
 		},
 		{
-			"include": ["apps/web/libs/ts-rest-react-query/*.ts"],
+			"include": ["ts-rest-react-query/*.ts"],
 			"linter": {
 				"rules": {
 					"suspicious": {
 						"noExplicitAny": "off"
+					}
+				}
+			}
+		},
+		{
+			"include": ["scripts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useNodejsImportProtocol": "off"
 					}
 				}
 			}

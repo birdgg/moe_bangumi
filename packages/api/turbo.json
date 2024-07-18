@@ -1,0 +1,13 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "dependsOn": ["server#db:generate"],
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["server#db:generate"]
+    }
+  } 
+}

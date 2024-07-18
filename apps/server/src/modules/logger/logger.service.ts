@@ -1,6 +1,6 @@
 import fs from "node:fs";
+import { LOG_FILE } from "@/constants/path.constant";
 import { Injectable } from "@nestjs/common";
-import { LOG_FILE } from "./logger.constant";
 
 @Injectable()
 export class LoggerService {

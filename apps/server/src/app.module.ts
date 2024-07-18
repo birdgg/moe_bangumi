@@ -10,6 +10,7 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
+import { CLIENT_DIR, POSTER_DIR } from "./constants/path.constant";
 import { EpisodeModule } from "./modules/episode/episode.module";
 import { RenameModule } from "./modules/rename/rename.module";
 
@@ -17,11 +18,15 @@ import { RenameModule } from "./modules/rename/rename.module";
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			envFilePath: [".env", ".env.local"],
 		}),
 		ServeStaticModule.forRoot({
-			rootPath: path.join(__dirname, "..", "public"),
-			exclude: ["/api/(.*)", "/swagger"],
+			rootPath: CLIENT_DIR,
+			serveRoot: "/",
+			exclude: ["/api/(.*)", "/posters/(.*)"],
+		}),
+		ServeStaticModule.forRoot({
+			rootPath: POSTER_DIR,
+			serveRoot: "/posters",
 		}),
 		LoggerModule,
 		EventEmitterModule.forRoot(),

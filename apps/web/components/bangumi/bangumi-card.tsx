@@ -1,5 +1,6 @@
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { POSTER_PREFIX_URL } from "@/constants/url.constant";
 import type { Bangumi } from "@repo/api/bangumi";
 import Image from "next/image";
 
@@ -10,9 +11,7 @@ const IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO;
 export function BangumiCard({ nameZh, poster, group, sub, dpi }: Bangumi) {
 	const tags = [group, sub, dpi];
 	const posterSrc =
-		poster === "default"
-			? "placeholder.svg"
-			: `${process.env.NEXT_PUBLIC_SERVER_URL}/posters/${poster}`;
+		poster === "default" ? "placeholder.svg" : `${POSTER_PREFIX_URL}/${poster}`;
 
 	return (
 		<Card className="col-span-1 w-full overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">

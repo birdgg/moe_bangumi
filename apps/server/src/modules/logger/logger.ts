@@ -1,6 +1,6 @@
+import { LOG_FILE } from "@/constants/path.constant";
 import { ConsoleLogger, Injectable } from "@nestjs/common";
 import { Level, LoggerOptions, pino } from "pino";
-import { LOG_FILE } from "./logger.constant";
 
 const transport: LoggerOptions["transport"] = {
 	targets: [

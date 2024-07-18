@@ -1,4 +1,5 @@
 import { ONE_DAY, ONE_HOUR, ONE_MINUTE } from "@/constants/date.constant";
+import { isDev } from "@/constants/env.constant";
 import { AnalyserService } from "@/modules/analyser/analyser.service";
 import { BangumiService } from "@/modules/bangumi/bangumi.service";
 import { JOB_MIKAN_RSS, MIKAN_RSS_URL } from "@/modules/mikan/mikan.constant";
@@ -26,19 +27,14 @@ export class MikanService implements OnModuleInit {
 	) {}
 
 	onModuleInit() {
-		if (this.getRssUrl() !== "") {
-			this.startMikanRssJob();
-		}
+		this.startMikanRssJob();
 	}
 
 	@OnEvent(EVENT_SETTING_UPDATED)
 	handler() {
 		this.logger.debug("Setting updated, restart mikan rss job");
-		try {
-			this.schedulerRegistry.deleteInterval(JOB_MIKAN_RSS);
-		} finally {
-			this.startMikanRssJob();
-		}
+		this.stopMikanRssJob();
+		this.startMikanRssJob();
 	}
 
 	private startMikanRssJob() {
@@ -50,7 +46,18 @@ export class MikanService implements OnModuleInit {
 		});
 	}
 
+	private stopMikanRssJob() {
+		try {
+			this.schedulerRegistry.deleteInterval(JOB_MIKAN_RSS);
+		} catch {}
+	}
+
 	private fetchRss() {
+		const rssUrl = this.getRssUrl();
+		if (!rssUrl) {
+			this.stopMikanRssJob();
+			return;
+		}
 		this.rssParser.parseURL(this.getRssUrl(), (_, feed) => {
 			if (feed.items.length === 0) {
 				this.logger.error("No items in mikan rss feed, check your token");
@@ -62,7 +69,10 @@ export class MikanService implements OnModuleInit {
 
 	private getRssUrl() {
 		const mikanToken = this.settingService.get().mikan.token;
-		if (!mikanToken) throw new Error("Mikan token not setted");
+		if (!mikanToken) {
+			this.logger.error("Mikan token not setted");
+			return "";
+		}
 		return `${MIKAN_RSS_URL}${mikanToken}`;
 	}
 

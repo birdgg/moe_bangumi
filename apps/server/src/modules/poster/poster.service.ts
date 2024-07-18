@@ -1,22 +1,15 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { POSTER_DIR } from "@/constants/path.constant";
 import { MIKAN_URL } from "@/modules/mikan/mikan.constant";
 import { md5Hash } from "@/utils/crypto";
-import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-const SAVE_PATH = path.join(process.cwd(), "/public/posters");
-
 @Injectable()
-export class PosterService implements OnModuleInit {
+export class PosterService {
 	private logger = new Logger(PosterService.name);
-
-	onModuleInit() {
-		if (!fs.existsSync(SAVE_PATH)) {
-			fs.mkdirSync(SAVE_PATH, { recursive: true });
-		}
-	}
 
 	/**
 	 *
@@ -30,8 +23,8 @@ export class PosterService implements OnModuleInit {
 		const posterString = $(".bangumi-poster").attr("style")!;
 		const matchedPoster = /url\('?(?<rawPoster>.*?)"?\)/i.exec(posterString);
 		if (!matchedPoster?.groups?.rawPoster) return "";
-		const poster = matchedPoster.groups.rawPoster.split("?")[0]!;
 
+		const poster = matchedPoster.groups.rawPoster.split("?")[0]!;
 		const posterUrl = `${MIKAN_URL}${poster}`;
 		const ext = path.extname(poster);
 
@@ -40,15 +33,13 @@ export class PosterService implements OnModuleInit {
 
 	private async saveImage(url: string, ext: string) {
 		const filename = `${this.getHash(url)}${ext}`;
+		const file = path.join(POSTER_DIR, filename);
 
-		if (fs.existsSync(path.join(SAVE_PATH, filename))) {
-			return filename;
-		}
+		if (fs.existsSync(file)) return filename;
 
 		const response = await axios.get(url, {
 			responseType: "stream",
 		});
-		const file = `${SAVE_PATH}/${filename}`;
 		response.data.pipe(fs.createWriteStream(file));
 		response.data.on("error", (err) => {
 			this.logger.error(err);

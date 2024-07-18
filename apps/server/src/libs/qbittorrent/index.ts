@@ -1,5 +1,5 @@
 import * as https from "node:https";
-import { isDev } from "@/utils/env";
+import { isDev } from "@/constants/env.constant";
 import axios, { type AxiosInstance } from "axios";
 import {
 	QbittorrentParams,
@@ -31,7 +31,7 @@ export class Qbittorent {
 			baseURL: this.host,
 		});
 		axiosInstance.defaults.headers.post["Content-Type"] = "multipart/form-data";
-		if (isDev()) {
+		if (isDev) {
 			const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 			axiosInstance.defaults.httpsAgent = httpsAgent;
 		}

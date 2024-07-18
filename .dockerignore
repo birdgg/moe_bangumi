@@ -26,6 +26,7 @@ release.zip
 data
 assets
 .env
+scripts
 
 node_modules
 **/node_modules
