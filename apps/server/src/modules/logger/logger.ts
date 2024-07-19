@@ -1,14 +1,10 @@
+import { isDev } from "@/constants/env.constant";
 import { LOG_FILE } from "@/constants/path.constant";
 import { ConsoleLogger, Injectable } from "@nestjs/common";
 import { Level, LoggerOptions, pino } from "pino";
 
 const transport: LoggerOptions["transport"] = {
 	targets: [
-		{
-			level: "debug",
-			target: "pino-pretty",
-			options: { colorize: true, levelFirst: true },
-		},
 		{
 			level: "info",
 			target: "pino/file",
@@ -19,6 +15,14 @@ const transport: LoggerOptions["transport"] = {
 		},
 	],
 };
+if (isDev) {
+	// @ts-expect-error
+	transport.targets.push({
+		level: "debug",
+		target: "pino-pretty",
+		options: { colorize: true, levelFirst: true },
+	});
+}
 
 @Injectable()
 export class Logger extends ConsoleLogger {

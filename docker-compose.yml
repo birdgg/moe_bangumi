@@ -7,7 +7,7 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - $HOME/Downloads/data:/app/apps/server/data
+      - $HOME/data:/app/data
   qb:
     image: superng6/qbittorrentee:latest
     container_name: qb

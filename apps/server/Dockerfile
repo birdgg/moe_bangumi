@@ -26,9 +26,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 RUN pnpm dlx turbo run build --filter=server
-# install denpency for production
+# install dependencies for production
 RUN rm -rf node_modules
-RUN rm -rf **/*/node_modules
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 
@@ -36,10 +35,16 @@ FROM base AS runner
 WORKDIR /app
 RUN addgroup --system --gid 1001 nestjs
 RUN adduser --system --uid 1001 nestjs
-# RUN chown -R nestjs:nestjs /app
-# RUN chmod 755 /app
+RUN chown -R nestjs:nestjs /app
+RUN chmod 755 /app
 USER nestjs
 COPY --from=installer --chown=nestjs:nestjs /app .
 WORKDIR /app/apps/server
-ENV DATABASE_URL /app/app.db
-CMD ["pnpm", "start:migrate:prod"]
+RUN chmod +x docker-entrypoint.sh
+
+ENV DATABASE_URL=file:/app/data/app.db
+ENV NODE_ENV=production
+ENV PORT=3001
+VOLUME ["/app/data"]
+EXPOSE 3001
+ENTRYPOINT [ "./docker-entrypoint.sh" ]

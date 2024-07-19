@@ -6,6 +6,9 @@ logs
 *.log
 npm-debug.log*
 
+# md
+*.md
+
 # OS
 .DS_Store
 
@@ -21,10 +24,9 @@ npm-debug.log*
 
 tmp
 out
-release.zip
-
 data
 assets
+test
 .env
 scripts
 
