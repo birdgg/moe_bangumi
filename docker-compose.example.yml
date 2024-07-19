@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  ab:
+    image: moe_bangumi:0.0.1
+    container_name: moe_bangumi 
+    ports:
+      - 3001:3001
+    depends_on:
+      - qb
+    environment:
+      PUID: 1000
+      PGID: 100
+    volumes:
+      - /share/CACHEDEV1_DATA/docker/mb/data:/app/data
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 223.5.5.5
+  qb:
+    image: superng6/qbittorrentee:latest
+    container_name: qb
+    ports:
+      - 8989:8989
+      - 6881:6881
+      - "6881:6881/udp"
+    environment:
+      PUID: 1000
+      PGID: 100
+      WEBUIPORT: 8989
+    volumes:
+      - /share/CACHEDEV1_DATA/docker/qb/config:/config
+      - /share/CACHEDEV1_DATA/Videos:/downloads
+    restart: unless-stopped
