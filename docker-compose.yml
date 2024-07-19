@@ -1,13 +1,16 @@
 
 services:
-  server:
+  moe_bangumi:
     build: 
       context: .
       dockerfile: ./apps/server/Dockerfile
+    depends_on:
+      - qb
     ports:
       - 3001:3001
     volumes:
       - $HOME/data:/app/data
+    restart: unless-stopped
   qb:
     image: superng6/qbittorrentee:latest
     container_name: qb

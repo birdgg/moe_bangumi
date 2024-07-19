@@ -1,2 +1,1 @@
-# TODO
-- [ ] move tests to single folder
+# Moe Bangumi

@@ -29,16 +29,13 @@ RUN pnpm dlx turbo run build --filter=server
 # install dependencies for production
 RUN rm -rf node_modules
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
-
+WORKDIR /app/apps/server
+RUN pnpm exec prisma generate --generator client
 
 FROM base AS runner
 WORKDIR /app
-RUN addgroup --system --gid 1001 nestjs
-RUN adduser --system --uid 1001 nestjs
-RUN chown -R nestjs:nestjs /app
 RUN chmod 755 /app
-USER nestjs
-COPY --from=installer --chown=nestjs:nestjs /app .
+COPY --from=installer /app .
 WORKDIR /app/apps/server
 RUN chmod +x docker-entrypoint.sh
 
