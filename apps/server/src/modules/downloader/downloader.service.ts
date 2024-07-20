@@ -1,10 +1,11 @@
+import { EVENT_SETTING_UPDATED } from "@/constants/event.constant";
 import { Qbittorent } from "@/libs/qbittorrent";
 import { Torrent, TorrentContent } from "@/libs/qbittorrent/types";
 import { getErrorMessage } from "@/utils/error";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-import { EVENT_SETTING_UPDATED } from "../setting/setting.constant";
 import { SettingService } from "../setting/setting.service";
+import type { SettingEventPayload } from "../setting/setting.types";
 import { CATEGORY_BANGUMI, TAG_UNRENAMED } from "./downloader.constant";
 
 export type TorrentWithContent = Torrent & { content: TorrentContent[] };
@@ -20,8 +21,12 @@ export class DownloaderService implements OnModuleInit {
 	}
 
 	@OnEvent(EVENT_SETTING_UPDATED)
-	onSettingChange() {
-		this.setup();
+	onSettingChange(payload: SettingEventPayload) {
+		if (payload.downloader) this.setup();
+	}
+
+	get isEnabled() {
+		return this.client.isLogined;
 	}
 
 	async addTorrent(url: string, savepath: string) {
@@ -69,13 +74,13 @@ export class DownloaderService implements OnModuleInit {
 	}
 
 	private async setup() {
-		const downloader = this.settingService.get().downloader;
+		const downloader = this.settingService.getBy("downloader");
 		try {
 			this.client = new Qbittorent(downloader);
 			await this.client.login();
+			this.logger.debug("Downloader connectted");
 		} catch (e) {
 			this.logger.error(getErrorMessage(e));
 		}
-		this.logger.log("Downloader connectted");
 	}
 }

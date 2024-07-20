@@ -16,7 +16,6 @@ export class Qbittorent {
 	private password: string;
 	private sid = "";
 	private axios!: AxiosInstance;
-	isConnected = false;
 
 	constructor({ host, username, password }: QbittorrentParams) {
 		this.host = host;
@@ -59,6 +58,10 @@ export class Qbittorent {
 		this.axios = axiosInstance;
 	}
 
+	get isLogined() {
+		return this.sid !== "";
+	}
+
 	async login() {
 		const response = await this.axios
 			.post("auth/login", {
@@ -75,7 +78,6 @@ export class Qbittorent {
 		const sid = response.headers["set-cookie"][0].split(";")[0].split("=")[1];
 		if (sid) {
 			this.sid = sid;
-			this.isConnected = true;
 		}
 		return response;
 	}

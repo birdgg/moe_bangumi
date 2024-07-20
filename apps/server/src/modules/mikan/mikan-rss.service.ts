@@ -1,64 +1,58 @@
-import { ONE_DAY, ONE_HOUR, ONE_MINUTE } from "@/constants/date.constant";
+import { ONE_DAY, TWO_HOURS } from "@/constants/date.constant";
 import { isDev } from "@/constants/env.constant";
+import { EVENT_SETTING_UPDATED } from "@/constants/event.constant";
+import { JOB_MIKAN_RSS } from "@/constants/job.constant";
 import { AnalyserService } from "@/modules/analyser/analyser.service";
 import { BangumiService } from "@/modules/bangumi/bangumi.service";
-import { JOB_MIKAN_RSS, MIKAN_RSS_URL } from "@/modules/mikan/mikan.constant";
+import { MIKAN_RSS_URL } from "@/modules/mikan/mikan.constant";
 import { SettingService } from "@/modules/setting/setting.service";
 import { md5Hash } from "@/utils/crypto";
 import { CACHE_MANAGER, Cache } from "@nestjs/cache-manager";
 import { Inject, Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { Interval } from "@nestjs/schedule";
 import RssParser from "rss-parser";
+import { DownloaderService } from "../downloader/downloader.service";
 import { EpisodeService } from "../episode/episode.service";
-import { EVENT_SETTING_UPDATED } from "../setting/setting.constant";
+import type { SettingEventPayload } from "../setting/setting.types";
 
 @Injectable()
-export class MikanService implements OnModuleInit {
-	private readonly logger = new Logger(MikanService.name);
-	private readonly rssParser = new RssParser();
+export class MikanRssService implements OnModuleInit {
+	private logger = new Logger(MikanRssService.name);
+	private rssParser = new RssParser();
 	constructor(
 		@Inject(CACHE_MANAGER) private cache: Cache,
-		private readonly settingService: SettingService,
-		private readonly analyserService: AnalyserService,
-		private readonly bangumiService: BangumiService,
-		private readonly episodeService: EpisodeService,
-		private readonly schedulerRegistry: SchedulerRegistry,
+		private settingService: SettingService,
+		private analyserService: AnalyserService,
+		private bangumiService: BangumiService,
+		private episodeService: EpisodeService,
+		private downloaderService: DownloaderService,
 	) {}
 
 	onModuleInit() {
-		this.startMikanRssJob();
+		isDev && setTimeout(() => this.fetchRss(), 2000);
+	}
+
+	@Interval(JOB_MIKAN_RSS, TWO_HOURS)
+	intervalHandler() {
+		this.fetchRss();
 	}
 
 	@OnEvent(EVENT_SETTING_UPDATED)
-	handler() {
-		this.logger.debug("Setting updated, restart mikan rss job");
-		this.stopMikanRssJob();
-		this.startMikanRssJob();
-	}
-
-	private startMikanRssJob() {
-		const interval =
-			process.env.NODE_ENV === "development" ? ONE_MINUTE * 2 : ONE_HOUR * 2;
-		this.fetchRss();
-		this.schedulerRegistry.addInterval(JOB_MIKAN_RSS, () => {
-			setInterval(this.fetchRss, interval);
-		});
-	}
-
-	private stopMikanRssJob() {
-		try {
-			this.schedulerRegistry.deleteInterval(JOB_MIKAN_RSS);
-		} catch {}
+	settingChangeHandler(payload: SettingEventPayload) {
+		if (payload.mikan?.token) this.fetchRss();
 	}
 
 	private fetchRss() {
-		const rssUrl = this.getRssUrl();
-		if (!rssUrl) {
-			this.stopMikanRssJob();
+		this.logger.debug(this.rssUrl, this.downloaderService.isEnabled);
+		if (this.rssUrl === "") {
 			return;
 		}
-		this.rssParser.parseURL(this.getRssUrl(), (_, feed) => {
+		if (!this.downloaderService.isEnabled) {
+			return;
+		}
+		this.logger.debug("Start fetch mikan rss");
+		this.rssParser.parseURL(this.rssUrl, (_, feed) => {
 			if (feed.items.length === 0) {
 				this.logger.error("No items in mikan rss feed, check your token");
 				return;
@@ -67,12 +61,9 @@ export class MikanService implements OnModuleInit {
 		});
 	}
 
-	private getRssUrl() {
-		const mikanToken = this.settingService.get().mikan.token;
-		if (!mikanToken) {
-			this.logger.error("Mikan token not setted");
-			return "";
-		}
+	get rssUrl() {
+		const mikanToken = this.settingService.getBy("mikan").token;
+		if (!mikanToken) return "";
 		return `${MIKAN_RSS_URL}${mikanToken}`;
 	}
 
@@ -83,7 +74,6 @@ export class MikanService implements OnModuleInit {
 			const isCached = await this.cache.get(hashedTitle);
 			if (isCached) continue;
 			try {
-				this.logger.log(`Analyse ${item.title}`);
 				const { episodeNum, ...bangumiInput } = this.analyserService.mikanTitle(
 					item.title,
 				);
@@ -106,10 +96,10 @@ export class MikanService implements OnModuleInit {
 						torrent: item.enclosure!.url,
 					},
 				);
-				this.logger.debug(
-					`set cache for ${item.title} with key ${hashedTitle}`,
-				);
 				this.cache.set(hashedTitle, true, ONE_DAY / 1000);
+				this.logger.log(
+					`Add ${bangumi.originName} Season ${bangumi.season} Episode ${episodeNum}`,
+				);
 			} catch (e) {
 				this.logger.error(e);
 			}

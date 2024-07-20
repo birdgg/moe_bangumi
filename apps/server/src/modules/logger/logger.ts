@@ -1,10 +1,10 @@
 import { isDev } from "@/constants/env.constant";
+import { EVENT_LOG } from "@/constants/event.constant";
 import { LOG_FILE } from "@/constants/path.constant";
 import { getEventName } from "@/utils/event";
 import { ConsoleLogger, Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Level, LoggerOptions, pino } from "pino";
-import { EVENT_LOG } from "./logger.constant";
 
 const transport: LoggerOptions["transport"] = {
 	targets: [

@@ -1,6 +1,6 @@
+import { EVENT_LOG } from "@/constants/event.constant";
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-import { EVENT_LOG } from "../logger/logger.constant";
 import { LogEventPayload } from "../logger/logger.types";
 
 @Injectable()

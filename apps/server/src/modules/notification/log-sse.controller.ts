@@ -1,8 +1,8 @@
+import { EVENT_LOG } from "@/constants/event.constant";
 import { Controller, MessageEvent, Req, Sse } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import type { Request } from "express";
 import { Observable, concat, from, fromEvent, map } from "rxjs";
-import { EVENT_LOG } from "../logger/logger.constant";
 import { LogEventPayload } from "../logger/logger.types";
 import { LogSSEService } from "./log-sse.service";
 

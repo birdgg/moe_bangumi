@@ -1,14 +1,14 @@
 import * as fs from "node:fs";
 import { join } from "node:path";
+import { EVENT_SETTING_UPDATED } from "@/constants/event.constant";
 import { DATA_DIR } from "@/constants/path.constant";
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Setting } from "@repo/api/setting";
-import { EVENT_SETTING_UPDATED } from "./setting.constant";
 
 const DEFAULT_SETTING: Setting = {
 	mikan: {
-		token: "",
+		token: "enter your mikan token",
 	},
 	downloader: {
 		host: "http://localhost:8989",
@@ -27,6 +27,7 @@ export class SettingService {
 	constructor(private eventEmitter: EventEmitter2) {}
 
 	load() {
+		this.logger.debug("load file");
 		this.loadFile();
 	}
 
@@ -34,7 +35,7 @@ export class SettingService {
 		return this.setting;
 	}
 
-	getBy(key: keyof Setting) {
+	getBy<K extends keyof Setting>(key: K): Setting[K] {
 		return this.setting[key];
 	}
 
@@ -51,7 +52,7 @@ export class SettingService {
 		this.setting = { ...this.setting, ...setting } as Setting;
 		try {
 			this.saveFile(newSetting);
-			this.eventEmitter.emit(EVENT_SETTING_UPDATED, newSetting);
+			this.eventEmitter.emit(EVENT_SETTING_UPDATED, setting);
 			return newSetting as Setting;
 		} catch (e) {
 			this.logger.error(e);
@@ -69,7 +70,6 @@ export class SettingService {
 		const data = fs.readFileSync(this.FILE, "utf-8");
 
 		this.setting = JSON.parse(data) as Setting;
-		this.logger.log("Load setting");
 	}
 
 	private saveFile(setting: Partial<Setting>) {

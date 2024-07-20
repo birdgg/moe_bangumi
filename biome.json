@@ -43,7 +43,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["server"],
+			"include": ["apps/server/"],
 			"linter": {
 				"rules": {
 					"suspicious": {

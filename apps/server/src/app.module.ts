@@ -13,6 +13,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
 import { CLIENT_DIR, POSTER_DIR } from "./constants/path.constant";
+import { DownloaderModule } from "./modules/downloader/downloader.module";
 
 @Module({
 	imports: [
@@ -41,6 +42,7 @@ import { CLIENT_DIR, POSTER_DIR } from "./constants/path.constant";
 			isGlobal: true,
 		}),
 		SettingModule.forRootAsync(),
+		DownloaderModule,
 		NotificationModule,
 		BangumiModule,
 		EpisodeModule,

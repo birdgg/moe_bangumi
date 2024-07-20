@@ -1,11 +1,8 @@
-import { isDataCreated } from "@/utils/database";
 import { Injectable, Logger } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { Mutex } from "async-mutex";
 import { PrismaService } from "nestjs-prisma";
 import { PathAnalyserService } from "../analyser/path-analyser.service";
 import { DownloaderService } from "../downloader/downloader.service";
-import { SettingService } from "../setting/setting.service";
 
 @Injectable()
 export class EpisodeService {
@@ -13,7 +10,6 @@ export class EpisodeService {
 	constructor(
 		private prismaService: PrismaService,
 		private downloaderService: DownloaderService,
-		private settingService: SettingService,
 		private pathAnalyserService: PathAnalyserService,
 	) {}
 
@@ -46,12 +42,8 @@ export class EpisodeService {
 			data,
 			include: { bangumi: true },
 		});
-		this.logger.log(
-			`Create new episode ${episode.bangumi.nameZh} ${episode.num}`,
-		);
 
 		const savePath = this.pathAnalyserService.getSavePath(episode);
-		this.logger.log(`Downloading ${episode.bangumi.nameZh} to ${savePath}`);
 		this.downloaderService.addTorrent(episode.torrent, savePath);
 	}
 }

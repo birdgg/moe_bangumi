@@ -1,25 +1,20 @@
 import path from "node:path";
-import { FIVE_MINITE, TEN_MINUTES } from "@/constants/date.constant";
-import { isDev } from "@/constants/env.constant";
+import { TEN_MINUTES } from "@/constants/date.constant";
+import { JOB_RENAME_FILE } from "@/constants/job.constant";
 import { TorrentContent } from "@/libs/qbittorrent/types";
 import { padNumber } from "@/utils/string";
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Interval } from "@nestjs/schedule";
 import {
 	DownloaderService,
 	TorrentWithContent,
 } from "../downloader/downloader.service";
 import { SettingService } from "../setting/setting.service";
-import {
-	MEDIA_EXT,
-	RENAME_JOB,
-	SEASON_REGEX,
-	SUB_EXT,
-} from "./rename.constant";
+import { MEDIA_EXT, SEASON_REGEX, SUB_EXT } from "./rename.constant";
 import { RenameFile } from "./rename.types";
 import { torrentParser } from "./torrent.parser";
 @Injectable()
-export class RenameService implements OnModuleInit {
+export class RenameService {
 	private readonly logger = new Logger(RenameService.name);
 
 	constructor(
@@ -27,20 +22,22 @@ export class RenameService implements OnModuleInit {
 		private settingService: SettingService,
 	) {}
 
-	onModuleInit() {
-		this.logger.log("RenameService initialized");
+	@Interval(JOB_RENAME_FILE, TEN_MINUTES)
+	renameHandler() {
+		this.rename();
 	}
 
-	@Interval(RENAME_JOB, isDev ? FIVE_MINITE : TEN_MINUTES)
 	async rename() {
-		this.logger.log("Start rename job");
+		if (!this.downloaderService.isEnabled) return;
+
+		this.logger.debug("Start rename job");
 		const torrents = await this.downloaderService.getUnrenamedTorrentList();
 		for (const torrent of torrents) {
-			this.handler(torrent);
+			this.torrentHandler(torrent);
 		}
 	}
 
-	private handler(torrent: TorrentWithContent) {
+	private torrentHandler(torrent: TorrentWithContent) {
 		const { mediaFiles, subFiles } = this.splitFiles(torrent.content);
 		// TODO: process collection and sub files
 		if (mediaFiles.length === 0) return;
