@@ -1,8 +1,11 @@
 import { Prisma } from "@prisma/client";
 
-export interface RawParserResult extends Prisma.BangumiUncheckedCreateInput {
+export type RawParserResult = Omit<
+	Prisma.BangumiUncheckedCreateInput,
+	"poster"
+> & {
 	episodeNum: number;
-}
+};
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
@@ -181,7 +184,7 @@ export function rawParser(str: string): RawParserResult {
 
 	const matchedTitle = TITLE_RE.exec(title);
 	if (!matchedTitle) {
-		throw new Error(`Not match title regex: ${title}`);
+		throw new Error(`Parse mikan rss failed with title: ${title}`);
 	}
 
 	// @ts-expect-error https://github.com/microsoft/TypeScript/issues/30921

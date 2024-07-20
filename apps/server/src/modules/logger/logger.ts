@@ -1,6 +1,7 @@
 import { isDev } from "@/constants/env.constant";
 import { EVENT_LOG } from "@/constants/event.constant";
 import { LOG_FILE } from "@/constants/path.constant";
+import { getErrorMessage } from "@/utils/error";
 import { getEventName } from "@/utils/event";
 import { ConsoleLogger, Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
@@ -120,7 +121,7 @@ export class Logger extends ConsoleLogger {
 	private emitLog(level: Level, message: any) {
 		this.eventEmitter.emit(getEventName([EVENT_LOG, level]), {
 			level,
-			message,
+			message: getErrorMessage(message),
 		});
 	}
 }
