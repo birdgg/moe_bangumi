@@ -1,7 +1,10 @@
 import { isDev } from "@/constants/env.constant";
 import { LOG_FILE } from "@/constants/path.constant";
+import { getEventName } from "@/utils/event";
 import { ConsoleLogger, Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Level, LoggerOptions, pino } from "pino";
+import { EVENT_LOG } from "./logger.constant";
 
 const transport: LoggerOptions["transport"] = {
 	targets: [
@@ -33,11 +36,16 @@ export class Logger extends ConsoleLogger {
 		"RouterExplorer",
 		"RoutesResolver",
 	];
+	emitLevles: Level[] = ["error", "warn"];
 	pinoLogger = pino({
 		level: "debug",
 		base: undefined,
 		transport,
 	});
+
+	constructor(private eventEmitter: EventEmitter2) {
+		super();
+	}
 
 	verbose(message: any, ...optionalParams: any[]) {
 		this.call("trace", message, ...optionalParams);
@@ -92,6 +100,7 @@ export class Logger extends ConsoleLogger {
 		} else {
 			this.pinoLogger[level](objArg, message, ...params);
 		}
+		if (this.emitLevles.includes(level)) this.emitLog(level, message);
 	}
 
 	private isWrongExceptionsHandlerContract(
@@ -106,5 +115,12 @@ export class Logger extends ConsoleLogger {
 			typeof params[0] === "string" &&
 			/\n\s*at /.test(params[0])
 		);
+	}
+
+	private emitLog(level: Level, message: any) {
+		this.eventEmitter.emit(getEventName([EVENT_LOG, level]), {
+			level,
+			message,
+		});
 	}
 }

@@ -1,5 +1,6 @@
 import path from "node:path";
-import { ONE_MINUTE } from "@/constants/date.constant";
+import { FIVE_MINITE, TEN_MINUTES } from "@/constants/date.constant";
+import { isDev } from "@/constants/env.constant";
 import { TorrentContent } from "@/libs/qbittorrent/types";
 import { padNumber } from "@/utils/string";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
@@ -30,7 +31,7 @@ export class RenameService implements OnModuleInit {
 		this.logger.log("RenameService initialized");
 	}
 
-	@Interval(RENAME_JOB, ONE_MINUTE * 5)
+	@Interval(RENAME_JOB, isDev ? FIVE_MINITE : TEN_MINUTES)
 	async rename() {
 		this.logger.log("Start rename job");
 		const torrents = await this.downloaderService.getUnrenamedTorrentList();
