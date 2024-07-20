@@ -22,7 +22,6 @@ import { DownloaderModule } from "./modules/downloader/downloader.module";
 		}),
 		ServeStaticModule.forRoot({
 			rootPath: CLIENT_DIR,
-			serveRoot: "/",
 			exclude: ["/api/(.*)", "/posters/(.*)"],
 		}),
 		ServeStaticModule.forRoot({
