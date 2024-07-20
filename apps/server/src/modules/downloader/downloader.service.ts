@@ -2,6 +2,8 @@ import { Qbittorent } from "@/libs/qbittorrent";
 import { Torrent, TorrentContent } from "@/libs/qbittorrent/types";
 import { getErrorMessage } from "@/utils/error";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { EVENT_SETTING_UPDATED } from "../setting/setting.constant";
 import { SettingService } from "../setting/setting.service";
 import { CATEGORY_BANGUMI, TAG_UNRENAMED } from "./downloader.constant";
 
@@ -14,14 +16,12 @@ export class DownloaderService implements OnModuleInit {
 	constructor(private readonly settingService: SettingService) {}
 
 	async onModuleInit() {
-		const downloader = this.settingService.get().downloader;
-		this.client = new Qbittorent(downloader);
-		try {
-			await this.client.login();
-		} catch (e) {
-			this.logger.error(getErrorMessage(e));
-		}
-		this.logger.log("Downloader connectted");
+		this.setup();
+	}
+
+	@OnEvent(EVENT_SETTING_UPDATED)
+	onSettingChange() {
+		this.setup();
 	}
 
 	async addTorrent(url: string, savepath: string) {
@@ -66,5 +66,16 @@ export class DownloaderService implements OnModuleInit {
 
 	async removeTorrentTag(hash: string, tag: string) {
 		this.client.removeTorrentTag(hash, tag);
+	}
+
+	private async setup() {
+		const downloader = this.settingService.get().downloader;
+		try {
+			this.client = new Qbittorent(downloader);
+			await this.client.login();
+		} catch (e) {
+			this.logger.error(getErrorMessage(e));
+		}
+		this.logger.log("Downloader connectted");
 	}
 }

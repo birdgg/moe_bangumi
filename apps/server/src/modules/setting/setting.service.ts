@@ -1,13 +1,7 @@
 import * as fs from "node:fs";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { DATA_DIR } from "@/constants/path.constant";
-import {
-	HttpException,
-	HttpStatus,
-	Injectable,
-	Logger,
-	OnModuleInit,
-} from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Setting } from "@repo/api/setting";
 import { EVENT_SETTING_UPDATED } from "./setting.constant";
@@ -25,19 +19,23 @@ const DEFAULT_SETTING: Setting = {
 };
 
 @Injectable()
-export class SettingService implements OnModuleInit {
+export class SettingService {
 	private readonly logger = new Logger(SettingService.name);
 	private readonly FILE = join(DATA_DIR, "setting.json");
-	private setting?: Setting;
+	private setting!: Setting;
 
 	constructor(private eventEmitter: EventEmitter2) {}
 
-	onModuleInit() {
-		this._load();
+	load() {
+		this.loadFile();
 	}
 
 	get(): Setting {
-		return this.setting!;
+		return this.setting;
+	}
+
+	getBy(key: keyof Setting) {
+		return this.setting[key];
 	}
 
 	/**
@@ -52,7 +50,7 @@ export class SettingService implements OnModuleInit {
 		const newSetting = { ...this.setting, ...setting };
 		this.setting = { ...this.setting, ...setting } as Setting;
 		try {
-			fs.writeFileSync(this.FILE, JSON.stringify(newSetting));
+			this.saveFile(newSetting);
 			this.eventEmitter.emit(EVENT_SETTING_UPDATED, newSetting);
 			return newSetting as Setting;
 		} catch (e) {
@@ -64,7 +62,7 @@ export class SettingService implements OnModuleInit {
 		}
 	}
 
-	private _load() {
+	private loadFile() {
 		if (!fs.existsSync(this.FILE)) {
 			fs.writeFileSync(this.FILE, JSON.stringify(DEFAULT_SETTING));
 		}
@@ -72,5 +70,9 @@ export class SettingService implements OnModuleInit {
 
 		this.setting = JSON.parse(data) as Setting;
 		this.logger.log("Load setting");
+	}
+
+	private saveFile(setting: Partial<Setting>) {
+		fs.writeFileSync(this.FILE, JSON.stringify(setting));
 	}
 }

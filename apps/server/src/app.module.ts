@@ -40,7 +40,7 @@ import { CLIENT_DIR, POSTER_DIR } from "./constants/path.constant";
 		CacheModule.register({
 			isGlobal: true,
 		}),
-		SettingModule,
+		SettingModule.forRootAsync(),
 		NotificationModule,
 		BangumiModule,
 		EpisodeModule,
