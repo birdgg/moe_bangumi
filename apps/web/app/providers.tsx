@@ -1,8 +1,6 @@
 "use client";
 
-import { SSE } from "@/components/sse/sse";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { Toaster as Sooner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from "@/queries";
@@ -21,9 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 			>
 				<TooltipProvider>
 					{children}
-					<SSE />
 					<Toaster />
-					<Sooner />
 				</TooltipProvider>
 			</ThemeProvider>
 			<ReactQueryDevtools initialIsOpen={false} />
