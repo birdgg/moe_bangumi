@@ -14,6 +14,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { PrismaModule } from "nestjs-prisma";
 import { CLIENT_DIR, POSTER_DIR } from "./constants/path.constant";
 import { DownloaderModule } from "./modules/downloader/downloader.module";
+import { HttpModule } from "./modules/http/http.module";
 
 @Module({
 	imports: [
@@ -41,6 +42,7 @@ import { DownloaderModule } from "./modules/downloader/downloader.module";
 			isGlobal: true,
 		}),
 		SettingModule.forRootAsync(),
+		HttpModule.forRootAsync(),
 		DownloaderModule,
 		NotificationModule,
 		BangumiModule,

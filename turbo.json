@@ -19,7 +19,8 @@
 			"cache": false
 		},
 		"db:push": {
-			"cache": false
+			"cache": false,
+			"interactive": true
 		},
 		"db:migrate": {
 			"cache": false
