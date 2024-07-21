@@ -5,16 +5,18 @@ const c = initContract();
 
 export const SettingSchema = z.object({
 	mikan: z.object({
-		token: z.string().min(1),
+		token: z.string().min(1)
 	}),
 	downloader: z.object({
 		host: z.string().min(1),
 		username: z.string().min(1),
 		password: z.string().min(1),
-		savePath: z.string().startsWith("/"),
+		savePath: z.string().startsWith("/")
 	}),
+  bangumiManager: z.object({
+		epsComplete: z.boolean()
+	})
 });
-
 export type Setting = z.infer<typeof SettingSchema>;
 export type PartialSetting = Partial<Setting>
 
