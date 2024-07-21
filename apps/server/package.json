@@ -6,9 +6,6 @@
 	"scripts": {
 		"build": "nest build",
 		"dev": "NODE_ENV=development nest start --watch",
-		"prod": "NODE_ENV=production node dist/main",
-		"prod:local": "pnpm copy:client && NODE_ENV=development node dist/main",
-		"copy:client": "node scripts/copy-client.cjs",
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push --skip-generate",
 		"db:migrate": "prisma migrate dev",

@@ -4,9 +4,10 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
-		"prod:local": "turbo build && turbo prod:local",
+		"dev:static": "turbo build --filter=web && turbo dev --filter=server", 
 		"lint": "biome check .",
 		"test": "turbo test",
+		"copy:client": "node scripts/copy-client.cjs",
 		"db:push": "turbo db:generate db:push",
 		"db:migrate": "turbo db:migrate",
 		"db:studio": "turbo db:studio",
@@ -29,6 +30,5 @@
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
 			"biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 		]
-	},
-	"version": "0.0.1"
+	}
 }
