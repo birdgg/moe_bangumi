@@ -1,5 +1,6 @@
 import { DynamicModule, Global, Module } from "@nestjs/common";
 import Axios, { CreateAxiosDefaults } from "axios";
+import axiosRetry from "axios-retry";
 import { SettingModule } from "../setting/setting.module";
 import { SettingService } from "../setting/setting.service";
 import { AXIOS_INSTANCE_TOKEN } from "./http.constant";
@@ -18,7 +19,7 @@ export class HttpModule {
 					useFactory: (setting: SettingService) => {
 						// const proxy = setting.setting.proxy
 						const config: CreateAxiosDefaults = {};
-						return Axios.create(config);
+						return axiosRetry(Axios.create(config));
 					},
 					inject: [SettingService],
 				},

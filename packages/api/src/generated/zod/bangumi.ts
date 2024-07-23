@@ -1,9 +1,9 @@
 import * as z from "zod"
-import { CompleteEpisode, RelatedEpisodeSchema } from "./index"
+import { CompleteTorrent, RelatedTorrentSchema } from "./index"
 
 export const BangumiSchema = z.object({
   id: z.number().int(),
-  originName: z.string(),
+  nameRaw: z.string(),
   nameZh: z.string().nullish(),
   nameJp: z.string().nullish(),
   nameEn: z.string().nullish(),
@@ -12,12 +12,16 @@ export const BangumiSchema = z.object({
   group: z.string().nullish(),
   sub: z.string().nullish(),
   dpi: z.string().nullish(),
+  needEpsCollect: z.boolean(),
+  isEpsCollected: z.boolean(),
+  rssLink: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  deleted: z.boolean(),
 })
 
 export interface CompleteBangumi extends z.infer<typeof BangumiSchema> {
-  episodes: CompleteEpisode[]
+  Torrent: CompleteTorrent[]
 }
 
 /**
@@ -26,5 +30,5 @@ export interface CompleteBangumi extends z.infer<typeof BangumiSchema> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedBangumiSchema: z.ZodSchema<CompleteBangumi> = z.lazy(() => BangumiSchema.extend({
-  episodes: RelatedEpisodeSchema.array(),
+  Torrent: RelatedTorrentSchema.array(),
 }))

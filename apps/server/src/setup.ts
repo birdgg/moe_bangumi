@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
-import { PrismaClientExceptionFilter } from "nestjs-prisma";
+import { PrismaClientExceptionFilter } from "./modules/database/prisma-client-exception";
 import { Logger } from "./modules/logger/logger";
 import { LoggerService } from "./modules/logger/logger.service";
 

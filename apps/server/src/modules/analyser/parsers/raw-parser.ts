@@ -1,11 +1,4 @@
-import { Prisma } from "@prisma/client";
-
-export type RawParserResult = Omit<
-	Prisma.BangumiUncheckedCreateInput,
-	"poster"
-> & {
-	episodeNum: number;
-};
+import { BangumiParseResult } from "@/types/bangumi.type";
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
@@ -135,10 +128,10 @@ function bangumiProcess(str: string) {
 	const { group, rawSeasonAndName } = getGroup(str);
 	const { season, rawName } = getSeason(preProcess(rawSeasonAndName));
 	const { nameJp, nameZh, nameEn } = getNames(rawName);
-	const originName = nameEn === "" ? nameZh : nameEn;
+	const nameRaw = nameEn === "" ? nameZh : nameEn;
 
 	return {
-		originName,
+		nameRaw,
 		group,
 		season,
 		nameJp,
@@ -153,7 +146,7 @@ function episodeProcess(str: string) {
 }
 
 // get sub, dpi
-function tagsProcess(other: string) {
+function tagsProcess(other: string): [string, string] {
 	const elements = other
 		.replace(/[[\]()（）]/g, " ")
 		.split(" ")
@@ -172,14 +165,14 @@ function tagsProcess(other: string) {
 	return [cleanSub(sub), dpi];
 }
 
-function cleanSub(sub: string | null) {
+function cleanSub(sub: string | null): string {
 	if (sub === null) {
-		return sub;
+		return "";
 	}
 	return sub.replace(/_MP4|_MKV/g, "");
 }
 
-export function rawParser(str: string): RawParserResult {
+export function rawParser(str: string): BangumiParseResult {
 	const title = str.trim().replace("【", "[").replace("】", "]");
 
 	const matchedTitle = TITLE_RE.exec(title);
@@ -197,6 +190,6 @@ export function rawParser(str: string): RawParserResult {
 		...bangumi,
 		sub,
 		dpi,
-		episodeNum: episode,
+		episode,
 	};
 }

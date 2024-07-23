@@ -20,35 +20,47 @@ datasource db {
 }
 
 model Bangumi {
-  id         Int       @id @default(autoincrement())
-  originName String    @map("origin_name")
-  nameZh     String?   @map("name_zh")
-  nameJp     String?   @map("name_jp")
-  nameEn     String?   @map("name_en")
-  poster     String    
-  season     Int       
+  id             Int       @id @default(autoincrement())
+  nameRaw        String    @map("name_raw")
+  nameZh         String?   @map("name_zh")
+  nameJp         String?   @map("name_jp")
+  nameEn         String?   @map("name_en")
+  poster         String
+  season         Int
   // 字幕组
-  group      String?
+  group          String?
   // 字幕
-  sub        String?
+  sub            String?
   // 分辨率
-  dpi        String?
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
-  episodes   Episode[]
+  dpi            String?
+  // 是否需要自动补全
+  needEpsCollect Boolean   @map("need_eps_collect")
+  isEpsCollected Boolean   @default(false) @map("is_eps_collected")
+  rssLink        String    @default("")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deleted        Boolean   @default(false)
+  Torrent        Torrent[]
 
-  @@unique(name: "name_season",[originName, season])
-  @@index([originName, season])
+  @@unique(name: "name_season", [nameZh, season])
+  @@index([nameZh, season])
 }
 
-model Episode {
-  id        Int      @id @default(autoincrement())
-  num   Int      @map("num")
-  bangumiId Int      @map("bangumi_id")
-  bangumi   Bangumi  @relation(fields: [bangumiId], references: [id])
-  torrent   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+model RssItem {
+  id        Int       @id @default(autoincrement())
+  url       String
+  // 订阅模式
+  aggregate Boolean
+  enabled   Boolean
+  Torrent   Torrent[]
+}
 
-  @@unique(name: "bangumi_episode", [num, bangumiId])
+model Torrent {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String   @unique
+  bangumiId Int?
+  bangumi   Bangumi? @relation(fields: [bangumiId], references: [id])
+  rssItemId Int?
+  rssItem   RssItem? @relation(fields: [rssItemId], references: [id])
 }

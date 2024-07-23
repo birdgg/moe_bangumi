@@ -2,9 +2,11 @@ import * as fs from "node:fs";
 import { join } from "node:path";
 import { EVENT_SETTING_UPDATED } from "@/constants/event.constant";
 import { DATA_DIR } from "@/constants/path.constant";
+import { ObjectKeyPaths } from "@/types/helper.type";
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Setting } from "@repo/api/setting";
+import { get } from "lodash";
 import { DEFAULT_SETTING } from "./setting.constant";
 
 @Injectable()
@@ -24,8 +26,8 @@ export class SettingService {
 		this.loadFile();
 	}
 
-	getBy<K extends keyof Setting>(key: K): Setting[K] {
-		return this._setting[key];
+	getBy(path: ObjectKeyPaths<Setting>) {
+		return get(this._setting, path);
 	}
 
 	/**

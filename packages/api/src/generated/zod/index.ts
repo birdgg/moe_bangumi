@@ -1,2 +1,3 @@
 export * from "./bangumi"
-export * from "./episode"
+export * from "./rssitem"
+export * from "./torrent"

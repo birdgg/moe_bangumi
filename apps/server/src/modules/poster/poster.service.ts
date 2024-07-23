@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { MIKAN_URL } from "@/constants/mikan.constant";
 import { POSTER_DIR } from "@/constants/path.constant";
-import { MIKAN_URL } from "@/modules/mikan/mikan.constant";
 import { md5Hash } from "@/utils/crypto";
 import { Injectable, Logger } from "@nestjs/common";
 import axios from "axios";

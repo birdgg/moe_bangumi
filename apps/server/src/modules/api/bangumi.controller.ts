@@ -1,11 +1,11 @@
-import { BangumiService } from "@/modules/bangumi/bangumi.service";
 import { Controller } from "@nestjs/common";
 import { contract } from "@repo/api";
 import { TsRestHandler, tsRestHandler } from "@ts-rest/nest";
+import { BangumiService } from "../database/bangumi.service";
 
 @Controller()
 export class BangumiController {
-	constructor(private readonly bangumiService: BangumiService) {}
+	constructor(private bangumiService: BangumiService) {}
 
 	@TsRestHandler(contract.bangumi)
 	async handle() {
