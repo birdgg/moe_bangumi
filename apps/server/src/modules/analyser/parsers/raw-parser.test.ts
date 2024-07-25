@@ -50,6 +50,18 @@ const successTitles: { title: string; expected: Partial<RawParserResult> }[] = [
 			episode: 6,
 		},
 	},
+	{
+		title:
+			"[MingY] 前辈是伪娘 / 前辈是伪娘 / Senpai wa Otokonoko [03][1080p][简繁日内封]",
+		expected: {
+			nameRaw: "Senpai wa Otokonoko",
+			season: 1,
+			episode: 3,
+			group: "MingY",
+			dpi: "1080p",
+			sub: "CHS",
+		},
+	},
 ];
 
 const failedTitle =

@@ -36,7 +36,11 @@ model Bangumi {
   // 是否需要自动补全
   needEpsCollect Boolean   @map("need_eps_collect")
   isEpsCollected Boolean   @default(false) @map("is_eps_collected")
+  savePath       String
+  // related rss links, split by ,
   rssLink        String    @default("")
+  // downloaded episodes split by ,
+  episodes       String    @default("")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
   deleted        Boolean   @default(false)
@@ -48,6 +52,7 @@ model Bangumi {
 
 model RssItem {
   id        Int       @id @default(autoincrement())
+  title     String
   url       String
   // 订阅模式
   aggregate Boolean

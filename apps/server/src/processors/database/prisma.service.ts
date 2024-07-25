@@ -3,7 +3,7 @@ import { Prisma, PrismaClient, PrismaPromise } from "@prisma/client";
 
 export type BulkUpdateEntry = {
 	id: number | string;
-	[key: string]: number | string | boolean | Date;
+	[key: string]: number | string | boolean | Date | null;
 };
 export type BulkUpdateEntries = BulkUpdateEntry[];
 
@@ -19,6 +19,9 @@ export class PrismaService
 		await this.$connect();
 	}
 
+	/**
+	 * @deprecated error in sqlite
+	 */
 	bulkUpdate<T extends Prisma.ModelName>(
 		tableName: T,
 		entries: BulkUpdateEntry[],
@@ -55,7 +58,7 @@ export class PrismaService
 			.join(", ");
 
 		const sql = `
-			UPDATE "${tableName}"
+		  UPDATE "${tableName}"
 			SET ${setSql}
 			FROM (VALUES ${valuesSql}) AS data(id, ${fields
 				.map((field) => `"${field}"`)

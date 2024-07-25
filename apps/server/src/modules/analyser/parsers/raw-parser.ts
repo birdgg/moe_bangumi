@@ -1,4 +1,4 @@
-import { BangumiParseResult } from "@/types/bangumi.type";
+import { BangumiParseResult, Sub } from "@/types/bangumi.type";
 
 const EPISODE_RE = /\d+/;
 const TITLE_RE =
@@ -25,7 +25,7 @@ const CHINESE_NUMBER_MAP = {
 	十: 10,
 };
 
-const CHINESE_SUB_MAP = {
+const CHINESE_SUB_MAP: Record<string, Sub> = {
 	简: "CHS",
 	繁: "CHT",
 	日: "JP",
@@ -142,11 +142,11 @@ function bangumiProcess(str: string) {
 
 function episodeProcess(str: string) {
 	const episodeStr = EPISODE_RE.exec(str);
-	return episodeStr ? Number.parseInt(episodeStr[0]) : 1;
+	return episodeStr ? episodeStr[0] : "1";
 }
 
 // get sub, dpi
-function tagsProcess(other: string): [string, string] {
+function tagsProcess(other: string): [Sub, string] {
 	const elements = other
 		.replace(/[[\]()（）]/g, " ")
 		.split(" ")
@@ -165,11 +165,11 @@ function tagsProcess(other: string): [string, string] {
 	return [cleanSub(sub), dpi];
 }
 
-function cleanSub(sub: string | null): string {
+function cleanSub(sub: string | null): Sub {
 	if (sub === null) {
 		return "";
 	}
-	return sub.replace(/_MP4|_MKV/g, "");
+	return sub.replace(/_MP4|_MKV/g, "") as Sub;
 }
 
 export function rawParser(str: string): BangumiParseResult {
@@ -190,6 +190,6 @@ export function rawParser(str: string): BangumiParseResult {
 		...bangumi,
 		sub,
 		dpi,
-		episode,
+		episodes: episode,
 	};
 }

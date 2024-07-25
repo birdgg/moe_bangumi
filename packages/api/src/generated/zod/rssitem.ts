@@ -3,6 +3,7 @@ import { CompleteTorrent, RelatedTorrentSchema } from "./index"
 
 export const RssItemSchema = z.object({
   id: z.number().int(),
+  title: z.string(),
   url: z.string(),
   aggregate: z.boolean(),
   enabled: z.boolean(),

@@ -1,9 +1,11 @@
-import { Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
+import { PosterModule } from "../poster/poster.module";
 import { AnalyserService } from "./analyser.service";
-import { PathAnalyserService } from "./path-analyser.service";
 
+@Global()
 @Module({
-	providers: [AnalyserService, PathAnalyserService],
-	exports: [AnalyserService, PathAnalyserService],
+	imports: [PosterModule],
+	providers: [AnalyserService],
+	exports: [AnalyserService],
 })
 export class AnalyserModule {}

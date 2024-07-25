@@ -1,11 +1,11 @@
 import { EVENT_SETTING_UPDATED } from "@/constants/event.constant";
 import { Qbittorent } from "@/libs/qbittorrent";
 import { Torrent, TorrentContent } from "@/libs/qbittorrent/types";
+import { SettingService } from "@/modules/setting/setting.service";
+import type { SettingEventPayload } from "@/modules/setting/setting.types";
 import { getErrorMessage } from "@/utils/error";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-import { SettingService } from "../setting/setting.service";
-import type { SettingEventPayload } from "../setting/setting.types";
 import { CATEGORY_BANGUMI, TAG_UNRENAMED } from "./downloader.constant";
 
 export type TorrentWithContent = Torrent & { content: TorrentContent[] };

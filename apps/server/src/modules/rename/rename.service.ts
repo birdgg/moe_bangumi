@@ -2,6 +2,7 @@ import path from "node:path";
 import { TEN_MINUTES } from "@/constants/date.constant";
 import { JOB_RENAME_FILE } from "@/constants/job.constant";
 import { TorrentContent } from "@/libs/qbittorrent/types";
+import { SettingService } from "@/modules/setting/setting.service";
 import { padNumber } from "@/utils/string";
 import { Injectable, Logger } from "@nestjs/common";
 import { Interval } from "@nestjs/schedule";
@@ -9,7 +10,6 @@ import {
 	DownloaderService,
 	TorrentWithContent,
 } from "../downloader/downloader.service";
-import { SettingService } from "../setting/setting.service";
 import { MEDIA_EXT, SEASON_REGEX, SUB_EXT } from "./rename.constant";
 import { RenameFile } from "./rename.types";
 import { torrentParser } from "./torrent.parser";

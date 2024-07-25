@@ -1,8 +1,8 @@
+import { PrismaClientExceptionFilter } from "@/processors/database/prisma-client-exception";
+import { Logger } from "@/processors/logger/logger";
+import { LoggerService } from "@/processors/logger/logger.service";
 import { INestApplication } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
-import { PrismaClientExceptionFilter } from "./modules/database/prisma-client-exception";
-import { Logger } from "./modules/logger/logger";
-import { LoggerService } from "./modules/logger/logger.service";
 
 export function setup(app: INestApplication) {
 	app.useLogger(app.get(Logger));
