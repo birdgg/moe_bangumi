@@ -122,7 +122,7 @@ importers:
         version: 3.45.2(zod@3.23.8)
       '@ts-rest/open-api':
         specifier: ^3.45.2
-        version: 3.45.2(zod@3.23.8)
+        version: 3.46.0(zod@3.23.8)
       '@types/express':
         specifier: ^4.17.17
         version: 4.17.21
@@ -2499,8 +2499,8 @@ packages:
       zod:
         optional: true
 
-  '@ts-rest/open-api@3.45.2':
-    resolution: {integrity: sha512-TG5GvD0eyicMR3HjEAMTO2ulO7x/ADSn5bfLF/ZDdVXla48PiQdwhG4NsjVbsUDCghwx+6y5u2aTYjypzdiXQg==}
+  '@ts-rest/open-api@3.46.0':
+    resolution: {integrity: sha512-G0mcDJE0cfeeWiqBaZJw7SrUPk7xYBnHlPNmuqueOISB8QRBNCYwefs4BWf2L78Vwu0Yymnaz1lfAUDvSLSJKA==}
     peerDependencies:
       zod: ^3.22.3
 
@@ -9589,7 +9589,7 @@ snapshots:
     optionalDependencies:
       zod: 3.23.8
 
-  '@ts-rest/open-api@3.45.2(zod@3.23.8)':
+  '@ts-rest/open-api@3.46.0(zod@3.23.8)':
     dependencies:
       '@anatine/zod-openapi': 1.14.2(openapi3-ts@2.0.2)(zod@3.23.8)
       openapi3-ts: 2.0.2
